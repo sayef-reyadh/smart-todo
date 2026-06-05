@@ -1,4 +1,4 @@
-# Smart ToDo - Information Gathering Report
+# Smart Todo App - Information Gathering Report
 
 ## Why Information Gathering Is Necessary
 Requirement quality determines delivery quality. Without disciplined elicitation, teams ship features that are technically correct but operationally misaligned. This phase reduced ambiguity and established a shared, testable scope.
@@ -47,3 +47,4 @@ flowchart TD
 
 ## Outcome
 The elicitation output became the baseline for PRD, user stories, FR/NFR, use cases, SRS, design, and QA traceability.
+

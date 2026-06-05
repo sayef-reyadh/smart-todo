@@ -1,9 +1,9 @@
-# Smart ToDo - Data Flow Diagrams (DFD)
+# Smart Todo App - Data Flow Diagrams (DFD)
 
 ## Context Diagram
 ```mermaid
 flowchart LR
-  U[User] -->|Auth, Task, Reminder Requests| S[Smart ToDo System]
+  U[User] -->|Auth, Task, Reminder Requests| S[Smart Todo App System]
   S -->|Task Views, Notifications, Dashboards| U
   S -->|Store/Retrieve Data| DB[(DynamoDB)]
   S -->|Send Email Alerts| ES[Email Service]
@@ -96,3 +96,4 @@ flowchart TD
 
   classDef db fill:#f2f2f2,stroke:#777,stroke-width:1px;
 ```
+

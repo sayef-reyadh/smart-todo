@@ -1,4 +1,4 @@
-# Smart ToDo - Interview Report
+# Smart Todo App - Interview Report
 
 ## Interview Framework
 - Format: semi-structured, 35-45 minutes per participant
@@ -57,3 +57,4 @@ FR-009, FR-012, FR-014, FR-015, FR-019, FR-023, FR-025, FR-029, FR-034, FR-036, 
 
 ## Interview Insight Summary
 Users do not need more task capture tools; they need a dependable execution system that combines structure, reminders, and feedback loops.
+

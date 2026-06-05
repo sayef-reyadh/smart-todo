@@ -1,4 +1,4 @@
-# Smart ToDo - Entity Relationship Diagram (ERD)
+# Smart Todo App - Entity Relationship Diagram (ERD)
 
 ## Entity Overview
 | Entity | Purpose |
@@ -117,3 +117,4 @@ erDiagram
       datetime created_at
     }
 ```
+

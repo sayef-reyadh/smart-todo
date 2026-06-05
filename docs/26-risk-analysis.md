@@ -1,4 +1,4 @@
-# Smart ToDo - Risk Analysis
+# Smart Todo App - Risk Analysis
 
 ## Risk Register
 | Risk ID | Category | Description | Probability | Impact | Mitigation | Owner |
@@ -43,3 +43,4 @@ quadrantChart
 1. High probability + high impact risks must have owners and weekly review.
 2. Critical security risks block release until mitigated.
 3. Schedule and scope risks require change-control decisions from Product Owner.
+

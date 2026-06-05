@@ -1,7 +1,7 @@
-# Smart ToDo - System Design
+# Smart Todo App - System Design
 
 ## High-Level Design
-Smart ToDo follows a layered, API-first architecture:
+Smart Todo App follows a layered, API-first architecture:
 1. **Presentation Layer:** React (TypeScript) SPA.
 2. **Application Layer:** FastAPI services (auth, tasks, reminders, notifications, analytics).
 3. **Data Layer:** DynamoDB for low-latency NoSQL persistence.
@@ -98,3 +98,4 @@ flowchart TD
   ECS --> CW
   DDB --> BKP
 ```
+

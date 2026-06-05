@@ -1,6 +1,6 @@
-# Smart ToDo Application - Documentation Repository
+# Smart Todo App - Documentation Repository
 
-This repository section contains a complete end-to-end Requirements Engineering and SDLC documentation set for **Smart ToDo**, designed for both industry delivery and university teaching.
+This repository section contains a complete end-to-end Requirements Engineering and SDLC documentation set for **Smart Todo App**, designed for both industry delivery and university teaching.
 
 ## Purpose
 1. Provide production-grade project documentation with traceability.
@@ -69,3 +69,4 @@ flowchart TD
 - Every user story maps to functional requirements.
 - Every requirement maps to verification tests.
 - All requirements are represented in the traceability matrix.
+

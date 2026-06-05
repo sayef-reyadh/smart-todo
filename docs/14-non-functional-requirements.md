@@ -1,4 +1,4 @@
-# Smart ToDo - Non-Functional Requirements
+# Smart Todo App - Non-Functional Requirements
 
 | NFR ID | Category | Requirement (Measurable Target) |
 |---|---|---|
@@ -37,3 +37,4 @@
 | Accessibility | Automated scans + manual keyboard/screen-reader testing |
 | Maintainability | CI quality gates, test coverage reporting |
 | Observability | Alert validation and telemetry completeness checks |
+

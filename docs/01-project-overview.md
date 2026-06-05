@@ -1,7 +1,7 @@
-# Smart ToDo Application - Project Overview
+# Smart Todo App - Project Overview
 
 ## Executive Summary
-Smart ToDo is a web-based productivity platform for students and professionals to plan, prioritize, and complete work reliably. The product combines task management, reminders, smart filtering, and progress analytics to reduce missed deadlines and improve execution consistency.
+Smart Todo App is a web-based productivity platform for students and professionals to plan, prioritize, and complete work reliably. The product combines task management, reminders, smart filtering, and progress analytics to reduce missed deadlines and improve execution consistency.
 
 ## Project Background
 User research across academic and professional groups showed fragmented productivity workflows: notes apps for capture, calendars for deadlines, messaging apps for reminders, and spreadsheets for reporting. This fragmentation creates context-switching costs and missed commitments.
@@ -73,3 +73,4 @@ Deliver a centralized productivity system with:
 1. Real-time multi-user collaboration on shared tasks (Phase 3).
 2. Native mobile apps (web responsive first).
 3. Third-party marketplace integrations beyond baseline calendar sync.
+

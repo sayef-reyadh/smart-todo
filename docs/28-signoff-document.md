@@ -1,9 +1,9 @@
-# Smart ToDo - Project Signoff Document
+# Smart Todo App - Project Signoff Document
 
 ## 1. Project Information
 | Field | Value |
 |---|---|
-| Project Name | Smart ToDo Application |
+| Project Name | Smart Todo App |
 | Version | v1.0 (MVP Baseline) |
 | Document Date | 2026-06-05 |
 | Prepared By | Product/BA/Architecture/Engineering/QA Team |
@@ -54,4 +54,5 @@
 | 1.0 | ____ | ____ | Baseline approved |
 
 ## 7. Signoff Statement
-By signing this document, stakeholders confirm that the documented requirements, design decisions, quality gates, and release constraints for Smart ToDo are reviewed and accepted for the approved scope.
+By signing this document, stakeholders confirm that the documented requirements, design decisions, quality gates, and release constraints for Smart Todo App are reviewed and accepted for the approved scope.
+

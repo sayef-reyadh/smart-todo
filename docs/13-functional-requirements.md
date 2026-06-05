@@ -1,4 +1,4 @@
-# Smart ToDo - Functional Requirements
+# Smart Todo App - Functional Requirements
 
 | FR ID | Description | Priority | Business Justification | Related User Story |
 |---|---|---|---|---|
@@ -56,3 +56,4 @@
 ## Requirement Notes
 1. FR IDs are baseline-controlled and referenced in use cases, API design, test cases, and traceability matrix.
 2. Implementation prioritizes High requirements for MVP, then Medium/Low by roadmap phase.
+

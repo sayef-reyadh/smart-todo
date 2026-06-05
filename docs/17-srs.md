@@ -1,8 +1,8 @@
-# Smart ToDo - Software Requirements Specification (SRS)
+# Smart Todo App - Software Requirements Specification (SRS)
 
 ## 1. Introduction
 ### 1.1 Purpose
-This SRS defines functional and non-functional requirements for Smart ToDo, a web application for task planning, reminders, and productivity analytics.
+This SRS defines functional and non-functional requirements for Smart Todo App, a web application for task planning, reminders, and productivity analytics.
 
 ### 1.2 Scope
 The system supports secure user access, task lifecycle management, reminders, notifications, dashboards, and operational governance using React (TypeScript), Python FastAPI, AWS DynamoDB (NoSQL), JWT, Docker, and AWS.
@@ -24,7 +24,7 @@ The system supports secure user access, task lifecycle management, reminders, no
 
 ## 2. Overall Description
 ### 2.1 Product Perspective
-Smart ToDo is a three-tier web system:
+Smart Todo App is a three-tier web system:
 1. React (TypeScript) frontend for user interaction.
 2. Python FastAPI backend for APIs/business logic.
 3. AWS DynamoDB (NoSQL) for persistent storage.
@@ -106,3 +106,4 @@ See [16-dfd.md](16-dfd.md), [18-erd.md](18-erd.md).
 
 ### Appendix C - Verification
 See [23-test-plan.md](23-test-plan.md), [24-test-cases.md](24-test-cases.md).
+

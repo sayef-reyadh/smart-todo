@@ -1,7 +1,7 @@
-# Smart ToDo - Test Plan
+# Smart Todo App - Test Plan
 
 ## QA Strategy
-Adopt risk-based, requirement-traceable testing across API, UI, integration, security, and performance to validate release readiness for Smart ToDo.
+Adopt risk-based, requirement-traceable testing across API, UI, integration, security, and performance to validate release readiness for Smart Todo App.
 
 ## Test Objectives
 | Objective ID | Objective |
@@ -77,3 +77,4 @@ Adopt risk-based, requirement-traceable testing across API, UI, integration, sec
 2. Defect log and triage summary
 3. Regression results
 4. Release quality recommendation
+

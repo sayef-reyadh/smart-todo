@@ -1,4 +1,4 @@
-# Smart ToDo - Acceptance Criteria
+# Smart Todo App - Acceptance Criteria
 
 ## Feature-Level Gherkin Acceptance Criteria
 
@@ -41,3 +41,4 @@
 - **Given** import file format is invalid, **when** upload occurs, **then** system returns validation errors and no partial commit.
 - **Given** calendar view selected, **when** tasks include due dates, **then** they appear on corresponding calendar cells.
 - **Given** dependency set between tasks, **when** blocked task is selected, **then** blocker relationship is visible.
+

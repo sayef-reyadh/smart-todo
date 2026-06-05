@@ -1,4 +1,4 @@
-# Smart ToDo - Product Requirements Document (PRD)
+# Smart Todo App - Product Requirements Document (PRD)
 
 ## Product Vision
 Enable users to consistently execute commitments by combining structured task management, intelligent reminders, and progress analytics in a secure and fast web platform.
@@ -66,3 +66,4 @@ Detailed timeline in [27-project-roadmap.md](27-project-roadmap.md).
 
 ## Acceptance Baseline
 Each major feature is released only if mapped user stories, FR/NFR, APIs, and test cases are complete and traceable in [25-traceability-matrix.md](25-traceability-matrix.md).
+

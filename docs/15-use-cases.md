@@ -1,4 +1,4 @@
-# Smart ToDo - Use Cases
+# Smart Todo App - Use Cases
 
 ## UC-01 Register
 | Field | Details |
@@ -89,3 +89,4 @@
 | Alternative Flow | A1: Task already complete -> idempotent success. |
 | Post Conditions | Task in completed state; analytics updated |
 | Related FR | FR-012, FR-034, FR-035, FR-037 |
+

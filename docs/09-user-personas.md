@@ -1,4 +1,4 @@
-# Smart ToDo - User Personas
+# Smart Todo App - User Personas
 
 ## Persona P1 - Aisha (University Student)
 | Attribute | Details |
@@ -57,3 +57,4 @@
 | Fast prioritization | P2, P4 | FR-015, FR-023..FR-026 |
 | Reporting/analytics | P2, P3, P5 | FR-034..FR-038 |
 | Security/trust | All | FR-001..FR-008, NFR-010..NFR-013 |
+

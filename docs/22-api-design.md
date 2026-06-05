@@ -1,4 +1,4 @@
-# Smart ToDo - API Design
+# Smart Todo App - API Design
 
 ## API Standards
 | Item | Standard |
@@ -165,3 +165,4 @@
 | Tasks | FR-009..FR-028, FR-041, FR-049, FR-050 |
 | Reminders/Notifications | FR-029..FR-033, FR-042 |
 | Analytics/Utility | FR-034..FR-039, FR-043, FR-048 |
+

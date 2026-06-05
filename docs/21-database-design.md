@@ -1,4 +1,4 @@
-# Smart ToDo - Database Design
+# Smart Todo App - Database Design
 
 ## Database Overview
 - Engine: **Amazon DynamoDB**
@@ -100,3 +100,4 @@
 - The design is optimized around **access patterns**, not normalized joins.
 - Denormalization is intentional for low-latency reads on task lists, reminders, and notifications.
 - Derived dashboard metrics are computed in service layer and optionally cached.
+

@@ -1,4 +1,4 @@
-# Smart ToDo - Project Roadmap
+# Smart Todo App - Project Roadmap
 
 ## Roadmap Strategy
 Delivery is phased to maximize early value while controlling risk:
@@ -18,7 +18,7 @@ Delivery is phased to maximize early value while controlling risk:
 ## Mermaid Gantt Timeline
 ```mermaid
 gantt
-    title Smart ToDo Product Roadmap
+    title Smart Todo App Product Roadmap
     dateFormat  YYYY-MM-DD
     axisFormat  %b %Y
     section Phase 1 - MVP
@@ -50,3 +50,4 @@ gantt
 | M3: Productivity Release | December 2026 |
 | M4: Collaboration Release | March 2027 |
 | M5: AI Assistant Release | June 2027 |
+

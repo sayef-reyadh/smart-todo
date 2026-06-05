@@ -1,4 +1,4 @@
-# Smart ToDo - User Stories
+# Smart Todo App - User Stories
 
 ## Epic E1 - Authentication and Account Management
 | US ID | Epic | Feature | Story | Priority | Mapped FR |
@@ -62,3 +62,4 @@
 
 ## Coverage Note
 All user stories are mapped to one or more functional requirements. Full end-to-end mapping is maintained in [25-traceability-matrix.md](25-traceability-matrix.md).
+

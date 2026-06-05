@@ -1,4 +1,4 @@
-# Smart ToDo - Traceability Matrix
+# Smart Todo App - Traceability Matrix
 
 ## Matrix A - User Story -> Functional Requirement -> Design -> API -> Test Case
 | User Story | Requirement | Design Component | API | Test Case |
@@ -87,3 +87,4 @@
 1. Every user story maps to one or more FR entries.
 2. Every FR (FR-001..FR-050) maps to at least one test case.
 3. Every NFR (NFR-001..NFR-025) maps to a validation test.
+

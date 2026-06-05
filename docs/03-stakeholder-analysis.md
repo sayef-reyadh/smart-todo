@@ -1,4 +1,4 @@
-# Smart ToDo - Stakeholder Analysis
+# Smart Todo App - Stakeholder Analysis
 
 ## Stakeholder Categories
 
@@ -63,3 +63,4 @@ quadrantChart
 | Signoff | A | C | C | C | C | C | C | R |
 
 **Legend:** R = Responsible, A = Accountable, C = Consulted, I = Informed.
+

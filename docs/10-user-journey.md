@@ -1,4 +1,4 @@
-# Smart ToDo - User Journey Map
+# Smart Todo App - User Journey Map
 
 ## Journey Stages
 Registration -> Login -> Create Task -> Organize Task -> Receive Reminder -> Complete Task
@@ -16,7 +16,7 @@ Registration -> Login -> Create Task -> Organize Task -> Receive Reminder -> Com
 ## Experience Heatmap
 ```mermaid
 journey
-    title Smart ToDo Journey Experience
+    title Smart Todo App Journey Experience
     section Onboarding
       Registration: 4: User
       Login: 4: User
@@ -32,3 +32,4 @@ journey
 1. Reduce friction in registration/login with explicit validation and recovery paths.
 2. Improve reminder precision (timezone and lead-time controls).
 3. Tighten loop between completion action and dashboard feedback.
+

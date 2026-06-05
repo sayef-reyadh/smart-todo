@@ -1,6 +1,6 @@
 # smart-todo
 
-Industry-grade and university-ready software engineering documentation repository for the **Smart ToDo Application**.
+Industry-grade and university-ready software engineering documentation repository for the **Smart Todo App**.
 
 ## Repository Purpose
 This repository demonstrates a complete SDLC and Requirements Engineering journey:
@@ -22,3 +22,4 @@ All detailed artifacts are under [`docs/`](docs), with full navigation in:
 - [`docs/README.md`](docs/README.md)
 
 Key documents include project overview, elicitation artifacts, PRD, SRS, design, API/database specs, testing, traceability matrix, risk register, roadmap, and signoff template.
+

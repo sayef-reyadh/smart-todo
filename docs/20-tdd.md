@@ -1,4 +1,4 @@
-# Smart ToDo - Technical Design Document (TDD)
+# Smart Todo App - Technical Design Document (TDD)
 
 ## Technical Stack
 | Layer | Technology |
@@ -89,3 +89,4 @@
 | Reminder/notification module | FR-029..FR-033, FR-042 |
 | Analytics module | FR-034..FR-036 |
 | Governance utilities | FR-037..FR-039, FR-043, FR-048 |
+

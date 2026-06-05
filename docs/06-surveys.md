@@ -1,4 +1,4 @@
-# Smart ToDo - Survey Report
+# Smart Todo App - Survey Report
 
 ## Survey Overview
 | Attribute | Value |
@@ -45,3 +45,4 @@
 | Build high-performance task retrieval | FR-022..FR-026, NFR-002 |
 | Include dashboard from first release | FR-034..FR-036 |
 | Ensure reliable auth and session lifecycle | FR-001..FR-008, NFR-010..NFR-013 |
+

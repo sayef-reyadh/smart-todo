@@ -1,4 +1,4 @@
-# Smart ToDo - Problem Statement
+# Smart Todo App - Problem Statement
 
 ## Problem Context
 Three major user groups are affected by fragmented task management:
@@ -31,7 +31,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  A[Centralized Smart ToDo] --> B[Organized Tasks]
+  A[Centralized Smart Todo App] --> B[Organized Tasks]
   B --> C[Timely Reminders]
   C --> D[Higher Completion Rates]
   D --> E[Improved Productivity]
@@ -46,4 +46,5 @@ flowchart LR
 | User confidence | Low trust in personal systems | Improved consistency and control |
 
 ## Problem Statement
-Users across academic and professional environments lack a unified, dependable, and insight-driven task management system. This causes missed deadlines, inconsistent execution, and reduced productivity. Smart ToDo addresses this by providing structured task orchestration, reminders, and measurable progress tracking in one secure web platform.
+Users across academic and professional environments lack a unified, dependable, and insight-driven task management system. This causes missed deadlines, inconsistent execution, and reduced productivity. Smart Todo App addresses this by providing structured task orchestration, reminders, and measurable progress tracking in one secure web platform.
+

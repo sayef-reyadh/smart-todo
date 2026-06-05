@@ -1,4 +1,4 @@
-# Smart ToDo - Test Cases
+# Smart Todo App - Test Cases
 
 | TC-ID | Title | Preconditions | Steps | Expected Result |
 |---|---|---|---|---|
@@ -80,3 +80,4 @@
 
 ## Coverage Note
 Test cases are mapped to requirements in [25-traceability-matrix.md](25-traceability-matrix.md).
+

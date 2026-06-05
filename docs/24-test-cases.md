@@ -77,6 +77,8 @@
 | TC-073 | Availability failover check | Staging failover setup | 1. Simulate instance failure | Service remains available per SLO |
 | TC-074 | Accessibility keyboard navigation | UI loaded | 1. Navigate core flows via keyboard | All actions operable without mouse |
 | TC-075 | Accessibility contrast/labels | UI loaded | 1. Run accessibility checks | WCAG AA criteria met for core pages |
+| TC-076 | Account deactivation flow | Logged-in user | 1. Call `/users/me/deactivate` 2. Attempt protected API call | Account status becomes deactivated and protected access is blocked per policy |
+| TC-077 | Admin suspend/reactivate user flow | Admin user + target user exists | 1. Call `/admin/users/{user_id}/status` suspend 2. Verify target login blocked 3. Reactivate and verify login restored | Admin status changes are applied and enforced correctly |
 
 ## Coverage Note
 Test cases are mapped to requirements in [25-traceability-matrix.md](25-traceability-matrix.md).

@@ -47,7 +47,7 @@ See [10-user-journey.md](10-user-journey.md).
 ## Feature List
 | Feature Group | Core Features | Requirement IDs |
 |---|---|---|
-| Authentication | Register, login, token refresh, logout | FR-001..FR-008, FR-044, FR-045 |
+| Authentication | Register, login, token refresh, logout, account lifecycle and access controls | FR-001..FR-008, FR-044..FR-047 |
 | Task Lifecycle | Create, edit, delete, complete, reopen | FR-009..FR-013 |
 | Task Organization | Priority, categories, recurrence, subtasks | FR-015..FR-021 |
 | Task Retrieval | Search, filter, sort, pagination | FR-022..FR-026, FR-041 |

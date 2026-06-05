@@ -50,8 +50,8 @@
 | US-033 | FR-042 | Timezone Scheduler | Reminder APIs | TC-051 |
 | US-033 | FR-043 | Locale Formatting Module | Profile + UI settings APIs | TC-010 |
 | US-006 | FR-044 | Password Reset Service | POST /auth/password-reset/* | TC-011, TC-012 |
-| US-007 | FR-045 | Account Lifecycle Service | PATCH /users/me/deactivate | TC-010 |
-| US-008 | FR-046 | Admin User Service | PATCH /admin/users/{user_id}/status | TC-009 |
+| US-007 | FR-045 | Account Lifecycle Service | PATCH /users/me/deactivate | TC-076 |
+| US-008 | FR-046 | Admin User Service | PATCH /admin/users/{user_id}/status | TC-077 |
 | US-008 | FR-047 | Rate Limit Middleware | All APIs | TC-067 |
 | US-040 | FR-048 | ICS Export Service | GET /calendar/feed.ics | TC-066 |
 | US-040 | FR-049 | Calendar View Module | GET /tasks + calendar UI | TC-030 |
@@ -83,7 +83,7 @@
 | NFR-021 | Alert response timing validation | TC-073 |
 | NFR-022 | Container portability verification | TC-073 |
 | NFR-023 | AWS reproducible deployment check | TC-073 |
-| NFR-024 | Deactivation/deletion process validation | TC-010 |
+| NFR-024 | Deactivation/deletion process validation | TC-076 |
 | NFR-025 | Usability first-task-time test | TC-013 |
 
 ## Coverage Statement

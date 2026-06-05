@@ -58,6 +58,7 @@
 | `/tasks/{task_id}` | DELETE | Soft-delete task | Bearer |
 | `/tasks/{task_id}/complete` | POST | Mark completed | Bearer |
 | `/tasks/{task_id}/reopen` | POST | Reopen task | Bearer |
+| `/tasks/{task_id}/dependencies` | PATCH | Update task dependency relationships | Bearer |
 | `/tasks/bulk` | PATCH | Bulk update tasks | Bearer |
 | `/tasks/bulk/complete` | POST | Bulk complete tasks | Bearer |
 
@@ -132,6 +133,16 @@
 | `/analytics/overdue` | GET | Overdue task report | Bearer |
 | `/analytics/export/tasks` | GET | Export task CSV | Bearer |
 | `/analytics/import/tasks` | POST | Import task CSV | Bearer |
+
+## Calendar Integration API
+| Endpoint | Method | Description | Auth |
+|---|---|---|---|
+| `/calendar/feed.ics` | GET | Export due-dated tasks as ICS calendar feed | Bearer |
+
+### Example: GET `/calendar/feed.ics`
+**Response 200**
+- `Content-Type: text/calendar`
+- Body contains ICS format calendar entries for due-dated tasks.
 
 ## Validation Rules
 | Area | Rule |

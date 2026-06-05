@@ -59,7 +59,7 @@ flowchart TD
 | 21 | [Database Design](21-database-design.md) | Schema, constraints, indexes |
 | 22 | [Application Programming Interface (API) Design](22-api-design.md) | Representational State Transfer contracts |
 | 23 | [Test Plan](23-test-plan.md) | Quality Assurance (QA) strategy |
-| 24 | [Test Cases](24-test-cases.md) | Test Case IDs (TC-001..TC-075) |
+| 24 | [Test Cases](24-test-cases.md) | Test Case IDs (TC-001..TC-077) |
 | 25 | [Traceability Matrix](25-traceability-matrix.md) | User Story (US) -> Functional Requirement/Non-Functional Requirement (FR/NFR) -> Application Programming Interface (API) -> Test Case (TC) |
 | 26 | [Risk Analysis](26-risk-analysis.md) | Risk register and mitigations |
 | 27 | [Project Roadmap](27-project-roadmap.md) | Multi-phase timeline |

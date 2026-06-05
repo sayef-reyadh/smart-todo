@@ -1,2 +1,2 @@
-# smart-todo-requirements-engineering
+# smart-todo
 A comprehensive academic and industry-oriented Requirements Engineering project demonstrating the complete software development documentation lifecycle using a Smart ToDo Application case study.

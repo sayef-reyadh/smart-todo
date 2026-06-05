@@ -7,7 +7,7 @@
 | Version | v1.0 (MVP Baseline) |
 | Document Date | 2026-06-05 |
 | Prepared By | Product/BA/Architecture/Engineering/QA Team |
-| Repository | `sayef-reyadh/smart-todo-requirements-engineering` |
+| Repository | `sayef-reyadh/smart-todo` |
 
 ## 2. Requirement Approval
 | Artifact | Version | Status | Approved By | Date |

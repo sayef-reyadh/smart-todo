@@ -11,11 +11,11 @@
 | Risk | Manageable | Mitigation plan documented in Risk Register |
 
 ## Technical Feasibility
-- **Frontend:** React supports modular UI and responsive design.
-- **Backend:** Spring Boot provides robust API, security integration, and testability.
+- **Frontend:** React (TypeScript) supports modular UI, type safety, and responsive design.
+- **Backend:** Python FastAPI provides high-performance async APIs, strong validation, and rapid development.
 - **Database:** MySQL supports relational integrity, indexing, and reporting queries.
 - **Auth:** JWT fits stateless scaling and API-first architecture.
-- **Deployment:** Docker + AWS supports repeatable environments and managed scalability.
+- **Deployment:** Docker on AWS supports repeatable environments and managed scalability.
 
 ## Economic Feasibility
 ### Cost Estimate (Year 1)

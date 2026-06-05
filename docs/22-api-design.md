@@ -9,6 +9,9 @@
 | Error Model | `error_code`, `message`, `trace_id`, `details` |
 | Time Format | ISO-8601 UTC |
 
+> **Path Convention:** Endpoints listed below are relative to `/api/v1`.  
+> Example: `POST /auth/register` means `POST /api/v1/auth/register`.
+
 ## Authentication APIs
 | Endpoint | Method | Description | Auth |
 |---|---|---|---|
@@ -32,11 +35,18 @@
 **Response 201**
 ```json
 {
-  "user_id": 101,
+  "user_id": "u_101",
   "email": "aisha@example.com",
   "message": "Registration successful"
 }
 ```
+
+## User and Account Lifecycle APIs
+| Endpoint | Method | Description | Auth |
+|---|---|---|---|
+| `/users/me` | PATCH | Update current user profile | Bearer |
+| `/users/me/deactivate` | PATCH | Deactivate current user account | Bearer |
+| `/admin/users/{user_id}/status` | PATCH | Suspend/reactivate user account | Bearer (admin) |
 
 ## Task APIs
 | Endpoint | Method | Description | Auth |
@@ -61,14 +71,14 @@
   "title": "Complete SRS draft",
   "description": "Finalize section 3 and 4",
   "priority": "HIGH",
-  "category_id": 12,
+  "category_id": "c_12",
   "due_at": "2026-06-20T18:00:00Z"
 }
 ```
 **Response 201**
 ```json
 {
-  "id": 501,
+  "id": "t_5001",
   "status": "PENDING",
   "created_at": "2026-06-05T10:22:00Z"
 }
@@ -102,8 +112,8 @@
 **Response 201**
 ```json
 {
-  "id": 9001,
-  "task_id": 501,
+  "id": "r_9001",
+  "task_id": "t_5001",
   "is_enabled": true
 }
 ```
@@ -165,4 +175,3 @@
 | Tasks | FR-009..FR-028, FR-041, FR-049, FR-050 |
 | Reminders/Notifications | FR-029..FR-033, FR-042 |
 | Analytics/Utility | FR-034..FR-039, FR-043, FR-048 |
-

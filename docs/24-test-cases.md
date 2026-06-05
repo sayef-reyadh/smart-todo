@@ -71,7 +71,7 @@
 | TC-067 | API rate limiting | High request burst | 1. Rapidly call API | Rate limit response (429) after threshold |
 | TC-068 | JWT expiration handling | Expired access token | 1. Call protected API | 401 with token-expired error |
 | TC-069 | Password hash security check | Existing user record | 1. Inspect stored password field | Password not stored in plaintext |
-| TC-070 | SQL injection resistance | Authenticated user | 1. Submit injection pattern in search | No injection effect, sanitized behavior |
+| TC-070 | Query injection resistance (NoSQL) | Authenticated user | 1. Submit injection-like pattern in search/filter inputs | No injection effect; query handling remains safe and sanitized |
 | TC-071 | XSS input handling | Authenticated user | 1. Save script-like task title 2. Render UI | Script not executed; output escaped |
 | TC-072 | P95 list API latency check | Load test environment | 1. Run standard load profile | P95 <= 400 ms |
 | TC-073 | Availability failover check | Staging failover setup | 1. Simulate instance failure | Service remains available per SLO |
@@ -80,4 +80,3 @@
 
 ## Coverage Note
 Test cases are mapped to requirements in [25-traceability-matrix.md](25-traceability-matrix.md).
-

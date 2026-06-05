@@ -9,7 +9,7 @@
 | RSK-004 | Technical | Third-party email provider instability | Medium | Medium | Retry policy, fallback provider option | DevOps Lead |
 | RSK-005 | Security | JWT token theft or misuse | Medium | High | Short token TTL, rotation, device/session controls | Security Lead |
 | RSK-006 | Security | Unauthorized data access via broken auth checks | Low | Critical | Mandatory auth middleware and endpoint tests | Security Lead |
-| RSK-007 | Security | Injection/XSS vulnerability | Medium | High | Input sanitization, prepared statements, security testing | QA Security Engineer |
+| RSK-007 | Security | Injection/XSS vulnerability | Medium | High | Input sanitization/allowlists, safe DynamoDB expression construction, output encoding, security testing | QA Security Engineer |
 | RSK-008 | Security | Sensitive data leakage in logs | Low | High | Log redaction policy and secure logging review | Platform Engineer |
 | RSK-009 | Operational | Incomplete monitoring causing late incident detection | Medium | High | SLO dashboards and alert coverage audits | DevOps Lead |
 | RSK-010 | Operational | Insufficient runbooks for support | Medium | Medium | Create incident runbooks and support playbooks | Product Ops |
@@ -43,4 +43,3 @@ quadrantChart
 1. High probability + high impact risks must have owners and weekly review.
 2. Critical security risks block release until mitigated.
 3. Schedule and scope risks require change-control decisions from Product Owner.
-

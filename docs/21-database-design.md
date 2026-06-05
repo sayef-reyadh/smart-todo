@@ -41,6 +41,7 @@
 | `gsi1pk`, `gsi1sk` | String | GSI-1 access pattern |
 | `gsi2pk`, `gsi2sk` | String | GSI-2 access pattern |
 | `gsi3pk`, `gsi3sk` | String | GSI-3 access pattern |
+| `gsi4pk`, `gsi4sk` | String | GSI-4 access pattern |
 
 ## Global Secondary Indexes (GSI)
 | Index | Partition Key | Sort Key | Access Pattern |
@@ -100,4 +101,3 @@
 - The design is optimized around **access patterns**, not normalized joins.
 - Denormalization is intentional for low-latency reads on task lists, reminders, and notifications.
 - Derived dashboard metrics are computed in service layer and optionally cached.
-

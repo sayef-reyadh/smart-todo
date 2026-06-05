@@ -1,5 +1,8 @@
 # Smart Todo App - Entity Relationship Diagram (ERD)
 
+> **Note:** This ERD is a **logical domain model** used for requirements and design communication.  
+> The physical persistence implementation is **AWS DynamoDB single-table NoSQL design** documented in [21-database-design.md](21-database-design.md).
+
 ## Entity Overview
 | Entity | Purpose |
 |---|---|
@@ -117,4 +120,3 @@ erDiagram
       datetime created_at
     }
 ```
-

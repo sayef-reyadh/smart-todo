@@ -23,7 +23,7 @@ gantt
     axisFormat  %b %Y
     section Phase 1 - MVP
     Requirements & Design             :done, p1a, 2026-06-10, 30d
-    Build Core Features               :active, p1b, after p1a, 45d
+    Build Core Features               :p1b, after p1a, 45d
     QA & MVP Release                  :p1c, after p1b, 20d
 
     section Phase 2 - Productivity Enhancements
@@ -50,4 +50,3 @@ gantt
 | M3: Productivity Release | December 2026 |
 | M4: Collaboration Release | March 2027 |
 | M5: AI Assistant Release | June 2027 |
-

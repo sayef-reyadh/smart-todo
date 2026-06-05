@@ -14,6 +14,27 @@ Users miss deadlines and underperform due to fragmented task tracking, weak remi
 | PG-03 | Minimize planning friction | Time-to-create-task <= 20 seconds (median) |
 | PG-04 | Build trusted platform | Reminder success >= 99.5%, login success >= 99.9% |
 
+## SMART Requirement Writing Standard
+All requirements in this product are authored using SMART quality criteria.
+
+| SMART Element | How It Is Applied in Smart Todo App |
+|---|---|
+| Specific | Requirements use explicit actor, action, and system outcome language. |
+| Measurable | Each major outcome is tied to a KPI, SLA, or testable acceptance criterion. |
+| Achievable | Scope is constrained to the current release baseline and team capacity. |
+| Relevant | Each requirement maps to user pain points and business goals (PG-01..PG-04). |
+| Timely | Requirements are prioritized by release phase and milestone targets. |
+
+## MoSCoW Prioritization
+The product backlog is prioritized using MoSCoW to protect release focus.
+
+| Category | Definition | Smart Todo App Usage |
+|---|---|---|
+| Must Have | Non-negotiable for release success | Auth, core task CRUD, completion flow, list/search/filter basics |
+| Should Have | Important but can be delayed if needed | Due-date UX polish, standardized error handling, baseline tests |
+| Could Have | Valuable enhancements if capacity remains | Recurrence, import/export, external calendar feed |
+| Won't Have (this release) | Explicitly out of scope now | Team collaboration workspace, AI assistant features |
+
 ## Target Users
 Students, professionals, freelancers, project coordinators, self-managed learners.
 
@@ -66,4 +87,3 @@ Detailed timeline in [27-project-roadmap.md](27-project-roadmap.md).
 
 ## Acceptance Baseline
 Each major feature is released only if mapped user stories, FR/NFR, APIs, and test cases are complete and traceable in [25-traceability-matrix.md](25-traceability-matrix.md).
-

@@ -57,3 +57,19 @@
 1. FR IDs are baseline-controlled and referenced in use cases, API design, test cases, and traceability matrix.
 2. Implementation prioritizes High requirements for MVP, then Medium/Low by roadmap phase.
 
+## SMART Quality Check for Functional Requirements
+| SMART Element | Functional Requirement Quality Rule |
+|---|---|
+| Specific | Each FR states a clear system behavior with unambiguous language. |
+| Measurable | Each FR is testable through acceptance criteria and mapped test cases. |
+| Achievable | FR scope aligns with approved architecture and delivery phases. |
+| Relevant | Each FR links to at least one user story and business justification. |
+| Timely | FR execution is phase-prioritized and release planned in roadmap/milestones. |
+
+## MoSCoW Mapping for Functional Requirements
+| MoSCoW Category | Priority Mapping | FR Coverage (examples) |
+|---|---|---|
+| Must Have | High | FR-001..FR-007, FR-009..FR-010, FR-012, FR-014..FR-016, FR-022..FR-025, FR-029..FR-034, FR-036, FR-042, FR-044 |
+| Should Have | Medium | FR-008, FR-011, FR-013, FR-017..FR-020, FR-026..FR-028, FR-031, FR-035, FR-037..FR-038, FR-041, FR-046..FR-047, FR-049..FR-050 |
+| Could Have | Low | FR-021, FR-039..FR-040, FR-043, FR-045, FR-048 |
+| Won't Have (this release) | Not in FR baseline | Collaboration and AI capabilities deferred to later roadmap phases |

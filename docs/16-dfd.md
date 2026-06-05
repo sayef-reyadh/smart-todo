@@ -5,7 +5,7 @@
 flowchart LR
   U[User] -->|Auth, Task, Reminder Requests| S[Smart ToDo System]
   S -->|Task Views, Notifications, Dashboards| U
-  S -->|Store/Retrieve Data| DB[(MySQL Database)]
+  S -->|Store/Retrieve Data| DB[(DynamoDB)]
   S -->|Send Email Alerts| ES[Email Service]
   S -->|Deployment/Monitoring| AWS[AWS Services]
 ```

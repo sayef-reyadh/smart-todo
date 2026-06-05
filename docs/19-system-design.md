@@ -4,7 +4,7 @@
 Smart ToDo follows a layered, API-first architecture:
 1. **Presentation Layer:** React (TypeScript) SPA.
 2. **Application Layer:** FastAPI services (auth, tasks, reminders, notifications, analytics).
-3. **Data Layer:** MySQL for transactional storage.
+3. **Data Layer:** DynamoDB for low-latency NoSQL persistence.
 4. **Platform Layer:** Dockerized deployment on AWS with observability.
 
 ## Architecture Diagram
@@ -12,7 +12,7 @@ Smart ToDo follows a layered, API-first architecture:
 flowchart LR
   U[Web User] --> FE[React TypeScript SPA]
   FE --> API[FastAPI Backend]
-  API --> DB[(MySQL)]
+  API --> DB[(DynamoDB)]
   API --> Q[Reminder Scheduler/Worker]
   Q --> NS[Notification Service]
   NS --> EMAIL[Email Provider]
@@ -61,7 +61,7 @@ sequenceDiagram
   participant User
   participant UI as React UI
   participant API as FastAPI
-  participant DB as MySQL
+  participant DB as DynamoDB
   participant Worker as Reminder Worker
   participant Notif as Notification Service
 
@@ -90,11 +90,11 @@ flowchart TD
   subgraph AWS
     ALB[Application Load Balancer]
     ECS[ECS/Fargate Service]
-    RDS[(Amazon RDS MySQL)]
+    DDB[(Amazon DynamoDB)]
     CW[CloudWatch]
-    S3[S3 Backups/Artifacts]
+    BKP[AWS Backup / PITR]
   end
-  Client[Browser] --> ALB --> ECS --> RDS
+  Client[Browser] --> ALB --> ECS --> DDB
   ECS --> CW
-  RDS --> S3
+  DDB --> BKP
 ```

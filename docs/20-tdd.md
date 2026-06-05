@@ -5,7 +5,7 @@
 |---|---|
 | Frontend | React + TypeScript |
 | Backend | Python FastAPI |
-| Database | MySQL |
+| Database | AWS DynamoDB (NoSQL) |
 | Auth | JWT |
 | Deployment | Docker on AWS |
 
@@ -29,11 +29,11 @@
   - Dependency validation
 
 ### 3. Repository Layer
-- Uses SQLAlchemy ORM (or SQLModel) repositories.
+- Uses DynamoDB data-access repositories (boto3/PynamoDB style adapters).
 - Responsibilities:
   - CRUD operations
-  - Query composition for search/filter
-  - Transaction boundaries
+  - Query composition through partition/sort keys and GSIs
+  - Conditional writes and TransactWriteItems for integrity-sensitive operations
 
 ### 4. Authentication Layer
 - JWT issuance and refresh token rotation.
@@ -72,7 +72,7 @@
 ### 10. Scalability Strategy
 1. Stateless API instances behind load balancer.
 2. Horizontal scaling for API and worker services.
-3. DB indexing and query optimization for list/filter/search.
+3. DynamoDB key design and GSI optimization for list/filter/search.
 4. Background job queue for reminder delivery spikes.
 
 ## Frontend Design Highlights

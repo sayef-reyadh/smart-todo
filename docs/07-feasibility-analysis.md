@@ -13,7 +13,7 @@
 ## Technical Feasibility
 - **Frontend:** React (TypeScript) supports modular UI, type safety, and responsive design.
 - **Backend:** Python FastAPI provides high-performance async APIs, strong validation, and rapid development.
-- **Database:** MySQL supports relational integrity, indexing, and reporting queries.
+- **Database:** AWS DynamoDB supports managed NoSQL scalability, low-latency key access, and high availability.
 - **Auth:** JWT fits stateless scaling and API-first architecture.
 - **Deployment:** Docker on AWS supports repeatable environments and managed scalability.
 

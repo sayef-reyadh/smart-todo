@@ -18,7 +18,7 @@ Deliver a centralized productivity system with:
 - Categories, priorities, due dates, and search/filter
 - Reminder and notification engine
 - Dashboard insights and completion trends
-- JWT-secured FastAPI backend, React (TypeScript) frontend, MySQL persistence, Dockerized AWS deployment
+- JWT-secured FastAPI backend, React (TypeScript) frontend, AWS DynamoDB (NoSQL) persistence, Dockerized AWS deployment
 
 ## Project Scope
 | In Scope | Description |

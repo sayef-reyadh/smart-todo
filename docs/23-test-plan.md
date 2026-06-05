@@ -52,7 +52,7 @@ Adopt risk-based, requirement-traceable testing across API, UI, integration, sec
 |---|---|
 | Frontend | React (TypeScript) build on staging |
 | Backend | FastAPI service (Docker) |
-| Database | MySQL staging instance |
+| Database | AWS DynamoDB staging tables |
 | Infra | AWS (ALB, containers, monitoring) |
 | Tooling | API test runner, UI automation, load test tools |
 

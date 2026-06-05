@@ -29,7 +29,7 @@ flowchart TD
 |---|---|
 | Frontend | React (TypeScript) |
 | Backend | Python FastAPI |
-| Database | MySQL |
+| Database | AWS DynamoDB (NoSQL) |
 | Authentication | JWT |
 | Deployment | Docker on AWS |
 

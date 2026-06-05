@@ -5,7 +5,7 @@
 This SRS defines functional and non-functional requirements for Smart ToDo, a web application for task planning, reminders, and productivity analytics.
 
 ### 1.2 Scope
-The system supports secure user access, task lifecycle management, reminders, notifications, dashboards, and operational governance using React (TypeScript), Python FastAPI, MySQL, JWT, Docker, and AWS.
+The system supports secure user access, task lifecycle management, reminders, notifications, dashboards, and operational governance using React (TypeScript), Python FastAPI, AWS DynamoDB (NoSQL), JWT, Docker, and AWS.
 
 ### 1.3 Definitions and Acronyms
 | Term | Meaning |
@@ -27,7 +27,7 @@ The system supports secure user access, task lifecycle management, reminders, no
 Smart ToDo is a three-tier web system:
 1. React (TypeScript) frontend for user interaction.
 2. Python FastAPI backend for APIs/business logic.
-3. MySQL database for persistent storage.
+3. AWS DynamoDB (NoSQL) for persistent storage.
 
 ### 2.2 Product Functions
 - Account registration, login, token lifecycle, profile management
@@ -42,7 +42,7 @@ Students, professionals, freelancers, administrators.
 ### 2.4 Operating Environment
 - Modern browsers (Chrome, Firefox, Edge, Safari)
 - Backend in containerized Linux runtime on AWS
-- MySQL 8.x
+- AWS DynamoDB
 
 ### 2.5 Constraints
 - JWT-based auth is mandatory.

@@ -1,41 +1,585 @@
+<!-- DOCTYPE declaration: Required for HTML5. Tells browser this is an HTML5 document -->
 <!DOCTYPE html>
+
+<!-- Root <html> element: lang="en" tells search engines this page is in English -->
 <html lang="en">
+
+<!-- HEAD section: Contains metadata (not visible on page) -->
 <head>
+    <!-- UTF-8 charset: Allows all international characters and special symbols -->
     <meta charset="UTF-8">
+    
+    <!-- Viewport meta tag: Makes website responsive on mobile devices -->
+    <!-- width=device-width: Page width = device screen width -->
+    <!-- initial-scale=1.0: Page displays at 100% zoom (not zoomed in/out) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- TITLE: Shows in browser tab and search results -->
     <title>John Doe - Resume</title>
+    
+    <!-- LINK to CSS: Connects external stylesheet for all styling -->
+    <!-- href="styles.css": Path to the CSS file -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
+<!-- BODY: Contains all visible page content -->
 <body>
-    <!-- Header -->
+    <!-- HEADER: Top section with profile information (semantic HTML tag) -->
     <header class="header">
+        <!-- DIV container: Centers content with max-width, adds padding on sides -->
         <div class="container">
+            <!-- DIV profile-section: Uses flexbox to arrange avatar and info side-by-side -->
             <div class="profile-section">
+                <!-- DIV profile-image: Container for the circular avatar -->
                 <div class="profile-image">
+                    <!-- DIV avatar: Displays initials (JD) inside circle -->
+                    <!-- CSS makes this circular with border-radius: 50% -->
                     <div class="avatar">JD</div>
                 </div>
+                
+                <!-- DIV profile-info: Contains name, title, and email -->
                 <div class="profile-info">
+                    <!-- H1 heading: Main title (name) - only ONE H1 per page for SEO -->
                     <h1>John Doe</h1>
+                    
+                    <!-- PARAGRAPH with class title: Job title styled differently than regular text -->
                     <p class="title">Full Stack Developer</p>
+                    
+                    <!-- PARAGRAPH with class email: Contact information -->
                     <p class="email">john.doe@example.com | (555) 123-4567</p>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Navigation -->
+    <!-- NAVIGATION BAR: Menu buttons to switch between sections -->
+    <!-- SEMANTIC HTML: <nav> tells screen readers this is navigation -->
     <nav class="navbar">
+        <!-- DIV container: Centers nav buttons -->
         <div class="container">
+            <!-- BUTTON 1: About section -->
+            <!-- class="nav-btn active": "active" class makes this button appear selected initially -->
+            <!-- data-section="about": Custom attribute storing section ID for JavaScript to read -->
             <button class="nav-btn active" data-section="about">About</button>
+            
+            <!-- BUTTON 2: Experience section -->
+            <!-- data-section stores the ID of the section to display when clicked -->
             <button class="nav-btn" data-section="experience">Experience</button>
+            
+            <!-- BUTTON 3: Skills section -->
             <button class="nav-btn" data-section="skills">Skills</button>
+            
+            <!-- BUTTON 4: Projects section -->
             <button class="nav-btn" data-section="projects">Projects</button>
+            
+            <!-- BUTTON 5: Contact section -->
             <button class="nav-btn" data-section="contact">Contact</button>
         </div>
     </nav>
 
-    <!-- Main Content -->
+
+    <!-- MAIN: Primary content area (semantic HTML tag) -->
     <main class="container">
+        
+        <!-- ========== ABOUT SECTION ========== -->
+        <!-- SECTION 1: About/intro section -->
+        <!-- id="about": Unique identifier for JavaScript to find and display this section -->
+        <!-- class="section active": "active" makes this visible initially, "section" applies base styling -->
+        <section id="about" class="section active">
+            <!-- H2 heading: Section title (comes after H1) -->
+            <h2>About Me</h2>
+            
+            <!-- PARAGRAPH: First intro line -->
+            <p>Hello! I'm John Doe, a passionate Full Stack Developer with 5+ years of experience building web applications.</p>
+            
+            <!-- PARAGRAPH: Second intro line with specializations -->
+            <p>I specialize in JavaScript, React, Node.js, and creating responsive web designs. I love solving complex problems and learning new technologies.</p>
+            
+            <!-- DIV button-group: Container for buttons (flexbox arranges horizontally) -->
+            <div class="button-group">
+                <!-- BUTTON 1: Dark mode toggle -->
+                <!-- id="toggleTheme": JavaScript finds this button to add click event -->
+                <!-- class="btn btn-primary": Multiple classes for button styling (primary = blue) -->
+                <!-- 🌙 emoji: Visual indicator for dark mode function -->
+                <button class="btn btn-primary" id="toggleTheme">🌙 Dark Mode</button>
+                
+                <!-- BUTTON 2: Show alert with profile info -->
+                <!-- id="showAlert": JavaScript identifier for this button -->
+                <!-- class="btn btn-secondary": Secondary styling (green color) -->
+                <button class="btn btn-secondary" id="showAlert">Show Alert</button>
+                
+                <!-- BUTTON 3: Toggle extended bio -->
+                <!-- id="toggleBio": JavaScript uses to toggle #extendedBio visibility -->
+                <!-- class="btn btn-tertiary": Tertiary styling (orange/yellow color) -->
+                <button class="btn btn-tertiary" id="toggleBio">Toggle Bio</button>
+            </div>
+
+            <!-- DIV extendedBio: Additional biography content (hidden by default) -->
+            <!-- id="extendedBio": JavaScript finds this to show/hide on button click -->
+            <!-- class="hidden": CSS class that sets display: none initially -->
+            <div id="extendedBio" class="hidden">
+                <!-- H3 heading: Subheading for the extended bio -->
+                <h3>My Journey</h3>
+                
+                <!-- PARAGRAPH: Personal background story -->
+                <p>Started learning web development in 2018, and now I'm helping others build amazing things. When I'm not coding, you can find me playing video games or exploring new coffee shops.</p>
+                
+                <!-- PARAGRAPH: Fun facts with emojis -->
+                <p>Fun facts: ☕ Coffee addict | 🎮 Gamer | 📚 Tech enthusiast</p>
+            </div>
+        </section>
+
+        <!-- ========== EXPERIENCE SECTION ========== -->
+        <!-- SECTION 2: Professional experience/work history -->
+        <!-- id="experience": Navigation identifier -->
+        <!-- class="section hidden": Hidden initially, shown when Experience button clicked -->
+        <section id="experience" class="section hidden">
+            <!-- H2: Section title -->
+            <h2>Professional Experience</h2>
+            
+            <!-- DIV experience-item: First job (Senior Developer) -->
+            <!-- class="experience-item": CSS styles this as a card with border and background -->
+            <div class="experience-item">
+                <!-- DIV experience-header: Contains job title and date (flexbox for side-by-side) -->
+                <div class="experience-header">
+                    <!-- H3: Job title -->
+                    <h3>Senior Developer</h3>
+                    
+                    <!-- SPAN date: Date range badge (styled with background color) -->
+                    <span class="date">2022 - Present</span>
+                </div>
+                
+                <!-- PARAGRAPH company: Company name (styled in primary color) -->
+                <p class="company">Tech Solutions Inc.</p>
+                
+                <!-- UL: Unordered list of job responsibilities (creates bullet points) -->
+                <ul>
+                    <!-- LI: Each list item becomes a bullet point -->
+                    <li>Led development of 10+ web applications</li>
+                    <li>Managed a team of 5 developers</li>
+                    <li>Improved application performance by 40%</li>
+                </ul>
+            </div>
+
+            <!-- DIV experience-item: Second job (Full Stack Developer) -->
+            <div class="experience-item">
+                <!-- DIV experience-header: Title and date side-by-side -->
+                <div class="experience-header">
+                    <!-- H3: Job position -->
+                    <h3>Full Stack Developer</h3>
+                    
+                    <!-- SPAN date: Employment dates -->
+                    <span class="date">2020 - 2022</span>
+                </div>
+                
+                <!-- PARAGRAPH company: Company name -->
+                <p class="company">Digital Innovations Ltd.</p>
+                
+                <!-- UL: Job accomplishments list -->
+                <ul>
+                    <li>Built and maintained REST APIs using Node.js</li>
+                    <li>Developed responsive UIs with React</li>
+                    <li>Collaborated with cross-functional teams</li>
+                </ul>
+            </div>
+
+            <!-- DIV experience-item: Third job (Junior Developer) -->
+            <div class="experience-item">
+                <!-- DIV experience-header: Job title and dates -->
+                <div class="experience-header">
+                    <!-- H3: Job position -->
+                    <h3>Junior Developer</h3>
+                    
+                    <!-- SPAN date: Dates badge -->
+                    <span class="date">2019 - 2020</span>
+                </div>
+                
+                <!-- PARAGRAPH company: Company -->
+                <p class="company">StartUp Hub</p>
+                
+                <!-- UL: Responsibilities list -->
+                <ul>
+                    <li>Developed frontend features using HTML, CSS, JS</li>
+                    <li>Fixed bugs and improved code quality</li>
+                    <li>Assisted in database design</li>
+                </ul>
+            </div>
+
+            <!-- DIV button-group: Action buttons for experience section -->
+            <div class="button-group">
+                <!-- BUTTON: Download resume -->
+                <!-- id="downloadResume": JavaScript identifier -->
+                <!-- 📥 emoji: Download icon -->
+                <button class="btn btn-primary" id="downloadResume">📥 Download Resume</button>
+                
+                <!-- BUTTON: Expand all experience items -->
+                <!-- id="expandExperience": JavaScript toggles expand/collapse state -->
+                <button class="btn btn-secondary" id="expandExperience">Expand All</button>
+            </div>
+        </section>
+
+        <!-- ========== SKILLS SECTION ========== -->
+        <!-- SECTION 3: Technical skills display -->
+        <!-- id="skills": Navigation identifier -->
+        <!-- class="section hidden": Hidden, shown when Skills button clicked -->
+        <section id="skills" class="section hidden">
+            <!-- H2: Section title -->
+            <h2>Skills</h2>
+            
+            <!-- DIV skills-container: Grid container for skill categories -->
+            <!-- class="skills-container": CSS creates responsive grid layout -->
+            <div class="skills-container">
+                
+                <!-- DIV skill-category: Frontend skills group -->
+                <div class="skill-category">
+                    <!-- H3: Category heading -->
+                    <h3>Frontend</h3>
+                    
+                    <!-- DIV skill-tags: Container for skill badges (flexbox wrapping) -->
+                    <div class="skill-tags">
+                        <!-- SPAN skill-tag: Individual skill badge (rounded pill shape) -->
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Vue.js</span>
+                        <span class="skill-tag">Bootstrap</span>
+                        <span class="skill-tag">Responsive Design</span>
+                    </div>
+                </div>
+
+                <!-- DIV skill-category: Backend skills group -->
+                <div class="skill-category">
+                    <!-- H3: Category heading -->
+                    <h3>Backend</h3>
+                    
+                    <!-- DIV skill-tags: Backend skill badges container -->
+                    <div class="skill-tags">
+                        <!-- SPAN skill-tag: Backend technology badges -->
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Express.js</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">REST APIs</span>
+                        <span class="skill-tag">GraphQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <!-- DIV skill-category: Tools & other skills group -->
+                <div class="skill-category">
+                    <!-- H3: Category heading -->
+                    <h3>Tools & Other</h3>
+                    
+                    <!-- DIV skill-tags: Tools and platform badges -->
+                    <div class="skill-tags">
+                        <!-- SPAN skill-tag: Development tool badges -->
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Webpack</span>
+                        <span class="skill-tag">Jest</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">VS Code</span>
+                        <span class="skill-tag">Linux</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIV button-group: Skill interaction buttons -->
+            <div class="button-group">
+                <!-- BUTTON: Filter to frontend skills only -->
+                <!-- id="filterSkills": JavaScript filters skills array -->
+                <button class="btn btn-primary" id="filterSkills">Filter Skills</button>
+                
+                <!-- BUTTON: Count total number of skills -->
+                <!-- id="countSkills": JavaScript counts all skill tags -->
+                <button class="btn btn-secondary" id="countSkills">Count Skills</button>
+                
+                <!-- BUTTON: Shuffle skill order randomly -->
+                <!-- id="shuffleSkills": JavaScript randomizes skill order -->
+                <button class="btn btn-tertiary" id="shuffleSkills">Shuffle Skills</button>
+            </div>
+        </section>
+
+        <!-- ========== PROJECTS SECTION ========== -->
+        <!-- SECTION 4: Portfolio/projects showcase -->
+        <!-- id="projects": Navigation identifier -->
+        <!-- class="section hidden": Hidden, shown when Projects button clicked -->
+        <section id="projects" class="section hidden">
+            <!-- H2: Section title -->
+            <h2>Featured Projects</h2>
+            
+            <!-- DIV projects-grid: Grid container for project cards -->
+            <!-- class="projects-grid": CSS creates responsive grid of cards -->
+            <div class="projects-grid">
+                
+                <!-- DIV project-card: First project (Social Media App) -->
+                <!-- class="project-card": CSS styles as card with shadow and hover effects -->
+                <div class="project-card">
+                    <!-- DIV project-image: Image/thumbnail area with gradient -->
+                    <div class="project-image">
+                        <!-- DIV placeholder: Shows project icon and name -->
+                        <div class="placeholder">📱 Social Media App</div>
+                    </div>
+                    
+                    <!-- DIV project-content: Text content of the card -->
+                    <div class="project-content">
+                        <!-- H3: Project name -->
+                        <h3>Social Media App</h3>
+                        
+                        <!-- PARAGRAPH: Project description -->
+                        <p>A full-featured social media platform built with React and Node.js</p>
+                        
+                        <!-- DIV project-tags: Technology tags for this project -->
+                        <div class="project-tags">
+                            <!-- SPAN: Technology badges -->
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                        
+                        <!-- BUTTON: View project details -->
+                        <!-- onclick="showProjectDetail('social')": Direct JavaScript function call -->
+                        <!-- 'social': String parameter identifying which project to show -->
+                        <button class="btn btn-small" onclick="showProjectDetail('social')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- DIV project-card: Second project (E-Commerce Store) -->
+                <div class="project-card">
+                    <!-- DIV project-image: Gradient image area -->
+                    <div class="project-image">
+                        <!-- DIV placeholder: Icon and project name -->
+                        <div class="placeholder">🛒 E-Commerce Store</div>
+                    </div>
+                    
+                    <!-- DIV project-content: Card information -->
+                    <div class="project-content">
+                        <!-- H3: Project name -->
+                        <h3>E-Commerce Store</h3>
+                        
+                        <!-- PARAGRAPH: Description -->
+                        <p>An online shopping platform with payment integration</p>
+                        
+                        <!-- DIV project-tags: Tech stack badges -->
+                        <div class="project-tags">
+                            <span>Vue.js</span>
+                            <span>Express</span>
+                            <span>Stripe</span>
+                        </div>
+                        
+                        <!-- BUTTON: Details with project identifier -->
+                        <button class="btn btn-small" onclick="showProjectDetail('ecommerce')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- DIV project-card: Third project (Analytics Dashboard) -->
+                <div class="project-card">
+                    <!-- DIV project-image: Image section -->
+                    <div class="project-image">
+                        <!-- DIV placeholder: Icon and name -->
+                        <div class="placeholder">📊 Analytics Dashboard</div>
+                    </div>
+                    
+                    <!-- DIV project-content: Content section -->
+                    <div class="project-content">
+                        <!-- H3: Project title -->
+                        <h3>Analytics Dashboard</h3>
+                        
+                        <!-- PARAGRAPH: Project description -->
+                        <p>Real-time data visualization and analytics tool</p>
+                        
+                        <!-- DIV project-tags: Technologies used -->
+                        <div class="project-tags">
+                            <span>React</span>
+                            <span>D3.js</span>
+                            <span>WebSocket</span>
+                        </div>
+                        
+                        <!-- BUTTON: View details button -->
+                        <button class="btn btn-small" onclick="showProjectDetail('analytics')">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIV button-group: Project action buttons -->
+            <div class="button-group">
+                <!-- BUTTON: Visit GitHub profile -->
+                <!-- id="visitGithub": JavaScript opens GitHub link -->
+                <!-- 🔗 emoji: Link icon -->
+                <button class="btn btn-primary" id="visitGithub">🔗 Visit GitHub</button>
+                
+                <!-- BUTTON: Filter projects by technology -->
+                <!-- id="filterProjects": JavaScript toggles project filter -->
+                <button class="btn btn-secondary" id="filterProjects">Filter: All Projects</button>
+            </div>
+        </section>
+
+        <!-- ========== CONTACT SECTION ========== -->
+        <!-- SECTION 5: Contact information and form -->
+        <!-- id="contact": Navigation identifier -->
+        <!-- class="section hidden": Hidden, shown when Contact button clicked -->
+        <section id="contact" class="section hidden">
+            <!-- H2: Section title -->
+            <h2>Get In Touch</h2>
+            
+            <!-- DIV contact-info: Grid of contact information items -->
+            <!-- class="contact-info": CSS creates responsive grid layout -->
+            <div class="contact-info">
+                
+                <!-- DIV contact-item: Email contact -->
+                <!-- class="contact-item": CSS styles as card with left border -->
+                <div class="contact-item">
+                    <!-- H3: Email label with emoji -->
+                    <h3>📧 Email</h3>
+                    <!-- PARAGRAPH: Email address -->
+                    <p>john.doe@example.com</p>
+                </div>
+                
+                <!-- DIV contact-item: Phone contact -->
+                <div class="contact-item">
+                    <!-- H3: Phone label with emoji -->
+                    <h3>📱 Phone</h3>
+                    <!-- PARAGRAPH: Phone number -->
+                    <p>(555) 123-4567</p>
+                </div>
+                
+                <!-- DIV contact-item: Location -->
+                <div class="contact-item">
+                    <!-- H3: Location label -->
+                    <h3>📍 Location</h3>
+                    <!-- PARAGRAPH: City and country -->
+                    <p>New York, USA</p>
+                </div>
+                
+                <!-- DIV contact-item: Social media links -->
+                <div class="contact-item">
+                    <!-- H3: Social media label -->
+                    <h3>🔗 Social</h3>
+                    <!-- PARAGRAPH: Links container -->
+                    <p>
+                        <!-- A: LinkedIn link (href="#" prevents navigation in demo) -->
+                        <a href="#">LinkedIn</a> | 
+                        <!-- A: GitHub link -->
+                        <a href="#">GitHub</a> | 
+                        <!-- A: Twitter link -->
+                        <a href="#">Twitter</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- FORM: Contact message form -->
+            <!-- id="contactForm": JavaScript finds this form for submission handling -->
+            <!-- No action attribute: JavaScript prevents default submission -->
+            <form class="contact-form" id="contactForm">
+                
+                <!-- DIV form-group: Name input field group -->
+                <!-- class="form-group": CSS provides consistent spacing for form fields -->
+                <div class="form-group">
+                    <!-- LABEL: Text label for name input -->
+                    <!-- for="name": Links label to input (clicking label focuses input) -->
+                    <label for="name">Name *</label>
+                    
+                    <!-- INPUT: Text input for user's name -->
+                    <!-- id="name": Matches label for attribute, used by JavaScript -->
+                    <!-- type="text": Accepts any text input -->
+                    <!-- name="name": Form field name -->
+                    <!-- required: HTML5 validation - prevents submission if empty -->
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <!-- DIV form-group: Email input field group -->
+                <div class="form-group">
+                    <!-- LABEL: Email input label -->
+                    <!-- for="email": Links to input element -->
+                    <label for="email">Email *</label>
+                    
+                    <!-- INPUT: Email input field -->
+                    <!-- id="email": Used by JavaScript to get email value -->
+                    <!-- type="email": Browser validates email format and shows @ on mobile -->
+                    <!-- required: Must be filled before submission -->
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <!-- DIV form-group: Message textarea field group -->
+                <div class="form-group">
+                    <!-- LABEL: Message input label -->
+                    <label for="message">Message *</label>
+                    
+                    <!-- TEXTAREA: Multi-line text input for message -->
+                    <!-- id="message": Used by JavaScript to get message content -->
+                    <!-- name="message": Form field name -->
+                    <!-- rows="5": Shows 5 lines of text height -->
+                    <!-- required: Must have content before submission -->
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                
+                <!-- BUTTON type="submit": Submits the form -->
+                <!-- type="submit": Triggers form submission event (caught by JavaScript) -->
+                <!-- class="btn btn-primary": Primary button styling -->
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- FOOTER: Bottom section with copyright and links -->
+    <!-- class="footer": CSS styles footer appearance -->
+    <footer class="footer">
+        <!-- DIV container: Centers footer content -->
+        <div class="container">
+            <!-- PARAGRAPH: Copyright information -->
+            <!-- &copy;: HTML entity for © symbol -->
+            <p>&copy; 2024 John Doe. All rights reserved.</p>
+            
+            <!-- DIV footer-links: Footer navigation links -->
+            <div class="footer-links">
+                <!-- A: Privacy Policy link (href="#" prevents navigation in demo) -->
+                <a href="#">Privacy Policy</a> | 
+                <!-- A: Terms of Service link -->
+                <a href="#">Terms of Service</a> | 
+                <!-- A: Sitemap link -->
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- DIV projectModal: Hidden popup for project details -->
+    <!-- id="projectModal": Used by JavaScript to show/hide modal -->
+    <!-- class="modal": CSS styles as full-screen overlay (display: none initially) -->
+    <div id="projectModal" class="modal">
+        <!-- DIV modal-content: Content box displayed on top of overlay -->
+        <!-- class="modal-content": CSS styles as white box with shadow -->
+        <div class="modal-content">
+            <!-- SPAN close: Close button (X symbol) -->
+            <!-- class="close": Styled as clickable X button -->
+            <!-- onclick="closeModal()": Direct JavaScript function call to close -->
+            <!-- &times;: HTML entity for × symbol -->
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <!-- H2 modalTitle: Project title placeholder -->
+            <!-- id="modalTitle": JavaScript updates this with project name -->
+            <h2 id="modalTitle"></h2>
+            
+            <!-- PARAGRAPH modalDescription: Project description placeholder -->
+            <!-- id="modalDescription": JavaScript updates with project details -->
+            <p id="modalDescription"></p>
+            
+            <!-- DIV modalDetails: Detailed project information placeholder -->
+            <!-- id="modalDetails": JavaScript fills this with HTML content -->
+            <div id="modalDetails"></div>
+            
+            <!-- BUTTON: Close modal button -->
+            <!-- onclick="closeModal()": JavaScript function to hide modal -->
+            <button class="btn btn-primary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT: Link to external JavaScript file -->
+    <!-- src="script.js": Path to JavaScript file for interactivity -->
+    <!-- Placed at end of body so HTML elements exist before script runs -->
+    <script src="script.js"></script>
+</body>
+</html>
         <!-- About Section -->
         <section id="about" class="section active">
             <h2>About Me</h2>

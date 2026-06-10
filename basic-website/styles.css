@@ -1,38 +1,82 @@
 /* ==========================================
-   GENERAL STYLES
+   GENERAL STYLES - Global styling for entire website
    ========================================== */
 
+/* * selector: Selects ALL elements on the page */
+/* margin: 0; padding: 0;: Removes default browser spacing from all elements */
+/* box-sizing: border-box;: Makes padding/border part of total width (not added extra) */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* :root selector: Defines CSS variables (custom properties) used throughout entire site */
+/* CSS Variables (--name) allow reusing colors, sizing values, etc. */
+/* Syntax: var(--variable-name) to use them in other CSS rules */
 :root {
+    /* Primary blue color for main buttons and links */
     --primary-color: #2563eb;
+    
+    /* Darker blue for hover states and secondary elements */
     --secondary-color: #1e40af;
+    
+    /* Dark gray text color for readability on light background */
     --text-color: #1f2937;
+    
+    /* White background for light mode */
     --bg-color: #ffffff;
+    
+    /* Very light gray for subtle backgrounds and card backgrounds */
     --light-bg: #f3f4f6;
+    
+    /* Light gray for borders and dividers */
     --border-color: #e5e7eb;
+    
+    /* Green color for success/positive actions */
     --success-color: #10b981;
+    
+    /* Orange/yellow color for warnings */
     --warning-color: #f59e0b;
+    
+    /* Red color for errors or destructive actions */
     --error-color: #ef4444;
 }
 
+/* body.dark-mode: When body has "dark-mode" class, redefine all color variables */
+/* JavaScript adds/removes this class when dark mode button is clicked */
 body.dark-mode {
+    /* Lighter blue for dark mode (easier on eyes in dark) */
     --primary-color: #3b82f6;
+    
+    /* Darker blue for secondary elements in dark mode */
     --secondary-color: #1e3a8a;
+    
+    /* Light gray text for visibility on dark background */
     --text-color: #f3f4f6;
+    
+    /* Dark gray background for dark mode */
     --bg-color: #1f2937;
+    
+    /* Slightly lighter dark gray for cards and sections */
     --light-bg: #374151;
+    
+    /* Lighter border color for visibility on dark background */
     --border-color: #4b5563;
 }
 
+/* html: Root element styling */
+/* scroll-behavior: smooth;: Makes scrolling animation smooth instead of jumping instantly */
 html {
     scroll-behavior: smooth;
 }
 
+/* body: Main page styling */
+/* font-family: Sets typeface (Segoe UI for Windows, fallbacks for other systems) */
+/* color: Uses CSS variable for text color (changes based on light/dark mode) */
+/* background-color: Page background (changes based on light/dark mode) */
+/* line-height: 1.6: Space between lines of text (1.6x font size = readable spacing) */
+/* transition: Smooth color change animation when switching to dark mode (0.3s = 300 milliseconds) */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-color);
@@ -41,16 +85,27 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* .container: Reusable class for centering and padding content */
+/* max-width: 1000px: Maximum width of content (prevents text from being too wide) */
+/* margin: 0 auto: Centers content horizontally (0 top/bottom, auto left/right) */
+/* padding: 0 20px: 20px padding on left and right (0 top/bottom) */
 .container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
+
 /* ==========================================
-   HEADER
+   HEADER - Top section with profile
    ========================================== */
 
+/* .header: Main header styling */
+/* background: linear-gradient(): Creates gradient background from primary to secondary color */
+/* 135deg: Diagonal gradient (top-left to bottom-right) */
+/* color: white;: White text inside header */
+/* padding: 40px 0: 40px top/bottom, 0 left/right */
+/* box-shadow: Creates subtle shadow below header */
 .header {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
@@ -58,16 +113,30 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* .profile-section: Container for avatar and profile info */
+/* display: flex: Uses flexbox (arranges children horizontally) */
+/* align-items: center: Vertically centers items */
+/* gap: 30px: 30px space between avatar and info */
 .profile-section {
     display: flex;
     align-items: center;
     gap: 30px;
 }
 
+/* .profile-image: Avatar container */
+/* flex-shrink: 0: Prevents avatar from shrinking (keeps fixed size) */
 .profile-image {
     flex-shrink: 0;
 }
 
+/* .avatar: Circular badge showing initials */
+/* width/height: 120x120 pixels circle */
+/* border-radius: 50%: Makes square into circle (50% = fully rounded) */
+/* background-color: rgba(255,255,255,0.2): Semi-transparent white background */
+/* display: flex; align-items/justify-content: center: Centers text inside circle */
+/* font-size: 48px: Large text for initials */
+/* font-weight: bold: Dark thick text */
+/* border: 3px solid white: White border around circle */
 .avatar {
     width: 120px;
     height: 120px;
@@ -81,26 +150,44 @@ body {
     border: 3px solid white;
 }
 
+/* .profile-info h1: Heading styling */
+/* font-size: 32px: Extra large text for name */
+/* margin-bottom: 5px: 5px space below name */
 .profile-info h1 {
     font-size: 32px;
     margin-bottom: 5px;
 }
 
+/* .profile-info .title: Job title styling */
+/* font-size: 20px: Large text for job title */
+/* opacity: 0.9: Slightly transparent (10% more transparent) */
+/* margin-bottom: 10px: 10px space below title */
 .profile-info .title {
     font-size: 20px;
     opacity: 0.9;
     margin-bottom: 10px;
 }
 
+/* .profile-info .email: Email/contact styling */
+/* font-size: 14px: Smaller text for contact info */
+/* opacity: 0.8: More transparent (20% transparency) */
 .profile-info .email {
     font-size: 14px;
     opacity: 0.8;
 }
 
+
 /* ==========================================
-   NAVIGATION BAR
+   NAVIGATION BAR - Menu buttons
    ========================================== */
 
+/* .navbar: Navigation bar styling */
+/* background-color: Uses light gray background color variable */
+/* padding: 15px 0: 15px top/bottom spacing */
+/* position: sticky: Stays at top when scrolling */
+/* top: 0: Sticks to top of page */
+/* z-index: 100: Appears on top of other elements (higher number = on top) */
+/* box-shadow: Subtle shadow below navbar */
 .navbar {
     background-color: var(--light-bg);
     padding: 15px 0;
@@ -110,12 +197,26 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+/* .navbar .container: Navbar container styling */
+/* display: flex: Arranges buttons horizontally */
+/* gap: 10px: 10px space between buttons */
+/* flex-wrap: wrap: Buttons wrap to next line on small screens */
 .navbar .container {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
+/* .nav-btn: Navigation button styling */
+/* background: none: No background color initially */
+/* border: none: No border line */
+/* padding: 10px 20px: 10px top/bottom, 20px left/right */
+/* font-size: 14px: Small text */
+/* cursor: pointer: Mouse becomes pointer when hovering */
+/* color: Uses text color variable (changes in dark mode) */
+/* transition: all 0.3s ease: Smooth animation of all changes over 0.3 seconds */
+/* border-radius: 5px: Rounded corners (5px radius) */
+/* font-weight: 500: Semi-bold text (not as heavy as bold) */
 .nav-btn {
     background: none;
     border: none;
@@ -128,44 +229,68 @@ body {
     font-weight: 500;
 }
 
+/* .nav-btn:hover: Styling when mouse hovers over button */
+/* background-color: Changes to light background on hover */
 .nav-btn:hover {
     background-color: var(--border-color);
 }
 
+/* .nav-btn.active: Styling for currently selected button */
+/* background-color: Primary color (blue) */
+/* color: white: White text */
 .nav-btn.active {
     background-color: var(--primary-color);
     color: white;
 }
 
+
 /* ==========================================
    MAIN CONTENT & SECTIONS
    ========================================== */
 
+/* main: Main content area */
+/* padding: 60px 0: 60px top/bottom, 0 left/right */
+/* min-height: calc(100vh - 300px): Minimum height = full screen height minus 300px (for header/footer) */
 main {
     padding: 60px 0;
     min-height: calc(100vh - 300px);
 }
 
+/* .section: Styling for all content sections */
+/* display: none !important: Hides section by default (important overrides other styles) */
+/* animation: fadeIn 0.5s ease-in-out: Applies fade-in animation when shown */
 .section {
     display: none !important;
     animation: fadeIn 0.5s ease-in-out;
 }
 
+/* .section.active: When section has active class, show it */
+/* display: block !important: Makes section visible (important ensures it overrides) */
 .section.active {
     display: block !important;
 }
 
+/* @keyframes fadeIn: Animation definition (fade-in effect) */
+/* Defines what changes during animation (from -> to) */
 @keyframes fadeIn {
+    /* from: Starting state of animation */
     from {
-        opacity: 0;
-        transform: translateY(10px);
+        opacity: 0;  /* Completely transparent (invisible) */
+        transform: translateY(10px);  /* Moved 10px down */
     }
+    /* to: Ending state of animation */
     to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1;  /* Completely opaque (visible) */
+        transform: translateY(0);  /* Back to original position */
     }
 }
 
+/* section h2: Section heading styling */
+/* font-size: 28px: Large heading text */
+/* margin-bottom: 30px: 30px space below heading */
+/* color: Primary color (blue) */
+/* border-bottom: 2px solid border line below heading */
+/* padding-bottom: 15px: Space between text and border */
 section h2 {
     font-size: 28px;
     margin-bottom: 30px;
@@ -174,22 +299,34 @@ section h2 {
     padding-bottom: 15px;
 }
 
+/* section h3: Subheading styling */
+/* font-size: 18px: Medium text size */
+/* margin-bottom: 15px: 15px space below */
 section h3 {
     font-size: 18px;
     margin-bottom: 15px;
     color: var(--text-color);
 }
 
+/* section p: Paragraph styling */
+/* margin-bottom: 15px: 15px space below each paragraph */
+/* opacity: 0.9: Slightly transparent (90% opaque) */
 section p {
     margin-bottom: 15px;
     color: var(--text-color);
     opacity: 0.9;
 }
 
+
 /* ==========================================
    BUTTONS
    ========================================== */
 
+/* .button-group: Container for multiple buttons */
+/* display: flex: Arranges buttons horizontally */
+/* gap: 10px: 10px space between each button */
+/* margin-top: 30px: 30px space above button group */
+/* flex-wrap: wrap: Buttons wrap to next line on small screens */
 .button-group {
     display: flex;
     gap: 10px;
@@ -197,6 +334,15 @@ section p {
     flex-wrap: wrap;
 }
 
+/* .btn: Base button styling (all buttons) */
+/* padding: 12px 24px: 12px top/bottom, 24px left/right */
+/* border: none: No border */
+/* border-radius: 5px: Rounded corners */
+/* cursor: pointer: Mouse becomes clickable pointer */
+/* font-size: 14px: Small text */
+/* font-weight: 500: Semi-bold text */
+/* transition: all 0.3s ease: Smooth animation for all changes */
+/* display: inline-block: Button is inline but respects width/height */
 .btn {
     padding: 12px 24px;
     border: none;
@@ -208,51 +354,77 @@ section p {
     display: inline-block;
 }
 
+/* .btn-primary: Main button style (blue) */
+/* background-color: Primary color (blue) */
+/* color: white: White text */
 .btn-primary {
     background-color: var(--primary-color);
     color: white;
 }
 
+/* .btn-primary:hover: When mouse hovers over primary button */
+/* background-color: Darker blue (secondary color) */
+/* transform: translateY(-2px): Move button up 2px (looks like it lifts) */
+/* box-shadow: Drop shadow effect (makes button look raised) */
 .btn-primary:hover {
     background-color: var(--secondary-color);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
 }
 
+/* .btn-secondary: Success/secondary button (green) */
+/* background-color: Green color */
+/* color: white: White text */
 .btn-secondary {
     background-color: var(--success-color);
     color: white;
 }
 
+/* .btn-secondary:hover: Hover state for secondary button */
+/* background-color: Darker green */
+/* Similar lift effect as primary button */
 .btn-secondary:hover {
     background-color: #059669;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
 }
 
+/* .btn-tertiary: Third button style (orange/warning color) */
+/* background-color: Warning/orange color */
+/* color: white: White text */
 .btn-tertiary {
     background-color: var(--warning-color);
     color: white;
 }
 
+/* .btn-tertiary:hover: Hover state */
+/* background-color: Darker orange */
+/* transform: Lift effect */
 .btn-tertiary:hover {
     background-color: #d97706;
     transform: translateY(-2px);
 }
 
+/* .btn-small: Smaller button variant */
+/* padding: 8px 16px: Smaller padding (compact button) */
+/* font-size: 12px: Smaller text */
 .btn-small {
     padding: 8px 16px;
     font-size: 12px;
 }
 
+/* .btn:active: When button is being clicked */
+/* transform: translateY(0): Returns to normal position (no lift) */
 .btn:active {
     transform: translateY(0);
 }
+
 
 /* ==========================================
    EXPERIENCE SECTION
    ========================================== */
 
+/* Experience card styling with left border accent */
 .experience-item {
     background-color: var(--light-bg);
     padding: 25px;
@@ -262,11 +434,13 @@ section p {
     transition: all 0.3s ease;
 }
 
+/* Hover effect: shift right and add shadow */
 .experience-item:hover {
     transform: translateX(5px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Header flexbox: job title on left, date on right */
 .experience-header {
     display: flex;
     justify-content: space-between;
@@ -274,6 +448,7 @@ section p {
     margin-bottom: 10px;
 }
 
+/* Date badge styling */
 .date {
     background-color: var(--primary-color);
     color: white;
@@ -283,12 +458,14 @@ section p {
     font-weight: 500;
 }
 
+/* Company name styling */
 .company {
     color: var(--primary-color);
     font-weight: 500;
     margin-bottom: 10px;
 }
 
+/* List styling for responsibilities */
 .experience-item ul {
     margin-left: 20px;
     margin-top: 10px;
@@ -296,7 +473,6 @@ section p {
 
 .experience-item li {
     margin-bottom: 8px;
-    color: var(--text-color);
     opacity: 0.9;
 }
 
@@ -304,6 +480,7 @@ section p {
    SKILLS SECTION
    ========================================== */
 
+/* Grid layout for skill categories (3 columns on desktop, 1 on mobile) */
 .skills-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -316,12 +493,14 @@ section p {
     color: var(--primary-color);
 }
 
+/* Skill tags: flex layout with wrapping */
 .skill-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
+/* Individual skill badge */
 .skill-tag {
     background-color: var(--light-bg);
     padding: 8px 14px;
@@ -332,6 +511,7 @@ section p {
     cursor: pointer;
 }
 
+/* Hover: blue background, white text, scale up */
 .skill-tag:hover {
     background-color: var(--primary-color);
     color: white;
@@ -343,6 +523,7 @@ section p {
    PROJECTS SECTION
    ========================================== */
 
+/* Responsive grid for project cards */
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -350,6 +531,7 @@ section p {
     margin-bottom: 30px;
 }
 
+/* Project card styling */
 .project-card {
     background-color: var(--light-bg);
     border-radius: 8px;
@@ -358,11 +540,13 @@ section p {
     border: 1px solid var(--border-color);
 }
 
+/* Hover: lift up and add shadow */
 .project-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
+/* Project image area with gradient */
 .project-image {
     height: 200px;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -378,6 +562,7 @@ section p {
     text-align: center;
 }
 
+/* Card content padding */
 .project-content {
     padding: 20px;
 }
@@ -391,6 +576,7 @@ section p {
     font-size: 14px;
 }
 
+/* Technology tags container */
 .project-tags {
     display: flex;
     gap: 8px;
@@ -398,6 +584,7 @@ section p {
     flex-wrap: wrap;
 }
 
+/* Technology badge styling */
 .project-tags span {
     background-color: var(--primary-color);
     color: white;
@@ -410,6 +597,7 @@ section p {
    CONTACT SECTION
    ========================================== */
 
+/* Grid for contact info items */
 .contact-info {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -417,6 +605,7 @@ section p {
     margin-bottom: 40px;
 }
 
+/* Contact item card */
 .contact-item {
     background-color: var(--light-bg);
     padding: 20px;
@@ -429,6 +618,7 @@ section p {
     color: var(--primary-color);
 }
 
+/* Links styling */
 .contact-item a {
     color: var(--primary-color);
     text-decoration: none;
@@ -438,6 +628,7 @@ section p {
     text-decoration: underline;
 }
 
+/* Contact form styling */
 .contact-form {
     background-color: var(--light-bg);
     padding: 30px;
@@ -445,17 +636,19 @@ section p {
     max-width: 600px;
 }
 
+/* Form field container */
 .form-group {
     margin-bottom: 20px;
 }
 
+/* Label styling */
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: var(--text-color);
 }
 
+/* Input and textarea styling */
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -469,6 +662,7 @@ section p {
     transition: border-color 0.3s ease;
 }
 
+/* Focus state: highlight border and add subtle shadow */
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
@@ -488,10 +682,12 @@ section p {
     animation: slideDown 0.3s ease-out;
 }
 
+/* Hide extended bio when it has hidden class */
 #extendedBio.hidden {
     display: none;
 }
 
+/* Slide down animation */
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -512,6 +708,7 @@ section p {
    MODAL
    ========================================== */
 
+/* Modal overlay: full screen, semi-transparent */
 .modal {
     display: none;
     position: fixed;
@@ -524,12 +721,14 @@ section p {
     animation: fadeIn 0.3s ease;
 }
 
+/* Modal show class */
 .modal.show {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Modal content box */
 .modal-content {
     background-color: var(--bg-color);
     padding: 30px;
@@ -540,6 +739,7 @@ section p {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Close button styling */
 .close {
     position: absolute;
     right: 20px;
@@ -566,6 +766,7 @@ section p {
    FOOTER
    ========================================== */
 
+/* Footer background and styling */
 .footer {
     background-color: var(--light-bg);
     padding: 30px 0;
@@ -582,6 +783,7 @@ section p {
     margin-top: 15px;
 }
 
+/* Footer links styling */
 .footer-links a {
     color: var(--primary-color);
     text-decoration: none;
@@ -594,10 +796,12 @@ section p {
 }
 
 /* ==========================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - Mobile & Tablet
    ========================================== */
 
+/* Tablet and smaller screens: max-width 768px */
 @media (max-width: 768px) {
+    /* Stack profile vertically on mobile */
     .profile-section {
         flex-direction: column;
         text-align: center;
@@ -607,6 +811,7 @@ section p {
         font-size: 24px;
     }
 
+    /* Center nav buttons */
     .navbar .container {
         justify-content: center;
     }
@@ -620,6 +825,7 @@ section p {
         justify-content: center;
     }
 
+    /* Single column for skills and projects */
     .skills-container {
         grid-template-columns: 1fr;
     }
@@ -639,6 +845,7 @@ section p {
     }
 }
 
+/* Small mobile screens: max-width 480px */
 @media (max-width: 480px) {
     .header {
         padding: 20px 0;
@@ -657,6 +864,7 @@ section p {
         font-size: 12px;
     }
 
+    /* Stack experience header vertically */
     .experience-header {
         flex-direction: column;
         align-items: flex-start;
@@ -680,18 +888,22 @@ section p {
    UTILITY CLASSES
    ========================================== */
 
+/* Hidden: display none */
 .hidden {
     display: none;
 }
 
+/* Visible: display block */
 .visible {
     display: block;
 }
 
+/* Text center alignment */
 .text-center {
     text-align: center;
 }
 
+/* Margin utilities */
 .mt-20 {
     margin-top: 20px;
 }

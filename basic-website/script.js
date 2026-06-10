@@ -1,54 +1,46 @@
 // ============================================
 // JOHN DOE RESUME WEBSITE - INTERACTIVE SCRIPT
-// Demonstrates JavaScript Basics in Practice
 // ============================================
 
-// ============================================
-// 1. VARIABLES AND DOM MANIPULATION
-// ============================================
-
-// Variables to store DOM elements
+// Select DOM elements for later use
 const navButtons = document.querySelectorAll('.nav-btn');
 const sections = document.querySelectorAll('.section');
 const body = document.body;
 
 // ============================================
-// 2. FUNCTIONS - SECTION NAVIGATION
+// SECTION NAVIGATION - Switch between sections
 // ============================================
 
-// Function: Switch between sections (demonstrates functions)
+// Hide all sections and deactivate all buttons
 function switchSection(sectionId) {
-    // Variables (2-variables.js concept)
     const targetSection = document.getElementById(sectionId);
     
-    // Arrays and forEach (4-arrays.js concept)
+    // Hide all sections and remove active class
     sections.forEach(section => {
         section.classList.remove('active');
         section.classList.add('hidden');
     });
     
+    // Remove active class from all buttons
     navButtons.forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // DOM manipulation (6-dom-manipulation.js concept)
+    // Show target section and activate button
     if (targetSection) {
         targetSection.classList.add('active');
         targetSection.classList.remove('hidden');
     }
     
-    // Find and highlight the active button
+    // Highlight the clicked navigation button
     const activeButton = document.querySelector(`[data-section="${sectionId}"]`);
     if (activeButton) {
         activeButton.classList.add('active');
     }
 }
 
-// ============================================
-// 3. EVENT HANDLING - NAVIGATION
-// ============================================
 
-// Event listeners for navigation buttons (7-event-handling.js concept)
+// Add click listeners to navigation buttons
 navButtons.forEach(button => {
     button.addEventListener('click', function() {
         const sectionId = this.getAttribute('data-section');
@@ -57,13 +49,11 @@ navButtons.forEach(button => {
 });
 
 // ============================================
-// 4. DARK MODE TOGGLE
+// DARK MODE - Toggle and persist with localStorage
 // ============================================
 
-// Variables: Store dark mode state
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-// Function: Apply dark mode from localStorage (localStorage uses JSON concepts - 12-json.js)
 function applyDarkMode() {
     if (isDarkMode) {
         body.classList.add('dark-mode');
@@ -71,153 +61,91 @@ function applyDarkMode() {
     }
 }
 
-// Initialize dark mode on page load
 applyDarkMode();
 
-// Event listener: Toggle dark mode button
+// Dark mode toggle button
 document.getElementById('toggleTheme').addEventListener('click', function() {
     isDarkMode = !isDarkMode;
     body.classList.toggle('dark-mode');
-    
-    // Update button text
-    if (isDarkMode) {
-        this.textContent = '☀️ Light Mode';
-    } else {
-        this.textContent = '🌙 Dark Mode';
-    }
-    
-    // Save preference (JSON and localStorage - 12-json.js concept)
+    this.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
     localStorage.setItem('darkMode', isDarkMode);
 });
 
 // ============================================
-// 5. ALERTS AND USER INTERACTION
+// USER INTERACTIONS - Alert, Bio Toggle
 // ============================================
 
-// Event listener: Show alert button (basic event handling)
+// Show profile alert with object data
 document.getElementById('showAlert').addEventListener('click', function() {
-    // Objects and strings (5-objects.js concept)
     const message = {
         greeting: "Welcome to John Doe's Resume!",
         role: "Full Stack Developer",
         yearsExp: 5
     };
-    
-    // String template (02-variables.js concept)
     alert(`${message.greeting}\nRole: ${message.role}\nExperience: ${message.yearsExp}+ years`);
 });
 
-// ============================================
-// 6. TOGGLE EXTENDED BIO
-// ============================================
-
-// Event listener: Toggle bio button (demonstrates DOM manipulation)
+// Toggle extended bio visibility
 document.getElementById('toggleBio').addEventListener('click', function() {
     const extendedBio = document.getElementById('extendedBio');
-    
-    // Classes - CSS class toggle (6-dom-manipulation.js concept)
     extendedBio.classList.toggle('hidden');
-    
-    // Update button text
-    if (extendedBio.classList.contains('hidden')) {
-        this.textContent = 'Toggle Bio';
-    } else {
-        this.textContent = 'Hide Bio';
-    }
+    this.textContent = extendedBio.classList.contains('hidden') ? 'Toggle Bio' : 'Hide Bio';
 });
 
 // ============================================
-// 7. ARRAYS AND FILTERING
+// SKILLS - Filter, Count, Shuffle
 // ============================================
 
-// Function: Filter skills (demonstrates arrays, filter method - 4-arrays.js concept)
+// Filter to frontend skills only (array.filter)
 document.getElementById('filterSkills').addEventListener('click', function() {
-    // Array of skills (4-arrays.js concept)
     const allSkills = Array.from(document.querySelectorAll('.skill-tag'));
-    
-    // Filter method on arrays (4-arrays.js - array.filter)
     const frontendSkills = allSkills.filter(skill => {
         const text = skill.textContent;
         return ['HTML5', 'CSS3', 'JavaScript', 'React', 'Vue.js', 'Bootstrap'].includes(text);
     });
-    
-    // Map method (4-arrays.js - array.map)
     frontendSkills.forEach(skill => {
         skill.style.backgroundColor = '#3b82f6';
         skill.style.color = 'white';
     });
-    
-    // Show message (using variables and functions)
-    const message = `Filtered to ${frontendSkills.length} frontend skills`;
-    console.log(message);
-    alert(message);
+    alert(`Filtered to ${frontendSkills.length} frontend skills`);
 });
 
-// ============================================
-// 8. COUNT SKILLS (REDUCE METHOD)
-// ============================================
-
-// Event listener: Count skills (demonstrates reduce method - 4-arrays.js)
+// Count total skills (array.reduce)
 document.getElementById('countSkills').addEventListener('click', function() {
     const skillTags = document.querySelectorAll('.skill-tag');
-    
-    // reduce method to count (4-arrays.js - array.reduce)
     const totalSkills = Array.from(skillTags).reduce((count) => count + 1, 0);
-    
-    // Object for skill stats (5-objects.js concept)
     const skillStats = {
         total: totalSkills,
-        frontend: Array.from(skillTags).filter(s => 
-            ['React', 'Vue.js', 'HTML5'].includes(s.textContent)
-        ).length,
-        backend: Array.from(skillTags).filter(s => 
-            ['Node.js', 'Express.js', 'MongoDB'].includes(s.textContent)
-        ).length
+        frontend: Array.from(skillTags).filter(s => ['React', 'Vue.js', 'HTML5'].includes(s.textContent)).length,
+        backend: Array.from(skillTags).filter(s => ['Node.js', 'Express.js', 'MongoDB'].includes(s.textContent)).length
     };
-    
-    // String template and object display
     alert(`Total Skills: ${skillStats.total}\nFrontend: ${skillStats.frontend}\nBackend: ${skillStats.backend}`);
 });
 
-// ============================================
-// 9. SHUFFLE SKILLS (ARRAY METHODS)
-// ============================================
-
-// Function: Shuffle array (demonstrates array manipulation)
+// Shuffle skills using Fisher-Yates algorithm
 function shuffleArray(array) {
-    const shuffled = [...array]; // Spread operator (04-arrays.js concept)
-    
-    // Simple shuffle algorithm
+    const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    
     return shuffled;
 }
 
-// Event listener: Shuffle skills
 document.getElementById('shuffleSkills').addEventListener('click', function() {
     const skillContainer = document.querySelector('.skill-tags');
     const skills = Array.from(skillContainer.querySelectorAll('.skill-tag'));
-    
-    // Shuffle array
     const shuffledSkills = shuffleArray(skills);
-    
-    // Clear and re-add shuffled skills (DOM manipulation)
     skillContainer.innerHTML = '';
-    shuffledSkills.forEach(skill => {
-        skillContainer.appendChild(skill);
-    });
+    shuffledSkills.forEach(skill => skillContainer.appendChild(skill));
 });
 
 // ============================================
-// 10. DOWNLOAD RESUME
+// RESUME & EXPERIENCE
 // ============================================
 
-// Event listener: Download resume
+// Download resume (convert object to JSON)
 document.getElementById('downloadResume').addEventListener('click', function() {
-    // Create a data object (5-objects.js concept)
     const resumeData = {
         name: 'John Doe',
         title: 'Full Stack Developer',
@@ -225,290 +153,166 @@ document.getElementById('downloadResume').addEventListener('click', function() {
         phone: '(555) 123-4567',
         downloadDate: new Date().toLocaleDateString()
     };
-    
-    // Convert to JSON (12-json.js concept)
-    const resumeJson = JSON.stringify(resumeData, null, 2);
-    
-    // Log to console
-    console.log('Resume Data:', resumeJson);
-    
-    alert(`Resume preparation initiated.\n\nName: ${resumeData.name}\nTitle: ${resumeData.title}\nDate: ${resumeData.downloadDate}\n\nCheck console for full details.`);
+    console.log('Resume Data:', JSON.stringify(resumeData, null, 2));
+    alert(`Resume preparation initiated.\n\nName: ${resumeData.name}\nTitle: ${resumeData.title}\nDate: ${resumeData.downloadDate}`);
 });
 
-// ============================================
-// 11. EXPAND EXPERIENCE
-// ============================================
-
-// Event listener: Expand all experience items
+// Expand all experience items
 document.getElementById('expandExperience').addEventListener('click', function() {
     const experienceItems = document.querySelectorAll('.experience-item');
-    
-    // Toggle expand state (forEach method - 4-arrays.js)
     experienceItems.forEach(item => {
         item.style.maxHeight = 'none';
         item.style.transition = 'all 0.3s ease';
     });
-    
-    // Update button text
     this.textContent = this.textContent === 'Expand All' ? 'Collapse All' : 'Expand All';
 });
 
 // ============================================
-// 12. VISIT GITHUB
+// GITHUB & PROJECTS
 // ============================================
 
-// Event listener: Visit GitHub (demonstrates objects)
+// Visit GitHub (object with method)
 document.getElementById('visitGithub').addEventListener('click', function() {
-    // Create URL object (5-objects.js concept)
     const githubProfile = {
         baseUrl: 'https://github.com',
         username: 'johndoe',
-        getFullUrl: function() {
-            return `${this.baseUrl}/${this.username}`;
-        }
+        getFullUrl: function() { return `${this.baseUrl}/${this.username}`; }
     };
-    
-    // Call method on object (5-objects.js - methods)
-    const fullUrl = githubProfile.getFullUrl();
-    
-    alert(`Opening GitHub profile: ${fullUrl}`);
-    // In real app: window.open(fullUrl, '_blank');
+    alert(`Opening GitHub profile: ${githubProfile.getFullUrl()}`);
 });
 
-// ============================================
-// 13. PROJECT MODAL FUNCTIONALITY
-// ============================================
-
-// Object: Project details (5-objects.js concept)
+// Project details object
 const projectDetails = {
     social: {
         title: 'Social Media App',
-        description: 'A full-featured social media platform with real-time messaging and notifications.',
-        details: `
-            <h3>Key Features:</h3>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>User authentication with JWT</li>
-                <li>Real-time notifications</li>
-                <li>Direct messaging</li>
-                <li>Post feed with likes and comments</li>
-                <li>User profiles and following system</li>
-            </ul>
-            <p style="margin-top: 15px;"><strong>Tech Stack:</strong> React, Node.js, MongoDB, Socket.io</p>
-        `
+        description: 'Full-featured social media platform with real-time messaging.',
+        details: `<h3>Key Features:</h3><ul style="margin-left:20px;"><li>User authentication</li><li>Real-time notifications</li><li>Direct messaging</li><li>Post feed</li></ul>`
     },
     ecommerce: {
         title: 'E-Commerce Store',
-        description: 'Complete online shopping platform with payment processing.',
-        details: `
-            <h3>Key Features:</h3>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>Product catalog with search and filters</li>
-                <li>Shopping cart functionality</li>
-                <li>Stripe payment integration</li>
-                <li>Order management and tracking</li>
-                <li>Admin dashboard for inventory</li>
-            </ul>
-            <p style="margin-top: 15px;"><strong>Tech Stack:</strong> Vue.js, Express, PostgreSQL, Stripe</p>
-        `
+        description: 'Online shopping platform with payment integration.',
+        details: `<h3>Key Features:</h3><ul style="margin-left:20px;"><li>Product catalog</li><li>Shopping cart</li><li>Stripe payment</li><li>Order tracking</li></ul>`
     },
     analytics: {
         title: 'Analytics Dashboard',
-        description: 'Real-time data visualization and analytics platform.',
-        details: `
-            <h3>Key Features:</h3>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>Real-time data updates via WebSocket</li>
-                <li>Interactive charts and graphs</li>
-                <li>Custom report generation</li>
-                <li>User behavior tracking</li>
-                <li>Predictive analytics</li>
-            </ul>
-            <p style="margin-top: 15px;"><strong>Tech Stack:</strong> React, D3.js, Node.js, WebSocket</p>
-        `
+        description: 'Real-time data visualization and analytics.',
+        details: `<h3>Key Features:</h3><ul style="margin-left:20px;"><li>Real-time updates</li><li>Interactive charts</li><li>Report generation</li></ul>`
     }
 };
 
-// Function: Show project modal (demonstrates objects)
+// Show project modal
 function showProjectDetail(projectKey) {
-    // Get project from object (5-objects.js concept)
     const project = projectDetails[projectKey];
-    
     if (project) {
-        // Update modal content (DOM manipulation)
         document.getElementById('modalTitle').textContent = project.title;
         document.getElementById('modalDescription').textContent = project.description;
         document.getElementById('modalDetails').innerHTML = project.details;
-        
-        // Show modal (toggle class)
         document.getElementById('projectModal').classList.add('show');
     }
 }
 
-// Function: Close modal
+// Close modal
 function closeModal() {
     document.getElementById('projectModal').classList.remove('show');
 }
 
-// Close modal when clicking outside of it
+// Close on outside click
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('projectModal');
-    if (event.target === modal) {
-        closeModal();
-    }
+    if (event.target === modal) closeModal();
+});
+
+// Filter projects
+document.getElementById('filterProjects').addEventListener('click', function() {
+    const isFiltered = this.textContent.includes('All');
+    this.textContent = isFiltered ? 'Filter: Frontend Only' : 'Filter: All Projects';
 });
 
 // ============================================
-// 14. CONTACT FORM VALIDATION
+// CONTACT FORM - Validation
 // ============================================
 
-// Event listener: Contact form submission
+// Form submission with validation
 document.getElementById('contactForm').addEventListener('submit', function(e) {
-    // Prevent default form submission (7-event-handling.js concept)
     e.preventDefault();
-    
-    // Get form values (DOM manipulation)
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const message = document.getElementById('message').value;
     
-    // Form validation (functions and conditionals)
     if (validateForm(name, email, message)) {
-        // Create form data object (5-objects.js concept)
         const formData = {
             name: name,
             email: email,
             message: message,
             timestamp: new Date().toISOString()
         };
-        
-        // Convert to JSON (12-json.js concept)
-        console.log('Form Data JSON:', JSON.stringify(formData, null, 2));
-        
-        // Show success message
-        alert(`Thank you, ${name}! Your message has been received.\nWe'll get back to you at ${email} soon.`);
-        
-        // Reset form
+        console.log('Form Data:', JSON.stringify(formData, null, 2));
+        alert(`Thank you, ${name}! Your message has been received.`);
         this.reset();
     }
 });
 
-// Function: Validate form (demonstrates conditionals and functions)
+// Form validation function
 function validateForm(name, email, message) {
-    // String validation (02-variables.js concept)
     if (!name || !email || !message) {
-        alert('Please fill in all required fields.');
+        alert('Please fill all required fields.');
         return false;
     }
-    
-    // Email validation with regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address.');
+        alert('Please enter valid email.');
         return false;
     }
-    
-    // Message length validation
     if (message.length < 10) {
-        alert('Message must be at least 10 characters long.');
+        alert('Message must be at least 10 characters.');
         return false;
     }
-    
     return true;
 }
 
 // ============================================
-// 15. FILTER PROJECTS
+// KEYBOARD SHORTCUTS - Ctrl+Key navigation
 // ============================================
 
-// Event listener: Filter projects (demonstrates arrays and filter)
-document.getElementById('filterProjects').addEventListener('click', function() {
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    // Toggle filter display
-    const isFiltered = this.textContent.includes('All');
-    
-    if (isFiltered) {
-        this.textContent = 'Filter: Frontend Only';
-    } else {
-        this.textContent = 'Filter: All Projects';
-    }
-    
-    // In real app: would filter based on technology
-    console.log('Projects filtered successfully');
-});
-
-// ============================================
-// 16. KEYBOARD SHORTCUTS
-// ============================================
-
-// Event listener: Keyboard navigation (7-event-handling.js concept)
 document.addEventListener('keydown', function(event) {
-    // Object: Keyboard shortcuts map
-    const shortcuts = {
-        'a': 'about',
-        'e': 'experience',
-        's': 'skills',
-        'p': 'projects',
-        'c': 'contact'
-    };
-    
-    // Check if key matches shortcut
+    const shortcuts = { 'a': 'about', 'e': 'experience', 's': 'skills', 'p': 'projects', 'c': 'contact' };
     const section = shortcuts[event.key];
     if (section && event.ctrlKey) {
         switchSection(section);
-        console.log(`Navigated to ${section} section using Ctrl+${event.key}`);
+        console.log(`Navigated to ${section} using Ctrl+${event.key}`);
     }
 });
 
 // ============================================
-// 17. INITIALIZATION AND LOGGING
+// INITIALIZATION
 // ============================================
 
-// Function: Initialize application
 function initializeApp() {
     console.log('='.repeat(50));
     console.log('John Doe Resume Website Initialized');
     console.log('='.repeat(50));
-    console.log('JavaScript Basics Examples:');
-    console.log('✓ Variables (var, let, const) - script.js');
-    console.log('✓ Functions - Multiple throughout');
-    console.log('✓ Objects - projectDetails, githubProfile');
-    console.log('✓ Arrays - Skills filtering, shuffling');
-    console.log('✓ DOM Manipulation - Section switching');
-    console.log('✓ Event Handling - Navigation, buttons');
-    console.log('✓ JSON - Form data, localStorage');
+    console.log('JavaScript Concepts Used:');
+    console.log('✓ Variables (let, const)');
+    console.log('✓ Functions and arrow functions');
+    console.log('✓ Objects and object methods');
+    console.log('✓ Arrays and array methods (filter, reduce, forEach)');
+    console.log('✓ DOM manipulation (querySelector, classList, textContent)');
+    console.log('✓ Event handling (addEventListener, click, submit, keydown)');
+    console.log('✓ localStorage for persistence');
+    console.log('✓ JSON stringification');
     console.log('='.repeat(50));
 }
 
-// Call initialization on page load
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
-    
-    // Log available keyboard shortcuts
-    console.log('\nKeyboard Shortcuts (Ctrl + Key):');
-    console.log('Ctrl+A - About');
-    console.log('Ctrl+E - Experience');
-    console.log('Ctrl+S - Skills');
-    console.log('Ctrl+P - Projects');
-    console.log('Ctrl+C - Contact');
+    console.log('\nKeyboard Shortcuts:\nCtrl+A=About, Ctrl+E=Experience, Ctrl+S=Skills, Ctrl+P=Projects, Ctrl+C=Contact');
 });
 
-// ============================================
-// 18. UTILITY FUNCTIONS (ASYNC/AWAIT EXAMPLE)
-// ============================================
-
-// Function: Simulate API call with async/await (10-async-await.js concept)
+// Async/await example (commented)
 async function simulateApiCall(delay = 1000) {
     return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({ status: 'success', message: 'Data loaded' });
-        }, delay);
+        setTimeout(() => resolve({ status: 'success', message: 'Data loaded' }), delay);
     });
 }
 
-// Example usage (commented out to avoid spam):
-// simulateApiCall(500).then(response => {
-//     console.log('API Response:', response);
-// });
-
-console.log('✓ Resume website interactive features loaded!');
+console.log('✓ Website loaded and interactive!');

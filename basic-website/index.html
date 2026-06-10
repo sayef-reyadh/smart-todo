@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Resume</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="profile-section">
+                <div class="profile-image">
+                    <div class="avatar">JD</div>
+                </div>
+                <div class="profile-info">
+                    <h1>John Doe</h1>
+                    <p class="title">Full Stack Developer</p>
+                    <p class="email">john.doe@example.com | (555) 123-4567</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <button class="nav-btn active" data-section="about">About</button>
+            <button class="nav-btn" data-section="experience">Experience</button>
+            <button class="nav-btn" data-section="skills">Skills</button>
+            <button class="nav-btn" data-section="projects">Projects</button>
+            <button class="nav-btn" data-section="contact">Contact</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- About Section -->
+        <section id="about" class="section active">
+            <h2>About Me</h2>
+            <p>Hello! I'm John Doe, a passionate Full Stack Developer with 5+ years of experience building web applications.</p>
+            <p>I specialize in JavaScript, React, Node.js, and creating responsive web designs. I love solving complex problems and learning new technologies.</p>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" id="toggleTheme">🌙 Dark Mode</button>
+                <button class="btn btn-secondary" id="showAlert">Show Alert</button>
+                <button class="btn btn-tertiary" id="toggleBio">Toggle Bio</button>
+            </div>
+
+            <div id="extendedBio" class="hidden">
+                <h3>My Journey</h3>
+                <p>Started learning web development in 2018, and now I'm helping others build amazing things. When I'm not coding, you can find me playing video games or exploring new coffee shops.</p>
+                <p>Fun facts: ☕ Coffee addict | 🎮 Gamer | 📚 Tech enthusiast</p>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="section hidden">
+            <h2>Professional Experience</h2>
+            
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3>Senior Developer</h3>
+                    <span class="date">2022 - Present</span>
+                </div>
+                <p class="company">Tech Solutions Inc.</p>
+                <ul>
+                    <li>Led development of 10+ web applications</li>
+                    <li>Managed a team of 5 developers</li>
+                    <li>Improved application performance by 40%</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3>Full Stack Developer</h3>
+                    <span class="date">2020 - 2022</span>
+                </div>
+                <p class="company">Digital Innovations Ltd.</p>
+                <ul>
+                    <li>Built and maintained REST APIs using Node.js</li>
+                    <li>Developed responsive UIs with React</li>
+                    <li>Collaborated with cross-functional teams</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3>Junior Developer</h3>
+                    <span class="date">2019 - 2020</span>
+                </div>
+                <p class="company">StartUp Hub</p>
+                <ul>
+                    <li>Developed frontend features using HTML, CSS, JS</li>
+                    <li>Fixed bugs and improved code quality</li>
+                    <li>Assisted in database design</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="downloadResume">📥 Download Resume</button>
+                <button class="btn btn-secondary" id="expandExperience">Expand All</button>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section hidden">
+            <h2>Skills</h2>
+            
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3>Frontend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Vue.js</span>
+                        <span class="skill-tag">Bootstrap</span>
+                        <span class="skill-tag">Responsive Design</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3>Backend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Express.js</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">REST APIs</span>
+                        <span class="skill-tag">GraphQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3>Tools & Other</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Webpack</span>
+                        <span class="skill-tag">Jest</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">VS Code</span>
+                        <span class="skill-tag">Linux</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="filterSkills">Filter Skills</button>
+                <button class="btn btn-secondary" id="countSkills">Count Skills</button>
+                <button class="btn btn-tertiary" id="shuffleSkills">Shuffle Skills</button>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section hidden">
+            <h2>Featured Projects</h2>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">📱 Social Media App</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Social Media App</h3>
+                        <p>A full-featured social media platform built with React and Node.js</p>
+                        <div class="project-tags">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showProjectDetail('social')">View Details</button>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">🛒 E-Commerce Store</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>E-Commerce Store</h3>
+                        <p>An online shopping platform with payment integration</p>
+                        <div class="project-tags">
+                            <span>Vue.js</span>
+                            <span>Express</span>
+                            <span>Stripe</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showProjectDetail('ecommerce')">View Details</button>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">📊 Analytics Dashboard</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Analytics Dashboard</h3>
+                        <p>Real-time data visualization and analytics tool</p>
+                        <div class="project-tags">
+                            <span>React</span>
+                            <span>D3.js</span>
+                            <span>WebSocket</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showProjectDetail('analytics')">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="visitGithub">🔗 Visit GitHub</button>
+                <button class="btn btn-secondary" id="filterProjects">Filter: All Projects</button>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section hidden">
+            <h2>Get In Touch</h2>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>📧 Email</h3>
+                    <p>john.doe@example.com</p>
+                </div>
+                <div class="contact-item">
+                    <h3>📱 Phone</h3>
+                    <p>(555) 123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <h3>📍 Location</h3>
+                    <p>New York, USA</p>
+                </div>
+                <div class="contact-item">
+                    <h3>🔗 Social</h3>
+                    <p>
+                        <a href="#">LinkedIn</a> | 
+                        <a href="#">GitHub</a> | 
+                        <a href="#">Twitter</a>
+                    </p>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 John Doe. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a> | 
+                <a href="#">Terms of Service</a> | 
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for project details -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <div id="modalDetails"></div>
+            <button class="btn btn-primary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

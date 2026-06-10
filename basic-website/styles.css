@@ -147,16 +147,12 @@ main {
 }
 
 .section {
-    display: none;
+    display: none !important;
     animation: fadeIn 0.5s ease-in-out;
 }
 
 .section.active {
-    display: block;
-}
-
-.section.hidden {
-    display: none;
+    display: block !important;
 }
 
 @keyframes fadeIn {

@@ -24,6 +24,7 @@ function switchSection(sectionId) {
     // Arrays and forEach (4-arrays.js concept)
     sections.forEach(section => {
         section.classList.remove('active');
+        section.classList.add('hidden');
     });
     
     navButtons.forEach(btn => {
@@ -33,6 +34,7 @@ function switchSection(sectionId) {
     // DOM manipulation (6-dom-manipulation.js concept)
     if (targetSection) {
         targetSection.classList.add('active');
+        targetSection.classList.remove('hidden');
     }
     
     // Find and highlight the active button

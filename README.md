@@ -22,3 +22,23 @@ All detailed artifacts are under [`docs/`](docs), with full navigation in:
 - [`docs/README.md`](docs/README.md)
 
 Key documents include project overview, elicitation artifacts, Product Requirements Document (PRD), Software Requirements Specification (SRS), design, Application Programming Interface (API)/database specifications, testing, traceability matrix, risk register, roadmap, and signoff template.
+
+## Initial Phase
+The frontend application was bootstrapped with Vite + React + TypeScript:
+
+```bash
+npx create-vite frontend --template react-ts
+```
+
+This created the `frontend/` project and installed the initial npm dependencies.
+
+## Run Frontend App
+Use the following commands from the repository root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app will start on the Vite development server (typically `http://localhost:5173`).

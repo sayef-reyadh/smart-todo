@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import './App.css'
+import {
+  UiButton,
+  UiCheckbox,
+  UiContainer,
+  UiSubtitle,
+  UiTextInput,
+  UiTitle,
+} from './ui'
 
 type Todo = {
   id: string
@@ -43,39 +50,59 @@ function App() {
   }
 
   return (
-    <main className="app">
-      <h1>Smart Todo</h1>
-      <p className="subtitle">Keep your tasks simple and focused.</p>
+    <UiContainer>
+      <UiTitle>Smart Todo</UiTitle>
+      <UiSubtitle>Keep your tasks simple and focused.</UiSubtitle>
 
-      <form className="todo-form" onSubmit={handleAddTodo}>
-        <input
-          type="text"
+      <form
+        onSubmit={handleAddTodo}
+        style={{ display: 'flex', gap: '0.625rem', marginBottom: '1rem' }}
+      >
+        <UiTextInput
           value={todoText}
-          onChange={(event) => setTodoText(event.target.value)}
+          onChange={(event) => setTodoText(event.currentTarget.value)}
           placeholder="Add a new task"
-          aria-label="Task title"
+          ariaLabel="Task title"
         />
-        <button type="submit">Add</button>
+        <UiButton type="submit">Add</UiButton>
       </form>
 
-      <ul className="todo-list">
+      <ul
+        style={{
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          display: 'grid',
+          gap: '0.625rem',
+        }}
+      >
         {todos.map((todo) => (
-          <li key={todo.id} className={todo.done ? 'done' : ''}>
-            <label>
-              <input
-                type="checkbox"
-                checked={todo.done}
-                onChange={() => handleToggleTodo(todo.id)}
-              />
-              <span>{todo.text}</span>
-            </label>
-            <button type="button" onClick={() => handleDeleteTodo(todo.id)}>
+          <li
+            key={todo.id}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.625rem 0.75rem',
+              border: '1px solid #e2e8f0',
+              borderRadius: '0.5rem',
+              background: '#f8fafc',
+            }}
+          >
+            <UiCheckbox
+              checked={todo.done}
+              onChange={() => handleToggleTodo(todo.id)}
+              label={todo.text}
+              struck={todo.done}
+            />
+            <UiButton tone="danger" type="button" onClick={() => handleDeleteTodo(todo.id)}>
               Delete
-            </button>
+            </UiButton>
           </li>
         ))}
       </ul>
-    </main>
+    </UiContainer>
   )
 }
 

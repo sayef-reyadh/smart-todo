@@ -82,9 +82,12 @@ Complete baseline in [14-non-functional-requirements.md](14-non-functional-requi
 Responsive web UI with keyboard support and accessible controls.
 
 ### 5.2 Software Interfaces
-- REST APIs over HTTPS
-- JWT auth
-- Email provider integration
+- GraphQL gateway over HTTPS.
+- OAuth2-based authentication integration.
+- SMTP relay provider integration.
+- REST APIs over HTTPS with `/api/v1` versioning.
+- JWT auth with short-lived access tokens.
+- Email provider integration through transactional API endpoints.
 
 ### 5.3 Hardware Interfaces
 No special hardware dependencies.
@@ -96,6 +99,9 @@ HTTPS/TLS 1.2+, JSON payloads, SMTP/API for email service.
 1. Single-tenant scope remains for the first year.
 2. Team collaboration is included in MVP.
 3. Monitoring rollout can be deferred by two sprints after launch.
+4. Multi-tenant support begins in post-MVP phase.
+5. Offline mode is out of MVP scope.
+6. Production release requires SLO dashboards and incident runbooks.
 
 ## 7. Appendices
 ### Appendix A - Use Cases

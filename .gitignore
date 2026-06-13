@@ -1,2 +1,9 @@
 # Copilot CLI local session state artifacts
 .copilot/session-state/
+
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/

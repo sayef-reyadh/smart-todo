@@ -96,9 +96,9 @@ No special hardware dependencies.
 HTTPS/TLS 1.2+, JSON payloads, SMTP/API for email service.
 
 ## 6. Assumptions and Constraints
-1. Single-tenant user domain for MVP.
-2. Team collaboration features are roadmap items, not MVP scope.
-3. Monitoring and incident response procedures are mandatory before production.
+1. Multi-tenant support begins in post-MVP phase.
+2. Offline mode is out of MVP scope.
+3. Production release requires SLO dashboards and incident runbooks.
 
 ## 7. Appendices
 ### Appendix A - Use Cases

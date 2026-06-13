@@ -82,6 +82,9 @@ Complete baseline in [14-non-functional-requirements.md](14-non-functional-requi
 Responsive web UI with keyboard support and accessible controls.
 
 ### 5.2 Software Interfaces
+- GraphQL gateway over HTTPS.
+- OAuth2-based authentication integration.
+- SMTP relay provider integration.
 - REST APIs over HTTPS with `/api/v1` versioning.
 - JWT auth with short-lived access tokens.
 - Email provider integration through transactional API endpoints.

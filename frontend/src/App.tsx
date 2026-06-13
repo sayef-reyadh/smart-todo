@@ -1,121 +1,108 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import type { FormEvent } from 'react'
+import {
+  UiButton,
+  UiCheckbox,
+  UiContainer,
+  UiSubtitle,
+  UiTextInput,
+  UiTitle,
+} from './ui'
+
+type Todo = {
+  id: string
+  text: string
+  done: boolean
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todoText, setTodoText] = useState('')
+  const [todos, setTodos] = useState<Todo[]>([
+    { id: '1', text: 'Set up frontend project', done: true },
+    { id: '2', text: 'Build simple Smart Todo UI', done: false },
+  ])
+
+  const handleAddTodo = (event: FormEvent) => {
+    event.preventDefault()
+
+    const trimmedText = todoText.trim()
+    if (!trimmedText) {
+      return
+    }
+
+    setTodos((currentTodos) => [
+      ...currentTodos,
+      { id: Date.now().toString(), text: trimmedText, done: false },
+    ])
+    setTodoText('')
+  }
+
+  const handleToggleTodo = (id: string) => {
+    setTodos((currentTodos) =>
+      currentTodos.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo,
+      ),
+    )
+  }
+
+  const handleDeleteTodo = (id: string) => {
+    setTodos((currentTodos) => currentTodos.filter((todo) => todo.id !== id))
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <UiContainer>
+      <UiTitle>Smart Todo</UiTitle>
+      <UiSubtitle>Keep your tasks simple and focused.</UiSubtitle>
 
-      <div className="ticks"></div>
+      <form
+        onSubmit={handleAddTodo}
+        style={{ display: 'flex', gap: '0.625rem', marginBottom: '1rem' }}
+      >
+        <UiTextInput
+          value={todoText}
+          onChange={(event) => setTodoText(event.currentTarget.value)}
+          placeholder="Add a new task"
+          ariaLabel="Task title"
+        />
+        <UiButton type="submit">Add</UiButton>
+      </form>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <ul
+        style={{
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          display: 'grid',
+          gap: '0.625rem',
+        }}
+      >
+        {todos.map((todo) => (
+          <li
+            key={todo.id}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.625rem 0.75rem',
+              border: '1px solid #e2e8f0',
+              borderRadius: '0.5rem',
+              background: '#f8fafc',
+            }}
+          >
+            <UiCheckbox
+              checked={todo.done}
+              onChange={() => handleToggleTodo(todo.id)}
+              label={todo.text}
+              struck={todo.done}
+            />
+            <UiButton tone="danger" type="button" onClick={() => handleDeleteTodo(todo.id)}>
+              Delete
+            </UiButton>
+          </li>
+        ))}
+      </ul>
+    </UiContainer>
   )
 }
 

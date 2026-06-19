@@ -1,4 +1,3 @@
-import { Group, Stack } from '@mantine/core'
 import { UiButton, UiCheckbox } from '../../ui'
 import type { TodoListProps } from './types'
 
@@ -8,20 +7,20 @@ export type { TodoListProps } from './types'
 // #7 Events (onClick with arrow to pass args), #1 Components (composing UiCheckbox + UiButton)
 export function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
   return (
-    <Stack gap="xs">
+    <div style={{ display: 'grid', gap: '0.5rem' }}>
       {/* Lists & Keys: map with stable key={todo.id} — never array index */}
       {todos.map((todo) => (
-        <Group
+        <div
           key={todo.id}
-          justify="space-between"
-          align="center"
-          gap="sm"
-          p="xs"
-          px="sm"
           style={{
-            border: '1px solid var(--mantine-color-gray-3)',
-            borderRadius: 'var(--mantine-radius-md)',
-            background: 'var(--mantine-color-gray-0)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '0.75rem',
+            padding: '0.625rem 0.75rem',
+            border: '1px solid #e2e8f0',
+            borderRadius: '0.5rem',
+            background: '#f8fafc',
           }}
         >
           <UiCheckbox
@@ -33,8 +32,8 @@ export function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
           <UiButton tone="danger" type="button" onClick={() => onDelete(todo.id)}>
             Delete
           </UiButton>
-        </Group>
+        </div>
       ))}
-    </Stack>
+    </div>
   )
 }

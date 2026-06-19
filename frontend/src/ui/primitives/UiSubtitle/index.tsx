@@ -1,12 +1,7 @@
-import { Text } from '@mantine/core'
 import type { UiSubtitleProps } from './types'
 
 export type { UiSubtitleProps } from './types'
 
 export function UiSubtitle({ children }: UiSubtitleProps) {
-  return (
-    <Text c="dimmed" mt={8} mb={20}>
-      {children}
-    </Text>
-  )
+  return <p style={{ color: '#64748b', marginTop: '0.5rem', marginBottom: '1.25rem' }}>{children}</p>
 }

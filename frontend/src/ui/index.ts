@@ -1,4 +1,3 @@
-export { AppUiProvider } from './provider/AppUiProvider'
 export {
   UiButton,
   UiCheckbox,

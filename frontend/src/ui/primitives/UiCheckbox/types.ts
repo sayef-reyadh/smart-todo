@@ -1,6 +1,8 @@
-import type { CheckboxProps } from '@mantine/core'
+import type { ChangeEventHandler } from 'react'
 
 export type UiCheckboxProps = {
   label: string
   struck?: boolean
-} & Pick<CheckboxProps, 'checked' | 'onChange'>
+  checked?: boolean
+  onChange?: ChangeEventHandler<HTMLInputElement>
+}

@@ -1,8 +1,8 @@
-import type { TextInputProps } from '@mantine/core'
+import type { ChangeEventHandler } from 'react'
 
-export type UiTextInputProps = Pick<
-  TextInputProps,
-  'value' | 'onChange' | 'placeholder'
-> & {
+export type UiTextInputProps = {
+  value?: string
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  placeholder?: string
   ariaLabel: string
 }

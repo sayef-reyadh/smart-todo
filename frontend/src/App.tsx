@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Group, Stack, Text } from '@mantine/core'
 import {
   UiButton,
   UiCheckbox,
@@ -56,55 +57,46 @@ function App() {
       <UiTitle>Smart Todo</UiTitle>
       <UiSubtitle>Keep your tasks simple and focused.</UiSubtitle>
 
-      {/* #7 Events: onSubmit with typed handler */}
-      <form
-        onSubmit={handleAddTodo}
-        style={{ display: 'flex', gap: '0.625rem', marginBottom: '1rem' }}
-      >
-        {/* #7 Events: controlled input — value + onChange fires per keystroke */}
-        <UiTextInput
-          value={todoText}
-          onChange={(event) => setTodoText(event.currentTarget.value)}
-          placeholder="Add a new task"
-          ariaLabel="Task title"
-        />
-        <UiButton type="submit">Add</UiButton>
+      {/* #7 Events: onSubmit with typed handler. <form> stays — Mantine has no form tag wrapper */}
+      <form onSubmit={handleAddTodo}>
+        <Group gap="sm" mb="md">
+          {/* #7 Events: controlled input — value + onChange fires per keystroke */}
+          <UiTextInput
+            value={todoText}
+            onChange={(event) => setTodoText(event.currentTarget.value)}
+            placeholder="Add a new task"
+            ariaLabel="Task title"
+          />
+          <UiButton type="submit">Add</UiButton>
+        </Group>
       </form>
 
-      {/* #6 Conditional rendering: early-return-style — show empty state or list */}
+      {/* #6 Conditional rendering: ternary — show empty state or list */}
       {todos.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem 0' }}>
+        <Text ta="center" c="dimmed" py="xl">
           No tasks yet — add one above.
-        </p>
+        </Text>
       ) : (
-        <>
+        <Stack gap="sm">
           {/* #4 Rendering: derived values rendered inline */}
-          <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '0.5rem' }}>
+          <Text size="sm" c="dimmed">
             {remainingCount} remaining · {doneCount} completed
-          </p>
+          </Text>
 
           {/* #5 Lists & keys: map with stable key={todo.id}, never index */}
-          <ul
-            style={{
-              listStyle: 'none',
-              margin: 0,
-              padding: 0,
-              display: 'grid',
-              gap: '0.625rem',
-            }}
-          >
+          <Stack gap="xs">
             {todos.map((todo) => (
-              <li
+              <Group
                 key={todo.id}
+                justify="space-between"
+                align="center"
+                gap="sm"
+                p="xs"
+                px="sm"
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.625rem 0.75rem',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '0.5rem',
-                  background: '#f8fafc',
+                  border: '1px solid var(--mantine-color-gray-3)',
+                  borderRadius: 'var(--mantine-radius-md)',
+                  background: 'var(--mantine-color-gray-0)',
                 }}
               >
                 {/* #1 Components: UiCheckbox is a function component with typed props */}
@@ -119,19 +111,19 @@ function App() {
                 <UiButton tone="danger" type="button" onClick={() => handleDeleteTodo(todo.id)}>
                   Delete
                 </UiButton>
-              </li>
+              </Group>
             ))}
-          </ul>
+          </Stack>
 
           {/* #6 Conditional rendering: && with > 0 (avoids number trap) */}
           {doneCount > 0 && (
-            <div style={{ marginTop: '0.75rem', textAlign: 'right' }}>
+            <Group justify="flex-end">
               <UiButton tone="danger" type="button" onClick={handleClearCompleted}>
                 Clear completed ({doneCount})
               </UiButton>
-            </div>
+            </Group>
           )}
-        </>
+        </Stack>
       )}
     </UiContainer>
   )

@@ -1,0 +1,4 @@
+[
+  { "id": "1", "text": "Set up frontend project", "done": true },
+  { "id": "2", "text": "Build simple Smart Todo UI", "done": false }
+]

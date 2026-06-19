@@ -1,4 +1,3 @@
-export { AppUiProvider } from './provider/AppUiProvider'
 export {
   UiButton,
   UiCheckbox,
@@ -6,4 +5,4 @@ export {
   UiSubtitle,
   UiTextInput,
   UiTitle,
-} from './components/UiPrimitives'
+} from './primitives'

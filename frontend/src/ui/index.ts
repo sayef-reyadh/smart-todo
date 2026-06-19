@@ -6,4 +6,4 @@ export {
   UiSubtitle,
   UiTextInput,
   UiTitle,
-} from './components/UiPrimitives'
+} from './primitives'

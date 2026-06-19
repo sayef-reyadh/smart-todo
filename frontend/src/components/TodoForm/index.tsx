@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Group } from '@mantine/core'
 import { UiButton, UiTextInput } from '../../ui'
 import type { TodoFormProps } from './types'
 
@@ -22,7 +21,7 @@ export function TodoForm({ onAdd }: TodoFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Group gap="sm" mb="md">
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         {/* Events: controlled input — value + onChange fires per keystroke */}
         <UiTextInput
           value={text}
@@ -31,7 +30,7 @@ export function TodoForm({ onAdd }: TodoFormProps) {
           ariaLabel="Task title"
         />
         <UiButton type="submit">Add</UiButton>
-      </Group>
+      </div>
     </form>
   )
 }

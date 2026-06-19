@@ -1,5 +1,4 @@
-// Example of: #1 Components (function component with no props), #2 TSX (Mantine components as JSX)
-import { Stack, Text } from '@mantine/core'
+// Example of: #1 Components (function component with no props), #2 TSX (plain HTML as JSX)
 import { UiContainer, UiTitle, UiSubtitle } from '../../ui'
 
 export function AboutPage() {
@@ -8,35 +7,35 @@ export function AboutPage() {
       <UiTitle>About Smart Todo</UiTitle>
       <UiSubtitle>A learning project built with modern React.</UiSubtitle>
 
-      <Stack gap="md">
+      <div style={{ display: 'grid', gap: '1rem' }}>
         <div>
-          <Text fw={600} mb={4}>What is this?</Text>
-          <Text c="dimmed">
+          <h3 style={{ margin: '0 0 0.25rem' }}>What is this?</h3>
+          <p style={{ color: '#64748b', margin: 0 }}>
             Smart Todo is a task management app built to learn and demonstrate React core concepts
             in a real, working application. Every component, hook, and pattern you see here maps
             to a fundamental React concept.
-          </Text>
+          </p>
         </div>
 
         <div>
-          <Text fw={600} mb={4}>Tech Stack</Text>
-          <Text c="dimmed">
+          <h3 style={{ margin: '0 0 0.25rem' }}>Tech Stack</h3>
+          <p style={{ color: '#64748b', margin: 0 }}>
             React 19 · TypeScript · Vite · Mantine v9 · React Router
-          </Text>
+          </p>
         </div>
 
         <div>
-          <Text fw={600} mb={4}>Concepts Covered</Text>
-          <Text c="dimmed">
+          <h3 style={{ margin: '0 0 0.25rem' }}>Concepts Covered</h3>
+          <p style={{ color: '#64748b', margin: 0 }}>
             Components · TSX · Props · Rendering · Lists & Keys · Conditional Rendering · Events · Routing
-          </Text>
+          </p>
         </div>
 
         <div>
-          <Text fw={600} mb={4}>Built by</Text>
-          <Text c="dimmed">SayefReyadh</Text>
+          <h3 style={{ margin: '0 0 0.25rem' }}>Built by</h3>
+          <p style={{ color: '#64748b', margin: 0 }}>SayefReyadh</p>
         </div>
-      </Stack>
+      </div>
     </UiContainer>
   )
 }

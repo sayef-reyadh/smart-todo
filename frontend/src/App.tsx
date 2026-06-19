@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import type { FormEvent } from 'react'
 import {
   UiButton,
   UiCheckbox,
@@ -8,12 +7,7 @@ import {
   UiTextInput,
   UiTitle,
 } from './ui'
-
-type Todo = {
-  id: string
-  text: string
-  done: boolean
-}
+import type { Todo } from './types'
 
 function App() {
   const [todoText, setTodoText] = useState('')
@@ -22,7 +16,7 @@ function App() {
     { id: '2', text: 'Build simple Smart Todo UI', done: false },
   ])
 
-  const handleAddTodo = (event: FormEvent) => {
+  const handleAddTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const trimmedText = todoText.trim()

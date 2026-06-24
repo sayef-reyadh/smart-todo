@@ -1,42 +1,55 @@
-// Example of: #2 useState (app state), #4 Rendering (derived values),
-// #6 Conditional rendering (ternary for empty state), #3 Props (passing data down + callbacks up)
-import { useState } from 'react'
+// Hooks demonstrated in this file: useState, useEffect, Custom Hook (useTodos)
+import { useState, useEffect } from 'react'
 import { UiContainer, UiSubtitle, UiTitle } from '../../ui'
 import { TodoForm } from '../../components/TodoForm'
 import { TodoList } from '../../components/TodoList'
 import { TodoStats } from '../../components/TodoStats'
-import { addTodo, toggleTodo, deleteTodo, clearCompleted } from './utils'
-import type { Todo } from '../../types'
-import seedTodos from '../../data/todos.json'
+import { useTodos } from '../../hooks/useTodos'
 
 export function HomePage() {
-  // useState: initialized from static JSON (later: API call)
-  const [todos, setTodos] = useState<Todo[]>(seedTodos)
+  // Custom Hook: all todo state + handlers live in useTodos — this component stays clean
+  const { todos, add, toggle, remove, clearDone } = useTodos()
+
+  // useState: simple boolean — show or hide completed todos
+  const [showDone, setShowDone] = useState(true)
+
+  // useEffect: runs after every render where `todos` changed — syncs document title
+  // The array [todos] is the dependency — effect re-runs only when todos changes
+  useEffect(() => {
+    const pending = todos.filter((t) => !t.done).length
+    document.title = pending > 0 ? `(${pending}) Smart Todo` : 'Smart Todo'
+  }, [todos])
+
+  // Derived value: filter list based on showDone — no extra state needed
+  const visibleTodos = showDone ? todos : todos.filter((t) => !t.done)
 
   return (
     <UiContainer>
       <UiTitle>Smart Todo</UiTitle>
       <UiSubtitle>Keep your tasks simple and focused.</UiSubtitle>
 
-      {/* Props: onAdd callback passed down — "events up" pattern */}
-      <TodoForm onAdd={(text) => setTodos((prev) => addTodo(prev, text))} />
+      <TodoForm onAdd={add} />
 
-      {/* Conditional rendering: ternary — empty state vs todo list */}
       {todos.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem 0' }}>
           No tasks yet — add one above.
         </p>
       ) : (
         <div style={{ display: 'grid', gap: '0.75rem' }}>
-          {/* Props: data down (todos), callbacks up (onToggle, onDelete, onClearCompleted) */}
-          <TodoStats
-            todos={todos}
-            onClearCompleted={() => setTodos((prev) => clearCompleted(prev))}
-          />
+          <TodoStats todos={todos} onClearCompleted={clearDone} />
+
+          {/* useState: clicking this button flips showDone → re-render shows/hides done todos */}
+          <button
+            onClick={() => setShowDone((prev) => !prev)}
+            style={{ justifySelf: 'start', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', fontSize: '0.85rem' }}
+          >
+            {showDone ? 'Hide completed' : 'Show completed'}
+          </button>
+
           <TodoList
-            todos={todos}
-            onToggle={(id) => setTodos((prev) => toggleTodo(prev, id))}
-            onDelete={(id) => setTodos((prev) => deleteTodo(prev, id))}
+            todos={visibleTodos}
+            onToggle={toggle}
+            onDelete={remove}
           />
         </div>
       )}

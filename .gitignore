@@ -10,3 +10,6 @@ build/
 
 # Playwright MCP
 .playwright-mcp/
+
+backend/.todo-venv/
+backend/__pycache__

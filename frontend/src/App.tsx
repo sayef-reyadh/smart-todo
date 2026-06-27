@@ -1,22 +1,24 @@
-// App.tsx: router setup only — no state, no UI logic.
-// BrowserRouter enables client-side routing (URL changes without page reload).
-// Route with element={<AppLayout />} wraps all pages with shared nav.
-// Nested Routes render inside the layout's <Outlet />.
+// App.tsx: router setup + context providers.
+// ThemeProvider wraps everything so any component can call useTheme() — no prop drilling.
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { AppLayout } from './layouts/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { AboutPage } from './pages/AboutPage'
+import { ThemeProvider } from './context/ThemeContext'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="about" element={<AboutPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    // ThemeProvider is the useContext "source" — it owns darkMode state and shares it
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="about" element={<AboutPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

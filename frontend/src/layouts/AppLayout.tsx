@@ -1,24 +1,32 @@
 // Layout: wraps all pages with a nav bar + content area (Outlet).
-// This is a React Router layout route — demonstrates component composition + Outlet.
+// Hooks demonstrated: useContext — reads darkMode from ThemeContext without prop drilling
 import { Outlet, NavLink } from 'react-router'
+import { useTheme } from '../context/ThemeContext'
 
 export function AppLayout() {
+  // useContext: reads the value provided by ThemeProvider in App.tsx
+  // No props needed — any component can call useTheme() to access darkMode
+  const { darkMode, toggleDark } = useTheme()
+
   return (
-    <>
-      {/* Nav bar — plain HTML flexbox, NavLink for client-side navigation (no page reload) */}
-      <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem', padding: '0.75rem', background: 'white', borderBottom: '1px solid #e2e8f0' }}>
+    <div style={{ minHeight: '100vh', background: darkMode ? '#0f172a' : '#f8fafc', color: darkMode ? '#f8fafc' : '#0f172a', transition: 'background 0.2s, color 0.2s' }}>
+      <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem', padding: '0.75rem', background: darkMode ? '#1e293b' : 'white', borderBottom: '1px solid #e2e8f0' }}>
         <strong style={{ fontSize: '1.125rem', marginRight: '1rem' }}>Smart Todo</strong>
-        {/* NavLink from react-router — renders an <a> with active styling, no full-page reload */}
         <NavLink to="/" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: 'inherit', textDecoration: 'none' })}>
           Home
         </NavLink>
         <NavLink to="/about" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: 'inherit', textDecoration: 'none' })}>
           About
         </NavLink>
+        {/* useContext in action: toggleDark came from ThemeContext, not from a parent prop */}
+        <button
+          onClick={toggleDark}
+          style={{ marginLeft: 'auto', background: 'none', border: '1px solid #cbd5e1', borderRadius: '0.375rem', padding: '0.25rem 0.75rem', cursor: 'pointer', color: 'inherit', fontSize: '0.85rem' }}
+        >
+          {darkMode ? '☀ Light' : '🌙 Dark'}
+        </button>
       </nav>
-
-      {/* Outlet renders the matched child route (HomePage or AboutPage) */}
       <Outlet />
-    </>
+    </div>
   )
 }

@@ -42,3 +42,24 @@ npm run dev
 ```
 
 The app will start on the Vite development server (typically `http://localhost:5173`).
+
+## Run Backend API
+Use the following commands from the repository root:
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+fastapi dev main.py
+```
+
+The API will be available at `http://127.0.0.1:8000`.
+
+## Run Full App
+Open two terminals and run both services:
+
+1. Start the backend from `backend/` with `fastapi dev main.py`.
+2. Start the frontend from `frontend/` on port `5173`.
+
+Frontend requests to `/api/*` are proxied to the backend during development.

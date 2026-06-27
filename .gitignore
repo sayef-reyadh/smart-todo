@@ -10,3 +10,7 @@ build/
 
 # Playwright MCP
 .playwright-mcp/
+
+# Python backend
+backend/.venv/
+backend/__pycache__/

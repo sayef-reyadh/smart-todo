@@ -13,4 +13,18 @@ build/
 
 # Python backend
 backend/.venv/
-backend/__pycache__/
+
+# Ignore all Python bytecode caches and compiled files anywhere in the repo
+# - folder __pycache__ and compiled extensions
+**/__pycache__/
+__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+*.pyc
+*.pyo
+
+# packaging/build artifacts
+pip-wheel-metadata/
+*.egg-info/
+.eggs/

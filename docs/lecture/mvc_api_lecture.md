@@ -94,14 +94,14 @@ Pydantic models used (backend/app/models, backend/app/schemas) — see source fo
 
 ```mermaid
 flowchart LR
-  A[HTTP Request: /api/tasks] --> B[Controller (APIRouter)]
-  B --> C[Service (TaskService): business rules, validation]
-  C --> D[Repository (JSONTaskRepository)]: read/write backend/data/tasks.json
-  D --> E[File System (tasks.json)]
+  A["HTTP Request: /api/tasks"] --> B["Controller (APIRouter)"]
+  B --> C["Service (TaskService): business rules, validation"]
+  C --> D["Repository (JSONTaskRepository): read/write backend/data/tasks.json"]
+  D --> E["File System (tasks.json)"]
   E --> D
   D --> C
   C --> B
-  B --> F[HTTP Response JSON]
+  B --> F["HTTP Response JSON"]
 ```
 
 Notes:
@@ -116,11 +116,11 @@ Notes:
 
 ```mermaid
 flowchart LR
-  UI[React Components (TodoForm, TodoList)] --> Hook[useTodosFetch / useTodosAxios]
-  Hook -->|HTTP| API[/api/tasks (Vite proxy -> backend)]
-  API --> Backend[FastAPI controller]
-  Backend --> Repository[JSONTaskRepository]
-  Repository --> File[tasks.json]
+  UI["React Components (TodoForm, TodoList)"] --> Hook["useTodosFetch / useTodosAxios"]
+  Hook -->|HTTP| API["/api/tasks (Vite proxy -> backend)"]
+  API --> Backend["FastAPI controller"]
+  Backend --> Repository["JSONTaskRepository"]
+  Repository --> File["tasks.json"]
   File --> Repository --> Backend
   Backend --> Hook
   Hook --> UI

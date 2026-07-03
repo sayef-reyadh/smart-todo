@@ -197,3 +197,59 @@ await fetch(`/api/tasks/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'a
 ---
 
 This file should be used in lecture slides or as a single-point reference for developers onboarding to the Smart Todo project.
+
+---
+
+## Full end-to-end data flow (Frontend -> Backend -> JSON)
+
+The diagram below shows a complete flow for create/list/update/delete operations starting from the browser UI, through the Vite dev proxy (in development), into the FastAPI controller, down to the service and repository, and finally the JSON storage file. Responses follow the reverse path back to the UI.
+
+```mermaid
+flowchart LR
+  Browser["Browser UI\n(TodoForm, TodoList)"] --> Hook["Hook\n(useTodosFetch / useTodosAxios)"]
+  Hook -->|"fetch / axios"| ViteProxy["Vite dev server proxy (/api)"]
+  ViteProxy -->|"HTTP request"| BackendIngress["Backend HTTP\n(uvicorn / fastapi)"]
+  BackendIngress --> Controller["Controller\n(APIRouter)"]
+  Controller --> Parse["Request parse & validation\n(Pydantic schema)"]
+  Parse --> Service["Service\n(TaskService)\nBusiness rules, ownership check"]
+  Service --> Repo["Repository\n(JSONTaskRepository)\nserialize/deserialize Task"]
+  Repo --> File["Storage (backend/data/tasks.json)\nRead / Write (atomic with lock)"]
+  File --> Repo
+  Repo --> Service
+  Service --> Controller
+  Controller --> Response["HTTP Response\n(JSON)"]
+  Response --> Hook
+  Hook --> Browser
+
+  %% Annotate common operations
+  subgraph Ops [Operations]
+    Create["POST /api/tasks\n(create)"]
+    List["GET /api/tasks\n(list)"]
+    Update["PATCH /api/tasks/{id}\n(partial update, toggle status)"]
+    Delete["DELETE /api/tasks/{id}\n(delete)"]
+  end
+
+  Browser -.-> Create
+  Browser -.-> List
+  Browser -.-> Update
+  Browser -.-> Delete
+
+  Create --> Hook
+  List --> Hook
+  Update --> Hook
+  Delete --> Hook
+
+  %% show path for create
+  Create --> ViteProxy
+  ViteProxy --> BackendIngress --> Controller --> Parse --> Service --> Repo --> File
+  File --> Repo --> Service --> Controller --> Response --> Hook --> Browser
+```
+
+Notes:
+- The Vite proxy is used in development so the frontend can call relative `/api/*` paths and the dev server forwards them to the backend. In production, frontend should call the real API base URL (set via VITE_API_BASE_URL).
+- Repository uses an in-process Lock and writes JSON files; this is suitable for local dev only. Replace with a DB and transactional repository for production.
+- The diagram highlights the common REST operations and the exact path they take.
+
+---
+
+

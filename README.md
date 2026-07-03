@@ -1,65 +1,100 @@
 # smart-todo
 
-Industry-grade and university-ready software engineering documentation repository for the **Smart Todo App**.
+Industry-grade and university-ready software engineering repository for the Smart Todo App.
 
-## Repository Purpose
-This repository demonstrates a complete **Software Development Life Cycle (SDLC)** and Requirements Engineering journey:
+## Overview
+This repo contains a React (Vite + TypeScript) frontend and a FastAPI backend following an MVC-style layout. The current implementation uses a lightweight JSON-backed repository (backend/data/tasks.json) for local development. A database will be integrated later.
 
-Problem Discovery -> Requirement Elicitation -> Product Requirements Document (PRD) -> User Stories -> Requirements -> Software Requirements Specification (SRS) -> Design -> Technical Design Document (TDD) -> Database -> Application Programming Interface (API) -> Testing -> Release
+## Prerequisites
+- Node.js (18+ recommended) and npm
+- Python 3.10+ (Windows)
+- Git
 
-## Technology Stack
-| Layer | Technology |
-|---|---|
-| Frontend | React (TypeScript) |
-| Backend | Python FastAPI |
-| Database | AWS DynamoDB (NoSQL: Not Only SQL) |
-| Authentication | JSON Web Token (JWT) |
-| Deployment | Docker on AWS |
+## Backend (FastAPI) — Setup & Run (Windows)
+1. From repository root, open PowerShell or CMD.
 
-## Documentation
-All detailed artifacts are under [`docs/`](docs), with full navigation in:
+2. Create and activate a virtual environment (PowerShell):
 
-- [`docs/README.md`](docs/README.md)
-
-Key documents include project overview, elicitation artifacts, Product Requirements Document (PRD), Software Requirements Specification (SRS), design, Application Programming Interface (API)/database specifications, testing, traceability matrix, risk register, roadmap, and signoff template.
-
-## Initial Phase
-The frontend application was bootstrapped with Vite + React + TypeScript:
-
-```bash
-npx create-vite frontend --template react-ts
+```powershell
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1   # PowerShell
+# or for CMD:
+# .venv\Scripts\activate.bat
 ```
 
-This created the `frontend/` project and installed the initial npm dependencies.
+3. Install Python dependencies:
 
-## Run Frontend App
-Use the following commands from the repository root:
+```powershell
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+4. Run the app with fastapi dev (recommended):
+
+```powershell
+# from repository root
+cd backend
+fastapi dev main.py
+```
+
+
+The API base will be available at: http://localhost:8000/api/tasks
+
+Notes:
+- If you get "No module named uvicorn", ensure requirements were installed into the active virtualenv.
+- Data file used for persistence: `backend/data/tasks.json` (JSON storage for development only).
+
+## Frontend (React + Vite) — Setup & Run
+1. From repository root:
 
 ```bash
 cd frontend
 npm install
+```
+
+2. (Optional) Set the API base URL for local development. Create `frontend/.env` with:
+
+```
+VITE_API_BASE_URL="http://localhost:8000/api"
+```
+
+If not set, the frontend uses relative paths and you should configure a Vite proxy in `vite.config.ts` to forward `/api` to the backend.
+
+3. Start the dev server:
+
+```bash
 npm run dev
 ```
 
-The app will start on the Vite development server (typically `http://localhost:5173`).
+Vite dev server typically runs at http://localhost:5173.
 
-## Run Backend API
-Use the following commands from the repository root:
+## Running both services together
+- Start the backend (step above) on port 8000.
+- Start the frontend (step above) on port 5173.
+- The frontend hooks expect the backend API at `<VITE_API_BASE_URL>/tasks` or at `/api/tasks` if using proxy.
+- The frontend supplies a header `X-User-Id` (default `frontend-user`) to simulate auth/ownership.
 
-```bash
-cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-fastapi dev main.py
-```
+## API summary (development)
+- POST   /api/tasks           -> create task (body: { title, description?, due_date? })
+- GET    /api/tasks           -> list tasks for current user (X-User-Id header)
+- PATCH  /api/tasks/{id}      -> partial update (e.g., { status: 'COMPLETED' })
+- DELETE /api/tasks/{id}      -> delete task
 
-The API will be available at `http://127.0.0.1:8000`.
+Status values: `PENDING` or `COMPLETED`.
 
-## Run Full App
-Open two terminals and run both services:
+## Frontend examples
+- fetch example (useTodosFetch): uses native fetch to call the API and demonstrates load/add/toggle/delete operations.
+- axios example (useTodosAxios): same functionality implemented with axios. The dependency was added to `frontend/package.json`.
 
-1. Start the backend from `backend/` with `fastapi dev main.py`.
-2. Start the frontend from `frontend/` on port `5173`.
+## Development notes & next steps
+- The JSON repository is for development only and is not safe for concurrent production use.
+- Replace repository with a real DB (SQLModel/SQLAlchemy + migrations) before production.
+- Replace header-based auth with real authentication (JWT/OAuth2) for multi-user security.
+- Consider adding tests, OpenAPI documentation examples, and a Vite proxy to simplify dev runs.
 
-Frontend requests to `/api/*` are proxied to the backend during development.
+## Quick start recap
+1. Backend: `cd backend` -> create venv -> `pip install -r requirements.txt` -> `fastapi dev main.py`
+2. Frontend: `cd frontend` -> `npm install` -> optionally set `VITE_API_BASE_URL` -> `npm run dev`
+
+Enjoy developing! If you want, I can add a Vite proxy snippet to `vite.config.ts` and a .env.example file.  

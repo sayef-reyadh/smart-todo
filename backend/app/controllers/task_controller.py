@@ -48,12 +48,3 @@ def delete_task(task_id: str, user_id: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="task not found")
     return None
 
-@router.post("/tasks/{task_id}/toggle", response_model=TaskResponse)
-def toggle_task(task_id: str, user_id: str = Depends(get_current_user)):
-    try:
-        updated = _service.toggle_complete(task_id, user_id)
-    except PermissionError:
-        raise HTTPException(status_code=403, detail="forbidden")
-    if not updated:
-        raise HTTPException(status_code=404, detail="task not found")
-    return TaskResponse.from_orm(updated)

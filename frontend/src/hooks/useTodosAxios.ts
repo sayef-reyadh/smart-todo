@@ -36,7 +36,9 @@ export function useTodosAxios() {
 
   async function toggle(id: string) {
     try {
-      const r = await client.post<TaskResponse>(`/tasks/${id}/toggle`)
+      const current = todos.find((t) => t.id === id)
+      const newStatus = current && current.done ? 'PENDING' : 'COMPLETED'
+      const r = await client.patch<TaskResponse>(`/tasks/${id}`, { status: newStatus })
       setTodos((prev) => prev.map((p) => (p.id === r.data.id ? taskToTodo(r.data) : p)))
     } catch (e) {
       console.error('toggle failed', e)

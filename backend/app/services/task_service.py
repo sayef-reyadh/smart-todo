@@ -34,12 +34,3 @@ class TaskService:
             raise PermissionError("not owner")
         return self.repo.delete(task_id)
 
-    def toggle_complete(self, task_id: str, user_id: str) -> Optional[Task]:
-        task = self.repo.get(task_id)
-        if not task:
-            return None
-        if task.user_id != user_id:
-            raise PermissionError("not owner")
-        new_status = Status.COMPLETED if task.status == Status.PENDING else Status.PENDING
-        patch = {"status": new_status.value, "updated_at": datetime.utcnow()}
-        return self.repo.update(task_id, patch)

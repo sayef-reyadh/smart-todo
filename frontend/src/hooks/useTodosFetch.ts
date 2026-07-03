@@ -46,9 +46,13 @@ export function useTodosFetch() {
 
   async function toggle(id: string) {
     try {
-      const res = await fetch(`${API_BASE}/tasks/${id}/toggle`, {
-        method: 'POST',
-        headers: { 'X-User-Id': USER_HEADER },
+      // find current todo and compute new status
+      const current = todos.find((t) => t.id === id)
+      const newStatus = current && current.done ? 'PENDING' : 'COMPLETED'
+      const res = await fetch(`${API_BASE}/tasks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-User-Id': USER_HEADER },
+        body: JSON.stringify({ status: newStatus }),
       })
       if (!res.ok) throw new Error('toggle failed')
       const t: TaskResponse = await res.json()

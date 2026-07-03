@@ -13,10 +13,10 @@ class TaskCreate(BaseModel):
     due_date: Optional[datetime] = None
 
 class TaskUpdate(BaseModel):
-    title: Optional[str]
-    description: Optional[str]
-    due_date: Optional[datetime]
-    status: Optional[Status]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
+    status: Optional[Status] = None
 
 class TaskResponse(BaseModel):
     id: str

@@ -4,37 +4,56 @@ import type { TodoFormProps } from './types'
 
 export type { TodoFormProps } from './types'
 
-// Hooks demonstrated: useState (input text), useRef (focus input after submit)
+// Hooks demonstrated: useState (inputs), useRef (focus input after submit)
 export function TodoForm({ onAdd }: TodoFormProps) {
-  const [text, setText] = useState('')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [dueDate, setDueDate] = useState('')
 
-  // useRef: creates a reference to the input DOM node — does NOT cause re-renders
-  // inputRef.current points to the actual <input> element after the component mounts
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const trimmed = text.trim()
+    const trimmed = title.trim()
     if (!trimmed) return
-    onAdd(trimmed)
-    setText('')
-    // useRef in action: directly call .focus() on the DOM node — no re-render needed
+    onAdd({ title: trimmed, description: description || undefined, due_date: dueDate || null })
+    setTitle('')
+    setDescription('')
+    setDueDate('')
     inputRef.current?.focus()
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-        {/* ref={inputRef} wires this DOM element to our ref object */}
+      <div style={{ display: 'grid', gap: '0.5rem', marginBottom: '1rem' }}>
         <input
           ref={inputRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Add a new task"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Task title"
           aria-label="Task title"
-          style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: '0.375rem', border: '1px solid #e2e8f0', fontSize: '1rem' }}
+          style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', border: '1px solid #e2e8f0', fontSize: '1rem' }}
         />
-        <UiButton type="submit">Add</UiButton>
+
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description (optional)"
+          aria-label="Task description"
+          style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', border: '1px solid #e2e8f0', fontSize: '0.95rem', minHeight: '3rem' }}
+        />
+
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          aria-label="Due date"
+          style={{ padding: '0.5rem 0.75rem', borderRadius: '0.375rem', border: '1px solid #e2e8f0', fontSize: '0.95rem' }}
+        />
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <UiButton type="submit">Add</UiButton>
+        </div>
       </div>
     </form>
   )

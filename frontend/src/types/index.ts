@@ -3,4 +3,6 @@ export type Todo = {
   id: string
   text: string
   done: boolean
+  description?: string | null
+  dueDate?: string | null
 }

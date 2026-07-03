@@ -10,6 +10,9 @@ export function HomePage() {
   // Custom Hook: all todo state + handlers live in useTodos — this component stays clean
   const { todos, add, toggle, remove, clearDone } = useTodos()
 
+  // adapt add to the new signature used by TodoForm
+  const handleAdd = (payload: { title: string; description?: string; due_date?: string | null }) => add(payload)
+
   // useState: simple boolean — show or hide completed todos
   const [showDone, setShowDone] = useState(true)
 
@@ -28,7 +31,7 @@ export function HomePage() {
       <UiTitle>Smart Todo</UiTitle>
       <UiSubtitle>Keep your tasks simple and focused.</UiSubtitle>
 
-      <TodoForm onAdd={add} />
+      <TodoForm onAdd={handleAdd} />
 
       {todos.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem 0' }}>

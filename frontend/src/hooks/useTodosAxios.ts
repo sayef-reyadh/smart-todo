@@ -7,7 +7,7 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api'
 const USER_HEADER = 'frontend-user'
 
 function taskToTodo(t: TaskResponse): Todo {
-  return { id: t.id, text: t.title, done: t.status === 'COMPLETED' }
+  return { id: t.id, text: t.title, done: t.status === 'COMPLETED', description: t.description ?? null, dueDate: t.due_date ?? null }
 }
 
 const client = axios.create({
@@ -25,9 +25,9 @@ export function useTodosAxios() {
       .catch((e) => console.error('useTodosAxios load failed', e))
   }, [])
 
-  async function add(text: string) {
+  async function add(payload: { title: string; description?: string; due_date?: string | null }) {
     try {
-      const r = await client.post<TaskResponse>('/tasks', { title: text })
+      const r = await client.post<TaskResponse>('/tasks', payload)
       setTodos((prev) => [...prev, taskToTodo(r.data)])
     } catch (e) {
       console.error('add failed', e)

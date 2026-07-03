@@ -10,6 +10,8 @@ function taskToTodo(t: TaskResponse): Todo {
     id: t.id,
     text: t.title,
     done: t.status === 'COMPLETED',
+    description: t.description ?? null,
+    dueDate: t.due_date ?? null,
   }
 }
 
@@ -29,12 +31,12 @@ export function useTodosFetch() {
     })()
   }, [])
 
-  async function add(text: string) {
+  async function add(payload: { title: string; description?: string; due_date?: string | null }) {
     try {
       const res = await fetch(`${API_BASE}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-User-Id': USER_HEADER },
-        body: JSON.stringify({ title: text }),
+        body: JSON.stringify(payload),
       })
       if (!res.ok) throw new Error('create failed')
       const t: TaskResponse = await res.json()

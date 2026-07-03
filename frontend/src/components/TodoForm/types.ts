@@ -1,3 +1,3 @@
 export type TodoFormProps = {
-  onAdd: (text: string) => void
+  onAdd: (payload: { title: string; description?: string; due_date?: string | null }) => void
 }

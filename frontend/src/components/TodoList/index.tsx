@@ -3,12 +3,9 @@ import type { TodoListProps } from './types'
 
 export type { TodoListProps } from './types'
 
-// Example of: #5 Lists & Keys (map with stable key), #3 Props (data down, events up),
-// #7 Events (onClick with arrow to pass args), #1 Components (composing UiCheckbox + UiButton)
-export function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
+export function TodoList({ todos, onToggle, onDelete, onView }: TodoListProps) {
   return (
     <div style={{ display: 'grid', gap: '0.5rem' }}>
-      {/* Lists & Keys: map with stable key={todo.id} — never array index */}
       {todos.map((todo) => (
         <div
           key={todo.id}
@@ -29,9 +26,14 @@ export function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
             label={todo.text}
             struck={todo.done}
           />
-          <UiButton tone="danger" type="button" onClick={() => onDelete(todo.id)}>
-            Delete
-          </UiButton>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <UiButton tone="primary" type="button" onClick={() => onView(todo.id)}>
+              View
+            </UiButton>
+            <UiButton tone="danger" type="button" onClick={() => onDelete(todo.id)}>
+              Delete
+            </UiButton>
+          </div>
         </div>
       ))}
     </div>

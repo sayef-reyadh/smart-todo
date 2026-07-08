@@ -1,5 +1,6 @@
 // Hooks demonstrated in this file: useState, useEffect, Custom Hook (useTodos)
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { UiContainer, UiSubtitle, UiTitle } from '../../ui'
 import { TodoForm } from '../../components/TodoForm'
 import { TodoList } from '../../components/TodoList'
@@ -7,6 +8,8 @@ import { TodoStats } from '../../components/TodoStats'
 import { useTodos } from '../../hooks/useTodos'
 
 export function HomePage() {
+  const navigate = useNavigate()
+  
   // Custom Hook: all todo state + handlers live in useTodos — this component stays clean
   const { todos, add, toggle, remove, clearDone } = useTodos()
 
@@ -25,6 +28,10 @@ export function HomePage() {
 
   // Derived value: filter list based on showDone — no extra state needed
   const visibleTodos = showDone ? todos : todos.filter((t) => !t.done)
+
+  const handleView = (taskId: string) => {
+    navigate(`/tasks/${taskId}`)
+  }
 
   return (
     <UiContainer>
@@ -53,6 +60,7 @@ export function HomePage() {
             todos={visibleTodos}
             onToggle={toggle}
             onDelete={remove}
+            onView={handleView}
           />
         </div>
       )}

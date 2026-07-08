@@ -4,4 +4,5 @@ export type TodoListProps = {
   todos: Todo[]
   onToggle: (id: string) => void
   onDelete: (id: string) => void
+  onView: (id: string) => void
 }

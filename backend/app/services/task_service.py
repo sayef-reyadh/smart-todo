@@ -14,8 +14,13 @@ class TaskService:
         task = Task(user_id=user_id, title=title, description=description, due_date=due_date)
         return self.repo.create(task)
 
-    def get_task(self, task_id: str) -> Optional[Task]:
-        return self.repo.get(task_id)
+    def get_task(self, task_id: str, user_id: str) -> Optional[Task]:
+        task = self.repo.get(task_id)
+        if not task:
+            return None
+        if task.user_id != user_id:
+            raise PermissionError("not owner")
+        return task
 
     def update_task(self, task_id: str, patch: dict, user_id: str) -> Optional[Task]:
         task = self.repo.get(task_id)

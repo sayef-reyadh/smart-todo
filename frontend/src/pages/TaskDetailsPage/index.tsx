@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { UiButton, UiContainer, UiTitle } from '../../ui'
+import { apiService } from '../../services/api'
 import type { TaskResponse } from '../../types/api'
-
-const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api'
-const USER_HEADER = 'frontend-user'
 
 export function TaskDetailsPage() {
   const { taskId } = useParams<{ taskId: string }>()
   const navigate = useNavigate()
-  
+
   const [task, setTask] = useState<TaskResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-  
+
   // Form state
   const [formData, setFormData] = useState({
     title: '',
@@ -26,16 +24,11 @@ export function TaskDetailsPage() {
   // Fetch task details
   useEffect(() => {
     if (!taskId) return
-    
-    (async () => {
+
+    ;(async () => {
       try {
         setLoading(true)
-        const res = await fetch(`${API_BASE}/tasks/${taskId}`, {
-          headers: { 'X-User-Id': USER_HEADER },
-        })
-        
-        if (!res.ok) throw new Error(`Failed to load task: ${res.status}`)
-        const data: TaskResponse = await res.json()
+        const data = await apiService.getTaskById(taskId)
         setTask(data)
         setFormData({
           title: data.title,
@@ -63,7 +56,7 @@ export function TaskDetailsPage() {
 
   const handleSave = async () => {
     if (!task || !taskId) return
-    
+
     try {
       const updatePayload = {
         title: formData.title,
@@ -71,18 +64,8 @@ export function TaskDetailsPage() {
         status: formData.status,
         due_date: formData.due_date || null,
       }
-      
-      const res = await fetch(`${API_BASE}/tasks/${taskId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Id': USER_HEADER,
-        },
-        body: JSON.stringify(updatePayload),
-      })
-      
-      if (!res.ok) throw new Error('Failed to update task')
-      const updatedTask: TaskResponse = await res.json()
+
+      const updatedTask = await apiService.updateTask(taskId, updatePayload)
       setTask(updatedTask)
       setIsEditing(false)
       setError(null)
@@ -94,16 +77,11 @@ export function TaskDetailsPage() {
 
   const handleDelete = async () => {
     if (!task || !taskId) return
-    
+
     if (!window.confirm('Are you sure you want to delete this task?')) return
-    
+
     try {
-      const res = await fetch(`${API_BASE}/tasks/${taskId}`, {
-        method: 'DELETE',
-        headers: { 'X-User-Id': USER_HEADER },
-      })
-      
-      if (res.status !== 204) throw new Error('Failed to delete task')
+      await apiService.deleteTask(taskId)
       navigate('/')
     } catch (err) {
       console.error('Failed to delete task:', err)

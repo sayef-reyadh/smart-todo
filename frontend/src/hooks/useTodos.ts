@@ -1,3 +1,2 @@
-// Default useTodos delegates to the fetch-based implementation (API example).
-// If you prefer axios, import useTodosAxios from './useTodosAxios' instead.
-export { useTodosFetch as useTodos } from './useTodosFetch'
+// Default useTodos delegates to the axios-based implementation with centralized API service
+export { useTodosAxios as useTodos } from './useTodosAxios'

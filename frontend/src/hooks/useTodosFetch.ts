@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { Todo } from '../../types'
+import type { Todo } from '../types'
 import type { TaskResponse } from '../types/api'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api'

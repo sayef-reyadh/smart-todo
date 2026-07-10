@@ -6,13 +6,10 @@ except Exception:
     # fallback for older pydantic versions
     from pydantic import BaseSettings
 
-from typing import Optional
-
 class Settings(BaseSettings):
     AWS_REGION: str = "us-east-1"
-    # Set only for local development (LocalStack). Leave unset in production.
-    AWS_ENDPOINT_URL: Optional[str] = None
     DYNAMODB_TABLE_NAME: str = "TASKS"
+    DYNAMODB_DEMO_TABLE_NAME: str = "TASKS_DEMO"
 
     class Config:
         env_file = (".env", ".env.local")  # .env.local overrides .env

@@ -18,6 +18,4 @@ class Task(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        use_enum_values = True
-        orm_mode = True
+    model_config = {"from_attributes": True, "use_enum_values": True}

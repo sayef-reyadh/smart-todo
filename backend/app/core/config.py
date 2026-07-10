@@ -16,5 +16,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = (".env", ".env.local")  # .env.local overrides .env
+        extra = "ignore"  # ignore unknown vars like LOCALSTACK_AUTH_TOKEN
 
 settings = Settings()

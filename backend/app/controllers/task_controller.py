@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from typing import Optional, List
 from ..schemas.task import TaskCreate, TaskUpdate, TaskResponse
-from ..repositories.json_repository import JSONTaskRepository
+from ..repositories.dynamodb_repository import DynamoDBTaskRepository, create_table_if_not_exists
 from ..services.task_service import TaskService
 from ..core.config import settings
 
@@ -11,8 +11,9 @@ router = APIRouter()
 def get_current_user(x_user_id: Optional[str] = Header(None)) -> str:
     return x_user_id or "anonymous"
 
-# instantiate repository and service (module-level simple DI)
-_repo = JSONTaskRepository(settings.TASKS_FILE)
+
+create_table_if_not_exists(settings.AWS_ENDPOINT_URL, settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
+_repo = DynamoDBTaskRepository(settings.AWS_ENDPOINT_URL, settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
 _service = TaskService(_repo)
 
 @router.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

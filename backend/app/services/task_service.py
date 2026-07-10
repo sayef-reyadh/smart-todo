@@ -1,10 +1,9 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, List, Optional
 from ..models.task import Task, Status
-from ..repositories.json_repository import JSONTaskRepository
 
 class TaskService:
-    def __init__(self, repo: JSONTaskRepository):
+    def __init__(self, repo: Any):
         self.repo = repo
 
     def list_tasks(self, user_id: str) -> List[Task]:

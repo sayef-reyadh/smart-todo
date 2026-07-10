@@ -5,7 +5,7 @@ import uuid
 from fastapi import APIRouter, Depends, Header, Query
 from pydantic import BaseModel
 
-from ..repositories.demo_repository import DemoRepository, create_demo_table_if_not_exists
+from ..repositories.tasks_demo_repository import DemoRepository
 from ..core.config import settings
 
 router = APIRouter()
@@ -15,7 +15,6 @@ def get_current_user(x_user_id: Optional[str] = Header(None)) -> str:
     return x_user_id or "frontend-user"
 
 
-create_demo_table_if_not_exists(settings.AWS_REGION, settings.DYNAMODB_DEMO_TABLE_NAME)
 _repo = DemoRepository(settings.AWS_REGION, settings.DYNAMODB_DEMO_TABLE_NAME)
 
 

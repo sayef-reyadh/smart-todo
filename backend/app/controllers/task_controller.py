@@ -1,18 +1,16 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from typing import Optional, List
 from ..schemas.task import TaskCreate, TaskUpdate, TaskResponse
-from ..repositories.dynamodb_repository import DynamoDBTaskRepository, create_table_if_not_exists
+from ..repositories.task_repository import DynamoDBTaskRepository
 from ..services.task_service import TaskService
 from ..core.config import settings
 
 router = APIRouter()
 
-# simple dependency to provide user id (placeholder for auth)
 def get_current_user(x_user_id: Optional[str] = Header(None)) -> str:
     return x_user_id or "anonymous"
 
 
-create_table_if_not_exists(settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
 _repo = DynamoDBTaskRepository(settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
 _service = TaskService(_repo)
 

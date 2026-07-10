@@ -11,66 +11,6 @@ def _build_resource(region: str):
     return boto3.resource("dynamodb", region_name=region)
 
 
-def create_demo_table_if_not_exists(region: str, table_name: str) -> None:
-    """
-    TASKS_DEMO table — redesigned to showcase ALL DynamoDB key patterns:
-
-    Base table
-      PK  = user_id              (partition key)   groups tasks per user
-      SK  = created_at           (sort key, ISO)   enables begins_with / between / range
-
-    GSI  = category-priority-index
-      PK  = category  (WORK | PERSONAL | STUDY | HEALTH)
-      SK  = priority  (HIGH | MEDIUM | LOW)
-      -> Cross-partition: "all HIGH priority WORK tasks across every user"
-
-    LSI  = due_date-index        (same PK = user_id, alternate SK = due_date)
-      -> Per-user results sorted by deadline instead of creation date
-
-    BillingMode = PAY_PER_REQUEST  -> DynamoDB auto-scales on demand, zero config
-    """
-    dynamodb = _build_resource(region)
-    existing = [t.name for t in dynamodb.tables.all()]
-    if table_name in existing:
-        return
-
-    dynamodb.create_table(
-        TableName=table_name,
-        KeySchema=[
-            {"AttributeName": "user_id",    "KeyType": "HASH"},
-            {"AttributeName": "created_at", "KeyType": "RANGE"},
-        ],
-        AttributeDefinitions=[
-            {"AttributeName": "user_id",    "AttributeType": "S"},
-            {"AttributeName": "created_at", "AttributeType": "S"},
-            {"AttributeName": "category",   "AttributeType": "S"},
-            {"AttributeName": "priority",   "AttributeType": "S"},
-            {"AttributeName": "due_date",   "AttributeType": "S"},
-        ],
-        BillingMode="PAY_PER_REQUEST",
-        GlobalSecondaryIndexes=[
-            {
-                "IndexName": "category-priority-index",
-                "KeySchema": [
-                    {"AttributeName": "category", "KeyType": "HASH"},
-                    {"AttributeName": "priority", "KeyType": "RANGE"},
-                ],
-                "Projection": {"ProjectionType": "ALL"},
-            }
-        ],
-        LocalSecondaryIndexes=[
-            {
-                "IndexName": "due_date-index",
-                "KeySchema": [
-                    {"AttributeName": "user_id",  "KeyType": "HASH"},
-                    {"AttributeName": "due_date", "KeyType": "RANGE"},
-                ],
-                "Projection": {"ProjectionType": "ALL"},
-            }
-        ],
-    ).wait_until_exists()
-
-
 class DemoRepository:
     _USERS      = ["alice", "bob", "charlie", "diana", "eve",
                    "frank", "grace", "henry", "iris", "jack"]

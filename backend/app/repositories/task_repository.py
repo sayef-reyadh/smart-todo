@@ -26,33 +26,6 @@ def _get_table(region: str, table_name: str):
     return _build_resource(region).Table(table_name)
 
 
-def create_table_if_not_exists(region: str, table_name: str) -> None:
-    """Create the DynamoDB table and GSI on first run. Safe to call on every startup."""
-    dynamodb = _build_resource(region)
-    existing = [t.name for t in dynamodb.tables.all()]
-    if table_name in existing:
-        return
-
-    dynamodb.create_table(
-        TableName=table_name,
-        KeySchema=[
-            {"AttributeName": "id", "KeyType": "HASH"},
-        ],
-        AttributeDefinitions=[
-            {"AttributeName": "id", "AttributeType": "S"},
-            {"AttributeName": "user_id", "AttributeType": "S"},
-        ],
-        BillingMode="PAY_PER_REQUEST",
-        GlobalSecondaryIndexes=[
-            {
-                "IndexName": "user_id-index",
-                "KeySchema": [{"AttributeName": "user_id", "KeyType": "HASH"}],
-                "Projection": {"ProjectionType": "ALL"},
-            }
-        ],
-    ).wait_until_exists()  # block until ACTIVE — needed for real AWS
-
-
 class DynamoDBTaskRepository:
     def __init__(self, region: str, table_name: str):
         self.table = _get_table(region, table_name)

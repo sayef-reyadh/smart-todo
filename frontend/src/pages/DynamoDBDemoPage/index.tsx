@@ -214,7 +214,7 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
       {/* Pattern 1: PK */}
       <QuerySection colour={COLOURS.pk} title="Simple Partition Key Query" result={pkResult} loading={pkLoading}
         description="Retrieves ALL tasks for one user. DynamoDB routes directly to that user's partition — no scan, O(1) lookup.">
-        <Field label="user_id">
+        <Field label="user_id  ← PK (Partition Key)">
           <input style={inputStyle} value={pkUser} onChange={e => setPkUser(e.target.value)} placeholder="frontend-user" />
         </Field>
         <button style={btnStyle(COLOURS.pk.badge)} onClick={handlePK}>Run Query</button>
@@ -223,13 +223,13 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
       {/* Pattern 2: PK + SK range */}
       <QuerySection colour={COLOURS.pksk} title="Composite Key Range Query (PK + SK)" result={pkskResult} loading={pkskLoading}
         description="Reads only the date-range slice within one user's partition. Perfect for 'show me tasks from last week'.">
-        <Field label="user_id">
+        <Field label="user_id  ← PK (Partition Key)">
           <input style={inputStyle} value={pkskUser} onChange={e => setPkskUser(e.target.value)} placeholder="alice" />
         </Field>
-        <Field label="from (leave blank = 7 days ago)">
+        <Field label="from  ← SK (Sort Key) range start">
           <input style={{ ...inputStyle, width: '160px' }} type="datetime-local" value={pkskFrom} onChange={e => setPkskFrom(e.target.value)} />
         </Field>
-        <Field label="to (leave blank = now)">
+        <Field label="to  ← SK (Sort Key) range end">
           <input style={{ ...inputStyle, width: '160px' }} type="datetime-local" value={pkskTo} onChange={e => setPkskTo(e.target.value)} />
         </Field>
         <button style={btnStyle(COLOURS.pksk.badge)} onClick={handlePKSK}>Run Query</button>
@@ -238,7 +238,7 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
       {/* Pattern 3: GSI */}
       <QuerySection colour={COLOURS.gsi} title="Global Secondary Index (GSI) Query" result={gsiResult} loading={gsiLoading}
         description="Queries status-created_at-index — spans ALL user partitions. An admin dashboard use-case. Data is eventually consistent.">
-        <Field label="status">
+        <Field label="status  ← GSI Partition Key">
           <select style={inputStyle} value={gsiStatus} onChange={e => setGsiStatus(e.target.value)}>
             <option value="PENDING">PENDING</option>
             <option value="COMPLETED">COMPLETED</option>
@@ -250,9 +250,10 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
       {/* Pattern 4: LSI */}
       <QuerySection colour={COLOURS.lsi} title="Local Secondary Index (LSI) Query" result={lsiResult} loading={lsiLoading}
         description="Queries due_date-index — same partition as base table (strongly consistent). Results are sorted by due_date. Only items WITH a due_date appear. LSI cannot be added after table creation.">
-        <Field label="user_id">
+        <Field label="user_id  ← PK (same Partition Key as base table)">
           <input style={inputStyle} value={lsiUser} onChange={e => setLsiUser(e.target.value)} placeholder="alice" />
         </Field>
+        <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#92400e' }}>Results sorted by <strong>due_date</strong> (LSI Sort Key) instead of created_at</p>
         <button style={btnStyle(COLOURS.lsi.badge)} onClick={handleLSI}>Run Query</button>
       </QuerySection>
 

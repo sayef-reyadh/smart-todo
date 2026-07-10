@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from threading import Lock
 from typing import List, Optional
-from ..models.task import Task
+from ..model.task import Task
 
 class JSONTaskRepository:
     def __init__(self, path: Path):

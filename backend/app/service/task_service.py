@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
-from ..models.task import Task, Status
-from ..repositories.interfaces import TaskRepositoryInterface
+from ..model.task import Task, Status
+from ..repository.interfaces import TaskRepositoryInterface
 
 class TaskService:
     def __init__(self, repo: TaskRepositoryInterface):

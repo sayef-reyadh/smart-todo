@@ -4,7 +4,7 @@ import uuid
 from boto3.dynamodb.conditions import Attr, Key
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
-from ..models.demo_task import DemoTask
+from ..model.demo_task import DemoTask
 from .interfaces import TasksDemoRepositoryInterface
 
 

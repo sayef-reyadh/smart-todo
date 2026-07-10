@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from ..models.demo_task import Category, Priority
+from ..model.demo_task import Category, Priority
 
 
 class DemoTaskCreate(BaseModel):

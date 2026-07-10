@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from ..models.task import Task
-from ..models.demo_task import DemoTask
+from ..model.task import Task
+from ..model.demo_task import DemoTask
 
 
 class TaskRepositoryInterface(ABC):

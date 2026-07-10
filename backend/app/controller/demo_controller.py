@@ -4,8 +4,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, Header, Query
 
-from ..models.demo_task import DemoTask
-from ..schemas.demo_task import DemoTaskCreate, DemoTaskResponse
+from ..model.demo_task import DemoTask
+from ..dto.demo_task import DemoTaskCreate, DemoTaskResponse
 from ..repositories.tasks_demo_repository import DemoRepository
 from ..core.config import settings
 

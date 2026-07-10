@@ -1,7 +1,7 @@
 import boto3
 from boto3.dynamodb.conditions import Key
 from typing import Any, Dict, List, Optional
-from ..models.task import Task
+from ..model.task import Task
 from .interfaces import TaskRepositoryInterface
 
 

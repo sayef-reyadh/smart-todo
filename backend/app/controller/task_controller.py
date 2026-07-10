@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from typing import Optional, List
-from ..schemas.task import TaskCreate, TaskUpdate, TaskResponse
-from ..repositories.task_repository import DynamoDBTaskRepository
-from ..services.task_service import TaskService
-from ..core.config import settings
+from ..dto.task import TaskCreate, TaskUpdate, TaskResponse
+from ..repository.task_repository import DynamoDBTaskRepository
+from ..service.task_service import TaskService
+from ..config.config import settings
 
 router = APIRouter()
 

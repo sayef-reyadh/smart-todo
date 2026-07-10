@@ -45,7 +45,26 @@ def get_count():
 
 @router.post("/tasks", response_model=DemoTaskResponse, status_code=201)
 def create_demo_task(payload: DemoTaskCreate, user_id: str = Depends(get_current_user)):
-    return _service.create(user_id, payload.title, payload.category, payload.priority, payload.due_date).dict()
+    try:
+        return _service.create(user_id, payload.title, payload.category, payload.priority, payload.due_date).dict()
+    except ValueError as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+# ── Service-layer business logic demos ───────────────────────────────────────
+
+@router.get("/overdue")
+def get_overdue(user_id: str = Query(default="alice")):
+    """Service orchestrates: LSI query + overdue filter applied in Python.
+    The repo has no concept of 'overdue' — that is domain/business logic."""
+    items = _service.get_overdue(user_id)
+    return {"user_id": user_id, "overdue_count": len(items), "items": [t.dict() for t in items]}
+
+@router.get("/summary")
+def get_summary(user_id: str = Query(default="alice")):
+    """Service aggregates stats across tasks — controller gets a ready dict."""
+    return _service.get_summary(user_id)
 
 
 # ── Pattern 1: PK ─────────────────────────────────────────────────────────────

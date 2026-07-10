@@ -57,7 +57,7 @@ def create_table_if_not_exists(endpoint_url: Optional[str], region: str, table_n
                 "Projection": {"ProjectionType": "ALL"},
             }
         ],
-    )
+    ).wait_until_exists()  # block until ACTIVE — needed for real AWS
 
 
 class DynamoDBTaskRepository:

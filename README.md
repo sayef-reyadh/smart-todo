@@ -3,29 +3,62 @@
 Industry-grade and university-ready software engineering repository for the Smart Todo App.
 
 ## Overview
-This repo contains a React (Vite + TypeScript) frontend and a FastAPI backend following an MVC-style layout. Persistence is backed by **AWS DynamoDB** — locally emulated via [LocalStack](https://www.localstack.cloud/) running in Docker.
+This repo contains a React (Vite + TypeScript) frontend and a FastAPI backend following an MVC-style layout. Persistence is backed by **AWS DynamoDB** (real AWS — no local emulator needed).
 
 ## Prerequisites
 - Node.js 18+ and npm
 - Python 3.10+
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for LocalStack)
+- AWS CLI configured (`aws configure`) with a user that has DynamoDB permissions
 - Git
 
 ---
 
-## 1. Start LocalStack (DynamoDB)
+## 1. Create DynamoDB tables (AWS CLI)
 
-From the repository root:
+Run once before starting the backend. Tables are created in your configured AWS region.
 
+### TASKS table (main app)
 ```powershell
-docker compose up -d
+aws dynamodb create-table `
+  --table-name TASKS `
+  --attribute-definitions `
+    AttributeName=id,AttributeType=S `
+    AttributeName=user_id,AttributeType=S `
+  --key-schema AttributeName=id,KeyType=HASH `
+  --billing-mode PAY_PER_REQUEST `
+  --global-secondary-indexes '[{"IndexName":"user_id-index","KeySchema":[{"AttributeName":"user_id","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}}]' `
+  --region us-east-1
 ```
 
-This starts LocalStack on `http://localhost:4566` with DynamoDB, S3, and SQS available. The DynamoDB `TASKS` table is created automatically on first backend startup.
-
-To stop:
+### TASKS_DEMO table (DynamoDB key patterns demo — PK, PK+SK, GSI, LSI)
 ```powershell
-docker compose down
+aws dynamodb create-table `
+  --table-name TASKS_DEMO `
+  --attribute-definitions `
+    AttributeName=user_id,AttributeType=S `
+    AttributeName=created_at,AttributeType=S `
+    AttributeName=status,AttributeType=S `
+    AttributeName=due_date,AttributeType=S `
+  --key-schema `
+    AttributeName=user_id,KeyType=HASH `
+    AttributeName=created_at,KeyType=RANGE `
+  --billing-mode PAY_PER_REQUEST `
+  --global-secondary-indexes '[{"IndexName":"status-created_at-index","KeySchema":[{"AttributeName":"status","KeyType":"HASH"},{"AttributeName":"created_at","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}]' `
+  --local-secondary-indexes '[{"IndexName":"due_date-index","KeySchema":[{"AttributeName":"user_id","KeyType":"HASH"},{"AttributeName":"due_date","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}]' `
+  --region us-east-1
+```
+
+### Verify tables are ACTIVE
+```powershell
+aws dynamodb list-tables --region us-east-1
+aws dynamodb describe-table --table-name TASKS      --region us-east-1 --query "Table.TableStatus"
+aws dynamodb describe-table --table-name TASKS_DEMO --region us-east-1 --query "Table.TableStatus"
+```
+
+### Delete tables (cleanup)
+```powershell
+aws dynamodb delete-table --table-name TASKS      --region us-east-1
+aws dynamodb delete-table --table-name TASKS_DEMO --region us-east-1
 ```
 
 ---
@@ -46,7 +79,7 @@ pip install -r requirements.txt
 
 # Copy local config
 cp .env.example .env.local
-# .env.local is pre-configured for LocalStack — no changes needed for local dev
+# Edit .env.local and set AWS_REGION to match your configured region
 
 # Run
 fastapi dev main.py
@@ -54,7 +87,7 @@ fastapi dev main.py
 
 API available at: **http://localhost:8000/api/tasks**
 
-> **Note:** Make sure `docker compose up -d` is running before starting the backend, otherwise the DynamoDB connection will fail.
+Swagger docs at: **http://localhost:8000/docs**
 
 ---
 
@@ -65,13 +98,10 @@ cd frontend
 npm install
 ```
 
-Optionally set the API base URL — create `frontend/.env`:
-
+Optionally create `frontend/.env`:
 ```
 VITE_API_BASE_URL="http://localhost:8000/api"
 ```
-
-Start the dev server:
 
 ```powershell
 npm run dev
@@ -81,15 +111,12 @@ Frontend runs at: **http://localhost:5173**
 
 ---
 
-## Running all three services together
+## Running both services
 
 | Service | Command | URL |
 |---|---|---|
-| LocalStack | `docker compose up -d` (root) | `http://localhost:4566` |
 | Backend | `fastapi dev main.py` (backend/) | `http://localhost:8000` |
 | Frontend | `npm run dev` (frontend/) | `http://localhost:5173` |
-
-The frontend sends an `X-User-Id` header (default `frontend-user`) to simulate per-user task ownership.
 
 ---
 
@@ -97,18 +124,18 @@ The frontend sends an `X-User-Id` header (default `frontend-user`) to simulate p
 
 | File | Purpose |
 |---|---|
-| `backend/.env.example` | Committed template — documents all variables |
-| `backend/.env.local` | Local dev values (gitignored) — points to LocalStack |
+| `backend/.env.example` | Committed template |
+| `backend/.env.local` | Local overrides (gitignored) |
 
 Key variables:
 
-| Variable | Local value | Production |
+| Variable | Default | Notes |
 |---|---|---|
-| `AWS_ENDPOINT_URL` | `http://localhost:4566` | unset (real AWS) |
-| `AWS_REGION` | `us-east-1` | your AWS region |
-| `DYNAMODB_TABLE_NAME` | `TASKS` | `TASKS` (or env-specific) |
+| `AWS_REGION` | `us-east-1` | Must match where you created the tables |
+| `DYNAMODB_TABLE_NAME` | `TASKS` | Main app table |
+| `DYNAMODB_DEMO_TABLE_NAME` | `TASKS_DEMO` | Key patterns demo table |
 
-In production, leave `AWS_ENDPOINT_URL` unset and provide credentials via IAM role or `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` environment variables.
+Credentials are picked up from `~/.aws/credentials` (AWS CLI) or IAM role automatically — never hardcoded.
 
 ---
 
@@ -121,21 +148,38 @@ In production, leave `AWS_ENDPOINT_URL` unset and provide credentials via IAM ro
 | `GET` | `/api/tasks/{id}` | Get single task |
 | `PATCH` | `/api/tasks/{id}` | Partial update e.g. `{ status: "COMPLETED" }` |
 | `DELETE` | `/api/tasks/{id}` | Delete task |
+| `POST` | `/api/demo/seed` | Insert 10 sample tasks into TASKS_DEMO |
+| `GET` | `/api/demo/pk` | Query by partition key |
+| `GET` | `/api/demo/pk-sk-range` | Query by composite key range |
+| `GET` | `/api/demo/gsi` | Query via GSI (by status) |
+| `GET` | `/api/demo/lsi` | Query via LSI (by due date) |
 
 Status values: `PENDING` or `COMPLETED`.
+
+---
+
+## DynamoDB Demo page
+
+Navigate to **http://localhost:5173/dynamo-demo** to interactively showcase:
+- Partition Key query
+- Composite Key (PK + SK) range query
+- Global Secondary Index (GSI) query
+- Local Secondary Index (LSI) query
 
 ---
 
 ## Quick start recap
 
 ```powershell
-# Terminal 1 — infrastructure
-docker compose up -d
+# One-time: create tables
+aws dynamodb create-table --table-name TASKS ...      (see above)
+aws dynamodb create-table --table-name TASKS_DEMO ... (see above)
 
-# Terminal 2 — backend
+# Terminal 1 — backend
 cd backend; .venv\Scripts\Activate.ps1; fastapi dev main.py
 
-# Terminal 3 — frontend
+# Terminal 2 — frontend
 cd frontend; npm run dev
 ```
+
 

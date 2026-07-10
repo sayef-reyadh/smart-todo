@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .controller.task_controller import router as task_router
-from .controller.demo_controller import router as demo_router
+from .controller.demo_task_controller import router as demo_router
 from .config.config import settings
 
 app = FastAPI(title="Smart Todo (MVC)")

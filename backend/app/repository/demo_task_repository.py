@@ -13,7 +13,7 @@ def _build_resource(region: str):
     return boto3.resource("dynamodb", region_name=region)
 
 
-class DemoRepository(TasksDemoRepositoryInterface):
+class DemoTaskRepository(TasksDemoRepositoryInterface):
     _USERS      = ["alice", "bob", "charlie", "diana", "eve",
                    "frank", "grace", "henry", "iris", "jack"]
     _CATEGORIES = ["WORK", "PERSONAL", "STUDY", "HEALTH"]

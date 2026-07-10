@@ -1,7 +1,20 @@
 import boto3
 from boto3.dynamodb.conditions import Key
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from ..models.task import Task
+
+
+def _serialize_item(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Convert Python types unsupported by DynamoDB (datetime -> ISO string, drop None)."""
+    result = {}
+    for k, v in data.items():
+        if v is None:
+            continue  # DynamoDB does not allow None in put_item items
+        elif hasattr(v, "isoformat"):
+            result[k] = v.isoformat()
+        else:
+            result[k] = v
+    return result
 
 
 def _build_resource(endpoint_url: Optional[str], region: str):
@@ -64,16 +77,17 @@ class DynamoDBTaskRepository:
         return Task(**item) if item else None
 
     def create(self, task: Task) -> Task:
-        self.table.put_item(Item=task.dict())
+        self.table.put_item(Item=_serialize_item(task.dict()))
         return task
 
     def update(self, task_id: str, patch: dict) -> Optional[Task]:
         if not patch:
             return self.get(task_id)
 
-        update_expr = "SET " + ", ".join(f"#f{i} = :v{i}" for i in range(len(patch)))
-        expr_names = {f"#f{i}": k for i, k in enumerate(patch)}
-        expr_values = {f":v{i}": str(v) if hasattr(v, "isoformat") else v for i, v in enumerate(patch.values())}
+        serialized = _serialize_item(patch)
+        update_expr = "SET " + ", ".join(f"#f{i} = :v{i}" for i in range(len(serialized)))
+        expr_names = {f"#f{i}": k for i, k in enumerate(serialized)}
+        expr_values = {f":v{i}": v for i, v in enumerate(serialized.values())}
 
         try:
             response = self.table.update_item(

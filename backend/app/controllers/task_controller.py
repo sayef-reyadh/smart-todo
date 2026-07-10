@@ -12,8 +12,8 @@ def get_current_user(x_user_id: Optional[str] = Header(None)) -> str:
     return x_user_id or "anonymous"
 
 
-create_table_if_not_exists(settings.AWS_ENDPOINT_URL, settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
-_repo = DynamoDBTaskRepository(settings.AWS_ENDPOINT_URL, settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
+create_table_if_not_exists(settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
+_repo = DynamoDBTaskRepository(settings.AWS_REGION, settings.DYNAMODB_TABLE_NAME)
 _service = TaskService(_repo)
 
 @router.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

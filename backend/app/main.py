@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .controllers.task_controller import router as task_router
+from .controllers.demo_controller import router as demo_router
 from .core.config import settings
 
 app = FastAPI(title="Smart Todo (MVC)")
@@ -14,3 +15,4 @@ app.add_middleware(
 )
 
 app.include_router(task_router, prefix="/api", tags=["tasks"])
+app.include_router(demo_router, prefix="/api/demo", tags=["dynamo-demo"])

@@ -18,6 +18,9 @@ export function AppLayout() {
         <NavLink to="/about" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: 'inherit', textDecoration: 'none' })}>
           About
         </NavLink>
+        <NavLink to="/dynamo-demo" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: isActive ? '#3b82f6' : 'inherit', textDecoration: 'none' })}>
+          DynamoDB Demo
+        </NavLink>
         {/* useContext in action: toggleDark came from ThemeContext, not from a parent prop */}
         <button
           onClick={toggleDark}

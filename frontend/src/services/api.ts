@@ -2,6 +2,24 @@ import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { TaskResponse } from '../types/api'
 
+export type DemoItem = {
+  user_id: string
+  created_at: string
+  id: string
+  title: string
+  status: string
+  due_date?: string
+}
+
+export type DemoQueryResult = {
+  pattern: string
+  key_used: string
+  description: string
+  dynamo_call: string
+  count: number
+  items: DemoItem[]
+}
+
 const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || '/api'
 const USER_HEADER = 'frontend-user'
 
@@ -51,5 +69,37 @@ export const apiService = {
 
   async deleteTask(taskId: string): Promise<void> {
     await axiosClient.delete(`/tasks/${taskId}`)
+  },
+
+  // ── DynamoDB Demo ──────────────────────────────────────────────────────────
+
+  async seedDemo(): Promise<{ seeded: number }> {
+    const r = await axiosClient.post('/demo/seed')
+    return r.data
+  },
+
+  async createDemoTask(payload: { title: string; due_date?: string }): Promise<unknown> {
+    const r = await axiosClient.post('/demo/tasks', payload)
+    return r.data
+  },
+
+  async queryPK(userId: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/pk', { params: { user_id: userId } })
+    return r.data
+  },
+
+  async queryPKSKRange(userId: string, fromDt: string, toDt: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/pk-sk-range', { params: { user_id: userId, from_dt: fromDt, to_dt: toDt } })
+    return r.data
+  },
+
+  async queryGSI(status: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/gsi', { params: { status } })
+    return r.data
+  },
+
+  async queryLSI(userId: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/lsi', { params: { user_id: userId } })
+    return r.data
   },
 }

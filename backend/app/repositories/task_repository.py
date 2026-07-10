@@ -2,6 +2,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from typing import Any, Dict, List, Optional
 from ..models.task import Task
+from .interfaces import TaskRepositoryInterface
 
 
 def _serialize_item(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -26,7 +27,7 @@ def _get_table(region: str, table_name: str):
     return _build_resource(region).Table(table_name)
 
 
-class DynamoDBTaskRepository:
+class DynamoDBTaskRepository(TaskRepositoryInterface):
     def __init__(self, region: str, table_name: str):
         self.table = _get_table(region, table_name)
 

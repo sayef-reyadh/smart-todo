@@ -4,6 +4,8 @@ import uuid
 from boto3.dynamodb.conditions import Attr, Key
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
+from ..models.demo_task import DemoTask
+from .interfaces import TasksDemoRepositoryInterface
 
 
 def _build_resource(region: str):
@@ -11,7 +13,7 @@ def _build_resource(region: str):
     return boto3.resource("dynamodb", region_name=region)
 
 
-class DemoRepository:
+class DemoRepository(TasksDemoRepositoryInterface):
     _USERS      = ["alice", "bob", "charlie", "diana", "eve",
                    "frank", "grace", "henry", "iris", "jack"]
     _CATEGORIES = ["WORK", "PERSONAL", "STUDY", "HEALTH"]
@@ -30,61 +32,61 @@ class DemoRepository:
     def __init__(self, region: str, table_name: str):
         self.table = _build_resource(region).Table(table_name)
 
-    def create(self, item):
-        self.table.put_item(Item=item)
-        return item
+    def create(self, task: DemoTask) -> DemoTask:
+        self.table.put_item(Item=task.dict())
+        return task
 
-    def query_by_pk(self, user_id: str):
-        return self.table.query(
+    def query_by_pk(self, user_id: str) -> List[DemoTask]:
+        return [DemoTask(**i) for i in self.table.query(
             KeyConditionExpression=Key("user_id").eq(user_id)
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_by_pk_sk_range(self, user_id: str, from_dt: str, to_dt: str):
-        return self.table.query(
+    def query_by_pk_sk_range(self, user_id: str, from_dt: str, to_dt: str) -> List[DemoTask]:
+        return [DemoTask(**i) for i in self.table.query(
             KeyConditionExpression=Key("user_id").eq(user_id)
             & Key("created_at").between(from_dt, to_dt)
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_by_gsi(self, category: str, priority: str = ""):
+    def query_by_gsi(self, category: str, priority: str = "") -> List[DemoTask]:
         expr = (Key("category").eq(category) & Key("priority").eq(priority)
                 if priority else Key("category").eq(category))
-        return self.table.query(
+        return [DemoTask(**i) for i in self.table.query(
             IndexName="category-priority-index",
             KeyConditionExpression=expr,
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_by_lsi_due_date(self, user_id: str):
-        return self.table.query(
+    def query_by_lsi_due_date(self, user_id: str) -> List[DemoTask]:
+        return [DemoTask(**i) for i in self.table.query(
             IndexName="due_date-index",
             KeyConditionExpression=Key("user_id").eq(user_id),
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_begins_with(self, user_id: str, prefix: str):
+    def query_begins_with(self, user_id: str, prefix: str) -> List[DemoTask]:
         """begins_with on SK (created_at). e.g. prefix='2026-07' -> July 2026 tasks."""
-        return self.table.query(
+        return [DemoTask(**i) for i in self.table.query(
             KeyConditionExpression=Key("user_id").eq(user_id)
             & Key("created_at").begins_with(prefix)
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def scan_contains(self, keyword: str):
+    def scan_contains(self, keyword: str) -> List[DemoTask]:
         """FilterExpression: Attr('title').contains(keyword) — scans ALL partitions."""
-        return self.table.scan(
+        return [DemoTask(**i) for i in self.table.scan(
             FilterExpression=Attr("title").contains(keyword)
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_attribute_exists(self, user_id: str):
+    def query_attribute_exists(self, user_id: str) -> List[DemoTask]:
         """FilterExpression: attribute_exists(due_date)."""
-        return self.table.query(
+        return [DemoTask(**i) for i in self.table.query(
             KeyConditionExpression=Key("user_id").eq(user_id),
             FilterExpression=Attr("due_date").exists(),
-        ).get("Items", [])
+        ).get("Items", [])]
 
-    def query_attribute_not_exists(self, user_id: str):
+    def query_attribute_not_exists(self, user_id: str) -> List[DemoTask]:
         """FilterExpression: attribute_not_exists(due_date) — sparse attribute demo."""
-        return self.table.query(
+        return [DemoTask(**i) for i in self.table.query(
             KeyConditionExpression=Key("user_id").eq(user_id),
             FilterExpression=Attr("due_date").not_exists(),
-        ).get("Items", [])
+        ).get("Items", [])]
 
     def count(self) -> int:
         return self.table.scan(Select="COUNT").get("Count", 0)

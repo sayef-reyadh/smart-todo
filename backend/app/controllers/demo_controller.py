@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
-from typing import Optional
+from datetime import datetime
+from typing import List, Optional
 import uuid
 
 from fastapi import APIRouter, Depends, Header, Query
-from pydantic import BaseModel
 
+from ..models.demo_task import DemoTask
+from ..schemas.demo_task import DemoTaskCreate, DemoTaskResponse
 from ..repositories.tasks_demo_repository import DemoRepository
 from ..core.config import settings
 
@@ -50,20 +51,17 @@ def get_count():
 
 # ── Create ────────────────────────────────────────────────────────────────────
 
-@router.post("/tasks", status_code=201)
+@router.post("/tasks", response_model=DemoTaskResponse, status_code=201)
 def create_demo_task(payload: DemoTaskCreate, user_id: str = Depends(get_current_user)):
-    item = {
-        "user_id":    user_id,
-        "created_at": datetime.utcnow().isoformat(),
-        "id":         str(uuid.uuid4()),
-        "title":      payload.title,
-        "status":     "PENDING",
-        "category":   payload.category,
-        "priority":   payload.priority,
-    }
-    if payload.due_date:
-        item["due_date"] = payload.due_date
-    return _repo.create(item)
+    task = DemoTask(
+        user_id=user_id,
+        created_at=datetime.utcnow().isoformat(),
+        title=payload.title,
+        category=payload.category,
+        priority=payload.priority,
+        due_date=payload.due_date,
+    )
+    return _repo.create(task).dict()
 
 
 # ── Pattern 1: PK ─────────────────────────────────────────────────────────────

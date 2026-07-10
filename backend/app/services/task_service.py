@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import List, Optional
 from ..models.task import Task, Status
+from ..repositories.interfaces import TaskRepositoryInterface
 
 class TaskService:
-    def __init__(self, repo: Any):
+    def __init__(self, repo: TaskRepositoryInterface):
         self.repo = repo
 
     def list_tasks(self, user_id: str) -> List[Task]:

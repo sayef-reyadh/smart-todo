@@ -6,13 +6,15 @@ except Exception:
     # fallback for older pydantic versions
     from pydantic import BaseSettings
 
-from pathlib import Path
+from typing import Optional
 
 class Settings(BaseSettings):
-    DATA_DIR: Path = Path(__file__).resolve().parents[2] / "data"
-    TASKS_FILE: Path = DATA_DIR / "tasks.json"
+    AWS_REGION: str = "us-east-1"
+    # Set only for local development (LocalStack). Leave unset in production.
+    AWS_ENDPOINT_URL: Optional[str] = None
+    DYNAMODB_TABLE_NAME: str = "TASKS"
 
     class Config:
-        env_file = ".env"
+        env_file = (".env", ".env.local")  # .env.local overrides .env
 
 settings = Settings()

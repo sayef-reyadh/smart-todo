@@ -3,98 +3,139 @@
 Industry-grade and university-ready software engineering repository for the Smart Todo App.
 
 ## Overview
-This repo contains a React (Vite + TypeScript) frontend and a FastAPI backend following an MVC-style layout. The current implementation uses a lightweight JSON-backed repository (backend/data/tasks.json) for local development. A database will be integrated later.
+This repo contains a React (Vite + TypeScript) frontend and a FastAPI backend following an MVC-style layout. Persistence is backed by **AWS DynamoDB** — locally emulated via [LocalStack](https://www.localstack.cloud/) running in Docker.
 
 ## Prerequisites
-- Node.js (18+ recommended) and npm
-- Python 3.10+ (Windows)
+- Node.js 18+ and npm
+- Python 3.10+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for LocalStack)
 - Git
 
-## Backend (FastAPI) — Setup & Run (Windows)
-1. From repository root, open PowerShell or CMD.
+---
 
-2. Create and activate a virtual environment (PowerShell):
+## 1. Start LocalStack (DynamoDB)
+
+From the repository root:
+
+```powershell
+docker compose up -d
+```
+
+This starts LocalStack on `http://localhost:4566` with DynamoDB, S3, and SQS available. The DynamoDB `TASKS` table is created automatically on first backend startup.
+
+To stop:
+```powershell
+docker compose down
+```
+
+---
+
+## 2. Backend (FastAPI) — Setup & Run
 
 ```powershell
 cd backend
+
+# Create and activate virtual environment
 python -m venv .venv
-.venv\Scripts\Activate.ps1   # PowerShell
-# or for CMD:
-# .venv\Scripts\activate.bat
-```
+.venv\Scripts\Activate.ps1       # PowerShell
+# .venv\Scripts\activate.bat     # CMD
 
-3. Install Python dependencies:
-
-```powershell
+# Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
-```
 
-4. Run the app with fastapi dev (recommended):
+# Copy local config
+cp .env.example .env.local
+# .env.local is pre-configured for LocalStack — no changes needed for local dev
 
-```powershell
-# from repository root
-cd backend
+# Run
 fastapi dev main.py
 ```
 
+API available at: **http://localhost:8000/api/tasks**
 
-The API base will be available at: http://localhost:8000/api/tasks
+> **Note:** Make sure `docker compose up -d` is running before starting the backend, otherwise the DynamoDB connection will fail.
 
-Notes:
-- If you get "No module named uvicorn", ensure requirements were installed into the active virtualenv.
-- Data file used for persistence: `backend/data/tasks.json` (JSON storage for development only).
+---
 
-## Frontend (React + Vite) — Setup & Run
-1. From repository root:
+## 3. Frontend (React + Vite) — Setup & Run
 
-```bash
+```powershell
 cd frontend
 npm install
 ```
 
-2. (Optional) Set the API base URL for local development. Create `frontend/.env` with:
+Optionally set the API base URL — create `frontend/.env`:
 
 ```
 VITE_API_BASE_URL="http://localhost:8000/api"
 ```
 
-If not set, the frontend uses relative paths and you should configure a Vite proxy in `vite.config.ts` to forward `/api` to the backend.
+Start the dev server:
 
-3. Start the dev server:
-
-```bash
+```powershell
 npm run dev
 ```
 
-Vite dev server typically runs at http://localhost:5173.
+Frontend runs at: **http://localhost:5173**
 
-## Running both services together
-- Start the backend (step above) on port 8000.
-- Start the frontend (step above) on port 5173.
-- The frontend hooks expect the backend API at `<VITE_API_BASE_URL>/tasks` or at `/api/tasks` if using proxy.
-- The frontend supplies a header `X-User-Id` (default `frontend-user`) to simulate auth/ownership.
+---
 
-## API summary (development)
-- POST   /api/tasks           -> create task (body: { title, description?, due_date? })
-- GET    /api/tasks           -> list tasks for current user (X-User-Id header)
-- PATCH  /api/tasks/{id}      -> partial update (e.g., { status: 'COMPLETED' })
-- DELETE /api/tasks/{id}      -> delete task
+## Running all three services together
+
+| Service | Command | URL |
+|---|---|---|
+| LocalStack | `docker compose up -d` (root) | `http://localhost:4566` |
+| Backend | `fastapi dev main.py` (backend/) | `http://localhost:8000` |
+| Frontend | `npm run dev` (frontend/) | `http://localhost:5173` |
+
+The frontend sends an `X-User-Id` header (default `frontend-user`) to simulate per-user task ownership.
+
+---
+
+## Environment config
+
+| File | Purpose |
+|---|---|
+| `backend/.env.example` | Committed template — documents all variables |
+| `backend/.env.local` | Local dev values (gitignored) — points to LocalStack |
+
+Key variables:
+
+| Variable | Local value | Production |
+|---|---|---|
+| `AWS_ENDPOINT_URL` | `http://localhost:4566` | unset (real AWS) |
+| `AWS_REGION` | `us-east-1` | your AWS region |
+| `DYNAMODB_TABLE_NAME` | `TASKS` | `TASKS` (or env-specific) |
+
+In production, leave `AWS_ENDPOINT_URL` unset and provide credentials via IAM role or `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` environment variables.
+
+---
+
+## API summary
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/api/tasks` | Create task `{ title, description?, due_date? }` |
+| `GET` | `/api/tasks` | List tasks for current user (`X-User-Id` header) |
+| `GET` | `/api/tasks/{id}` | Get single task |
+| `PATCH` | `/api/tasks/{id}` | Partial update e.g. `{ status: "COMPLETED" }` |
+| `DELETE` | `/api/tasks/{id}` | Delete task |
 
 Status values: `PENDING` or `COMPLETED`.
 
-## Frontend examples
-- fetch example (useTodosFetch): uses native fetch to call the API and demonstrates load/add/toggle/delete operations.
-- axios example (useTodosAxios): same functionality implemented with axios. The dependency was added to `frontend/package.json`.
-
-## Development notes & next steps
-- The JSON repository is for development only and is not safe for concurrent production use.
-- Replace repository with a real DB (SQLModel/SQLAlchemy + migrations) before production.
-- Replace header-based auth with real authentication (JWT/OAuth2) for multi-user security.
-- Consider adding tests, OpenAPI documentation examples, and a Vite proxy to simplify dev runs.
+---
 
 ## Quick start recap
-1. Backend: `cd backend` -> create venv -> `pip install -r requirements.txt` -> `fastapi dev main.py`
-2. Frontend: `cd frontend` -> `npm install` -> optionally set `VITE_API_BASE_URL` -> `npm run dev`
 
-Enjoy developing! If you want, I can add a Vite proxy snippet to `vite.config.ts` and a .env.example file.  
+```powershell
+# Terminal 1 — infrastructure
+docker compose up -d
+
+# Terminal 2 — backend
+cd backend; .venv\Scripts\Activate.ps1; fastapi dev main.py
+
+# Terminal 3 — frontend
+cd frontend; npm run dev
+```
+

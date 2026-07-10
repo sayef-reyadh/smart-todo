@@ -17,25 +17,18 @@ def _serialize_item(data: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _build_resource(endpoint_url: Optional[str], region: str):
-    kwargs = {"region_name": region}
-    if endpoint_url:
-        # LocalStack: endpoint override + dummy credentials
-        kwargs["endpoint_url"] = endpoint_url
-        kwargs["aws_access_key_id"] = "test"
-        kwargs["aws_secret_access_key"] = "test"
-    # Production: boto3 uses its standard credential chain
-    # (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY env vars, or IAM role)
-    return boto3.resource("dynamodb", **kwargs)
+def _build_resource(region: str):
+    # boto3 credential chain: AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY env vars, or IAM role
+    return boto3.resource("dynamodb", region_name=region)
 
 
-def _get_table(endpoint_url: Optional[str], region: str, table_name: str):
-    return _build_resource(endpoint_url, region).Table(table_name)
+def _get_table(region: str, table_name: str):
+    return _build_resource(region).Table(table_name)
 
 
-def create_table_if_not_exists(endpoint_url: Optional[str], region: str, table_name: str) -> None:
+def create_table_if_not_exists(region: str, table_name: str) -> None:
     """Create the DynamoDB table and GSI on first run. Safe to call on every startup."""
-    dynamodb = _build_resource(endpoint_url, region)
+    dynamodb = _build_resource(region)
     existing = [t.name for t in dynamodb.tables.all()]
     if table_name in existing:
         return
@@ -61,8 +54,8 @@ def create_table_if_not_exists(endpoint_url: Optional[str], region: str, table_n
 
 
 class DynamoDBTaskRepository:
-    def __init__(self, endpoint_url: Optional[str], region: str, table_name: str):
-        self.table = _get_table(endpoint_url, region, table_name)
+    def __init__(self, region: str, table_name: str):
+        self.table = _get_table(region, table_name)
 
     def list_by_user(self, user_id: str) -> List[Task]:
         response = self.table.query(

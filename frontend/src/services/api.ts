@@ -8,7 +8,17 @@ export type DemoItem = {
   id: string
   title: string
   status: string
+  category: string
+  priority: string
   due_date?: string
+}
+
+export type DemoSummary = {
+  total: number
+  pending: number
+  completed: number
+  high: number
+  overdue: number
 }
 
 export type DemoQueryResult = {
@@ -125,6 +135,16 @@ export const apiService = {
 
   async queryAttributeExists(userId: string, mustExist: boolean): Promise<DemoQueryResult> {
     const r = await axiosClient.get('/demo/attribute-exists', { params: { user_id: userId, must_exist: mustExist } })
+    return r.data
+  },
+
+  async getOverdue(userId: string): Promise<{ user_id: string; overdue_count: number; items: DemoItem[] }> {
+    const r = await axiosClient.get('/demo/overdue', { params: { user_id: userId } })
+    return r.data
+  },
+
+  async getSummary(userId: string): Promise<DemoSummary> {
+    const r = await axiosClient.get('/demo/summary', { params: { user_id: userId } })
     return r.data
   },
 }

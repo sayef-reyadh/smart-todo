@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { apiService, type DemoQueryResult, type DemoItem } from '../../services/api'
+import { apiService, type DemoQueryResult, type DemoItem, type DemoSummary } from '../../services/api'
 
 // ── colour palette per pattern ────────────────────────────────────────────────
 const COLOURS = {
@@ -25,7 +25,7 @@ function ResultTable({ items }: { items: DemoItem[] }) {
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
         <thead>
           <tr style={{ background: '#f1f5f9' }}>
-            {['user_id', 'title', 'status', 'created_at', 'due_date'].map(col => (
+            {['user_id', 'title', 'category', 'priority', 'status', 'created_at', 'due_date'].map(col => (
               <th key={col} style={{ padding: '0.4rem 0.6rem', textAlign: 'left', borderBottom: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>{col}</th>
             ))}
           </tr>
@@ -35,6 +35,10 @@ function ResultTable({ items }: { items: DemoItem[] }) {
             <tr key={item.id ?? i} style={{ borderBottom: '1px solid #f1f5f9' }}>
               <td style={{ padding: '0.35rem 0.6rem' }}>{item.user_id}</td>
               <td style={{ padding: '0.35rem 0.6rem' }}>{item.title}</td>
+              <td style={{ padding: '0.35rem 0.6rem' }}>{item.category}</td>
+              <td style={{ padding: '0.35rem 0.6rem' }}>
+                <span style={{ color: item.priority === 'HIGH' ? '#ef4444' : item.priority === 'MEDIUM' ? '#f59e0b' : '#94a3b8', fontWeight: 600 }}>{item.priority}</span>
+              </td>
               <td style={{ padding: '0.35rem 0.6rem' }}>
                 <span style={{ color: item.status === 'COMPLETED' ? '#16a34a' : '#f59e0b', fontWeight: 600 }}>{item.status}</span>
               </td>
@@ -153,6 +157,13 @@ export function DynamoDBDemoPage() {
   const [attrResult, setAttrResult] = useState<DemoQueryResult | null>(null)
   const [attrLoading, setAttrLoading] = useState(false)
 
+  // Service-layer demos
+  const [svcUser, setSvcUser] = useState('alice')
+  const [overdueItems, setOverdueItems] = useState<DemoItem[] | null>(null)
+  const [overdueLoading, setOverdueLoading] = useState(false)
+  const [summary, setSummary] = useState<DemoSummary | null>(null)
+  const [summaryLoading, setSummaryLoading] = useState(false)
+
   async function handleSeed() {
     setSeedMsg('Seeding…')
     const res = await apiService.seedDemo()
@@ -220,6 +231,18 @@ export function DynamoDBDemoPage() {
     setAttrLoading(true); setAttrResult(null)
     const r = await apiService.queryAttributeExists(attrUser, attrMustExist)
     setAttrResult(r); setAttrLoading(false)
+  }
+
+  async function handleOverdue() {
+    setOverdueLoading(true); setOverdueItems(null)
+    const r = await apiService.getOverdue(svcUser)
+    setOverdueItems(r.items); setOverdueLoading(false)
+  }
+
+  async function handleSummary() {
+    setSummaryLoading(true); setSummary(null)
+    const r = await apiService.getSummary(svcUser)
+    setSummary(r); setSummaryLoading(false)
   }
 
   return (
@@ -392,6 +415,72 @@ BillingMode = PAY_PER_REQUEST       → auto-scales on demand, zero capacity con
         </Field>
         <button style={btnStyle('#0d9488')} onClick={handleAttributeExists}>Run Query</button>
       </QuerySection>
+
+      {/* Divider */}
+      <div style={{ borderTop: '2px solid #e2e8f0', margin: '1.5rem 0', paddingTop: '1rem' }}>
+        <h2 style={{ margin: '0 0 0.25rem', fontSize: '1.1rem' }}>Service Layer — Business Logic</h2>
+        <p style={{ margin: '0 0 1rem', fontSize: '0.82rem', color: '#64748b' }}>
+          These endpoints are handled by <code>DemoTaskService</code>, not the repository directly.
+          The controller calls the service; the service applies business rules, orchestration, and aggregation.
+        </p>
+      </div>
+
+      {/* Shared user input */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'flex-end' }}>
+        <Field label="user_id (shared for both sections below)">
+          <input style={inputStyle} value={svcUser} onChange={e => setSvcUser(e.target.value)} placeholder="alice" />
+        </Field>
+      </div>
+
+      {/* Overdue — orchestration */}
+      <div style={{ border: '1px solid #7c3aed', borderRadius: '0.5rem', background: '#f5f3ff', padding: '1rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.4rem' }}>
+          <Badge color="#7c3aed" label="Orchestration" />
+          <strong>get_overdue(user_id)</strong>
+        </div>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '0.82rem', color: '#475569' }}>
+          Service calls LSI (sorted by due_date), then filters where <code>due_date &lt; now</code> in Python.
+          The repository has no concept of "overdue" — that is <strong>domain/business logic</strong> that belongs in the service.
+        </p>
+        <button style={btnStyle('#7c3aed')} onClick={handleOverdue}>Get Overdue Tasks</button>
+        {overdueLoading && <p style={{ color: '#94a3b8', marginTop: '0.5rem', fontSize: '0.82rem' }}>Loading…</p>}
+        {overdueItems !== null && (
+          <div style={{ marginTop: '0.5rem' }}>
+            <p style={{ margin: '0 0 0.25rem', fontSize: '0.8rem', color: '#475569' }}><strong>{overdueItems.length}</strong> overdue tasks</p>
+            <ResultTable items={overdueItems} />
+          </div>
+        )}
+      </div>
+
+      {/* Summary — aggregation */}
+      <div style={{ border: '1px solid #0891b2', borderRadius: '0.5rem', background: '#ecfeff', padding: '1rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.4rem' }}>
+          <Badge color="#0891b2" label="Aggregation" />
+          <strong>get_summary(user_id)</strong>
+        </div>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '0.82rem', color: '#475569' }}>
+          Service makes one repo call, then computes counts in Python. The controller receives a clean summary dict —
+          it never needs to know how it was computed.
+        </p>
+        <button style={btnStyle('#0891b2')} onClick={handleSummary}>Get Summary</button>
+        {summaryLoading && <p style={{ color: '#94a3b8', marginTop: '0.5rem', fontSize: '0.82rem' }}>Loading…</p>}
+        {summary && (
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
+            {[
+              { label: 'Total',     value: summary.total,     color: '#0f172a' },
+              { label: 'Pending',   value: summary.pending,   color: '#f59e0b' },
+              { label: 'Completed', value: summary.completed, color: '#16a34a' },
+              { label: 'High Pri',  value: summary.high,      color: '#ef4444' },
+              { label: 'Overdue',   value: summary.overdue,   color: '#dc2626' },
+            ].map(s => (
+              <div key={s.label} style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.375rem', padding: '0.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: '0.72rem', color: '#64748b' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
     </div>
   )

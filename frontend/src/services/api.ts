@@ -78,7 +78,7 @@ export const apiService = {
     return r.data
   },
 
-  async createDemoTask(payload: { title: string; due_date?: string }): Promise<unknown> {
+  async createDemoTask(payload: { title: string; category?: string; priority?: string; due_date?: string }): Promise<unknown> {
     const r = await axiosClient.post('/demo/tasks', payload)
     return r.data
   },
@@ -93,13 +93,38 @@ export const apiService = {
     return r.data
   },
 
-  async queryGSI(status: string): Promise<DemoQueryResult> {
-    const r = await axiosClient.get('/demo/gsi', { params: { status } })
+  async queryGSI(category: string, priority: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/gsi', { params: { category, priority: priority || undefined } })
     return r.data
   },
 
   async queryLSI(userId: string): Promise<DemoQueryResult> {
     const r = await axiosClient.get('/demo/lsi', { params: { user_id: userId } })
+    return r.data
+  },
+
+  async bulkSeed(count: number): Promise<{ inserted: number; total_in_table: number }> {
+    const r = await axiosClient.post('/demo/bulk-seed', null, { params: { count } })
+    return r.data
+  },
+
+  async getCount(): Promise<{ total: number }> {
+    const r = await axiosClient.get('/demo/count')
+    return r.data
+  },
+
+  async queryBeginsWith(userId: string, prefix: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/begins-with', { params: { user_id: userId, prefix } })
+    return r.data
+  },
+
+  async queryContains(keyword: string): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/contains', { params: { keyword } })
+    return r.data
+  },
+
+  async queryAttributeExists(userId: string, mustExist: boolean): Promise<DemoQueryResult> {
+    const r = await axiosClient.get('/demo/attribute-exists', { params: { user_id: userId, must_exist: mustExist } })
     return r.data
   },
 }

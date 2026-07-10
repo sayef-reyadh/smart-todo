@@ -121,7 +121,8 @@ export function DynamoDBDemoPage() {
   const [pkskLoading, setPkskLoading] = useState(false)
 
   // GSI
-  const [gsiStatus, setGsiStatus] = useState('PENDING')
+  const [gsiCategory, setGsiCategory] = useState('WORK')
+  const [gsiPriority, setGsiPriority] = useState('')
   const [gsiResult, setGsiResult] = useState<DemoQueryResult | null>(null)
   const [gsiLoading, setGsiLoading] = useState(false)
 
@@ -129,6 +130,28 @@ export function DynamoDBDemoPage() {
   const [lsiUser, setLsiUser] = useState('alice')
   const [lsiResult, setLsiResult] = useState<DemoQueryResult | null>(null)
   const [lsiLoading, setLsiLoading] = useState(false)
+
+  // Bulk seed
+  const [bulkCount, setBulkCount] = useState(1000)
+  const [bulkMsg, setBulkMsg] = useState('')
+  const [totalCount, setTotalCount] = useState<number | null>(null)
+
+  // begins_with
+  const [bwUser, setBwUser] = useState('alice')
+  const [bwPrefix, setBwPrefix] = useState('2026-07')
+  const [bwResult, setBwResult] = useState<DemoQueryResult | null>(null)
+  const [bwLoading, setBwLoading] = useState(false)
+
+  // contains
+  const [containsKw, setContainsKw] = useState('bug')
+  const [containsResult, setContainsResult] = useState<DemoQueryResult | null>(null)
+  const [containsLoading, setContainsLoading] = useState(false)
+
+  // attribute_exists
+  const [attrUser, setAttrUser] = useState('frontend-user')
+  const [attrMustExist, setAttrMustExist] = useState(true)
+  const [attrResult, setAttrResult] = useState<DemoQueryResult | null>(null)
+  const [attrLoading, setAttrLoading] = useState(false)
 
   async function handleSeed() {
     setSeedMsg('Seeding…')
@@ -159,7 +182,7 @@ export function DynamoDBDemoPage() {
 
   async function handleGSI() {
     setGsiLoading(true); setGsiResult(null)
-    const r = await apiService.queryGSI(gsiStatus)
+    const r = await apiService.queryGSI(gsiCategory, gsiPriority)
     setGsiResult(r); setGsiLoading(false)
   }
 
@@ -167,6 +190,36 @@ export function DynamoDBDemoPage() {
     setLsiLoading(true); setLsiResult(null)
     const r = await apiService.queryLSI(lsiUser)
     setLsiResult(r); setLsiLoading(false)
+  }
+
+  async function handleBulkSeed() {
+    setBulkMsg(`Inserting ${bulkCount} items…`)
+    const r = await apiService.bulkSeed(bulkCount)
+    setTotalCount(r.total_in_table)
+    setBulkMsg(`✓ Inserted ${r.inserted} items — table now has ${r.total_in_table} total`)
+  }
+
+  async function handleCount() {
+    const r = await apiService.getCount()
+    setTotalCount(r.total)
+  }
+
+  async function handleBeginsWith() {
+    setBwLoading(true); setBwResult(null)
+    const r = await apiService.queryBeginsWith(bwUser, bwPrefix)
+    setBwResult(r); setBwLoading(false)
+  }
+
+  async function handleContains() {
+    setContainsLoading(true); setContainsResult(null)
+    const r = await apiService.queryContains(containsKw)
+    setContainsResult(r); setContainsLoading(false)
+  }
+
+  async function handleAttributeExists() {
+    setAttrLoading(true); setAttrResult(null)
+    const r = await apiService.queryAttributeExists(attrUser, attrMustExist)
+    setAttrResult(r); setAttrLoading(false)
   }
 
   return (
@@ -193,6 +246,11 @@ export function DynamoDBDemoPage() {
             <Field label="Title">
               <input style={{ ...inputStyle, width: '200px' }} value={createTitle} onChange={e => setCreateTitle(e.target.value)} placeholder="Task title" />
             </Field>
+            <Field label="Category">
+              <select style={inputStyle} value={createDueDate} onChange={e => setCreateDueDate(e.target.value)}>
+                {['WORK','PERSONAL','STUDY','HEALTH'].map(c => <option key={c}>{c}</option>)}
+              </select>
+            </Field>
             <Field label="Due date (optional)">
               <input style={inputStyle} type="date" value={createDueDate} onChange={e => setCreateDueDate(e.target.value)} />
             </Field>
@@ -206,9 +264,10 @@ export function DynamoDBDemoPage() {
       <div style={{ background: '#1e293b', color: '#e2e8f0', borderRadius: '0.5rem', padding: '0.75rem 1rem', marginBottom: '1.5rem', fontSize: '0.8rem' }}>
         <strong style={{ color: '#7dd3fc' }}>TASKS_DEMO table design</strong>
         <pre style={{ margin: '0.4rem 0 0', lineHeight: 1.6 }}>{`PK  = user_id     (partition key)   → groups tasks by user
-SK  = created_at  (sort key)        → enables date-range queries per user
-GSI = status-created_at-index       → query any status ACROSS all users
-LSI = due_date-index                → user's tasks sorted by due_date (strongly consistent)`}</pre>
+SK  = created_at  (sort key, ISO)   → begins_with / between / range queries
+GSI = category-priority-index       → cross-partition: all HIGH WORK tasks
+LSI = due_date-index                → user tasks sorted by deadline (strongly consistent)
+BillingMode = PAY_PER_REQUEST       → auto-scales on demand, zero capacity config`}</pre>
       </div>
 
       {/* Pattern 1: PK */}
@@ -237,11 +296,16 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
 
       {/* Pattern 3: GSI */}
       <QuerySection colour={COLOURS.gsi} title="Global Secondary Index (GSI) Query" result={gsiResult} loading={gsiLoading}
-        description="Queries status-created_at-index — spans ALL user partitions. An admin dashboard use-case. Data is eventually consistent.">
-        <Field label="status  ← GSI Partition Key">
-          <select style={inputStyle} value={gsiStatus} onChange={e => setGsiStatus(e.target.value)}>
-            <option value="PENDING">PENDING</option>
-            <option value="COMPLETED">COMPLETED</option>
+        description="Queries category-priority-index — spans ALL user partitions. An admin use-case: 'all HIGH priority WORK tasks'. Eventually consistent.">
+        <Field label="category  ← GSI Partition Key">
+          <select style={inputStyle} value={gsiCategory} onChange={e => setGsiCategory(e.target.value)}>
+            {['WORK','PERSONAL','STUDY','HEALTH'].map(c => <option key={c}>{c}</option>)}
+          </select>
+        </Field>
+        <Field label="priority  ← GSI Sort Key (optional)">
+          <select style={inputStyle} value={gsiPriority} onChange={e => setGsiPriority(e.target.value)}>
+            <option value="">Any</option>
+            {['HIGH','MEDIUM','LOW'].map(p => <option key={p}>{p}</option>)}
           </select>
         </Field>
         <button style={btnStyle(COLOURS.gsi.badge)} onClick={handleGSI}>Run Query</button>
@@ -255,6 +319,78 @@ LSI = due_date-index                → user's tasks sorted by due_date (strongl
         </Field>
         <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: '#92400e' }}>Results sorted by <strong>due_date</strong> (LSI Sort Key) instead of created_at</p>
         <button style={btnStyle(COLOURS.lsi.badge)} onClick={handleLSI}>Run Query</button>
+      </QuerySection>
+
+      {/* Divider */}
+      <div style={{ borderTop: '2px solid #e2e8f0', margin: '1.5rem 0', paddingTop: '1rem' }}>
+        <h2 style={{ margin: '0 0 1rem', fontSize: '1.1rem' }}>Scale & Auto-Capacity</h2>
+      </div>
+
+      {/* Bulk Seed */}
+      <div style={{ border: '1px solid #0f172a', borderRadius: '0.5rem', background: '#f8fafc', padding: '1rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+          <Badge color="#0f172a" label="PAY_PER_REQUEST" />
+          <strong>Bulk Seed — Auto-Scale Demo</strong>
+        </div>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '0.82rem', color: '#475569' }}>
+          DynamoDB <code>BillingMode=PAY_PER_REQUEST</code> scales throughput instantly with no provisioned capacity.
+          batch_writer automatically chunks into 25-item requests — no manual batching needed.
+        </p>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <Field label="Items to insert">
+            <input style={{ ...inputStyle, width: '100px' }} type="number" min={1} max={5000}
+              value={bulkCount} onChange={e => setBulkCount(Number(e.target.value))} />
+          </Field>
+          <button style={btnStyle('#0f172a')} onClick={handleBulkSeed}>Bulk Insert</button>
+          <button style={{ ...btnStyle('#64748b') }} onClick={handleCount}>Refresh Count</button>
+        </div>
+        {bulkMsg && <p style={{ marginTop: '0.5rem', fontSize: '0.82rem', color: '#16a34a' }}>{bulkMsg}</p>}
+        {totalCount !== null && !bulkMsg &&
+          <p style={{ marginTop: '0.5rem', fontSize: '0.82rem', color: '#475569' }}>Table total: <strong>{totalCount}</strong> items</p>}
+      </div>
+
+      {/* Divider */}
+      <div style={{ borderTop: '2px solid #e2e8f0', margin: '1.5rem 0', paddingTop: '1rem' }}>
+        <h2 style={{ margin: '0 0 1rem', fontSize: '1.1rem' }}>String &amp; Condition Functions</h2>
+      </div>
+
+      {/* begins_with */}
+      <QuerySection colour={{ bg: '#fdf4ff', border: '#a855f7', badge: '#a855f7', label: 'begins_with' }}
+        title="begins_with on Sort Key" result={bwResult} loading={bwLoading}
+        description="KeyConditionExpression: Key('created_at').begins_with(prefix). Index-aware — DynamoDB uses the sort key B-tree, no scan. e.g. '2026-07' matches all July 2026 tasks.">
+        <Field label="user_id  ← PK">
+          <input style={inputStyle} value={bwUser} onChange={e => setBwUser(e.target.value)} />
+        </Field>
+        <Field label="SK prefix  ← begins_with(created_at, ...)">
+          <input style={{ ...inputStyle, width: '120px' }} value={bwPrefix} onChange={e => setBwPrefix(e.target.value)} placeholder="2026-07" />
+        </Field>
+        <button style={btnStyle('#a855f7')} onClick={handleBeginsWith}>Run Query</button>
+      </QuerySection>
+
+      {/* contains */}
+      <QuerySection colour={{ bg: '#fff1f2', border: '#f43f5e', badge: '#f43f5e', label: 'contains' }}
+        title="contains (FilterExpression on title)" result={containsResult} loading={containsLoading}
+        description="Attr('title').contains(keyword) — applied as a FilterExpression after reading items. Scans the entire table. Powerful but costly at scale — consider a search service (OpenSearch) for production full-text search.">
+        <Field label="keyword">
+          <input style={inputStyle} value={containsKw} onChange={e => setContainsKw(e.target.value)} placeholder="bug" />
+        </Field>
+        <button style={btnStyle('#f43f5e')} onClick={handleContains}>Run Scan</button>
+      </QuerySection>
+
+      {/* attribute_exists */}
+      <QuerySection colour={{ bg: '#f0fdfa', border: '#0d9488', badge: '#0d9488', label: 'attr_exists' }}
+        title="attribute_exists / not_exists (FilterExpression)" result={attrResult} loading={attrLoading}
+        description="DynamoDB allows sparse attributes — items can omit fields entirely. attribute_exists/not_exists let you query on presence. Items without due_date simply don't have that key at all.">
+        <Field label="user_id">
+          <input style={inputStyle} value={attrUser} onChange={e => setAttrUser(e.target.value)} />
+        </Field>
+        <Field label="filter">
+          <select style={inputStyle} value={String(attrMustExist)} onChange={e => setAttrMustExist(e.target.value === 'true')}>
+            <option value="true">due_date exists</option>
+            <option value="false">due_date NOT exists</option>
+          </select>
+        </Field>
+        <button style={btnStyle('#0d9488')} onClick={handleAttributeExists}>Run Query</button>
       </QuerySection>
 
     </div>

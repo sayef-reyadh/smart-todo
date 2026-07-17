@@ -20,6 +20,7 @@ GitHub Actions secrets required:
 """
 
 import os
+from pathlib import Path
 from aws_cdk import (
     Stack,
     Duration,
@@ -67,13 +68,16 @@ class SmartTodoStack(Stack):
         password_pepper = os.environ["PASSWORD_PEPPER"]
 
         # ── Lambda: FastAPI + Mangum ──────────────────────────────────────────
+        # Resolve backend path relative to this file (infra/stacks/ → ../../backend)
+        backend_dir = str(Path(__file__).resolve().parent.parent.parent / "backend")
+
         api_fn = lambda_.Function(
             self, "SmartTodoApiFunction",
             function_name="smart-todo-api",
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="handler.handler",
             code=lambda_.Code.from_asset(
-                "../backend",
+                backend_dir,
                 bundling=BundlingOptions(
                     image=lambda_.Runtime.PYTHON_3_11.bundling_image,
                     command=[

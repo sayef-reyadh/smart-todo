@@ -1,4 +1,4 @@
-name: CD — Deploy Frontend (Vercel)
+name: Deploy Frontend (Vercel)
 
 on:
   push:

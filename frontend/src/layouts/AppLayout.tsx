@@ -1,32 +1,54 @@
-// Layout: wraps all pages with a nav bar + content area (Outlet).
-// Hooks demonstrated: useContext — reads darkMode from ThemeContext without prop drilling
-import { Outlet, NavLink } from 'react-router'
+import { Outlet, NavLink, useNavigate } from 'react-router'
 import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../context/AuthContext'
 
 export function AppLayout() {
-  // useContext: reads the value provided by ThemeProvider in App.tsx
-  // No props needed — any component can call useTheme() to access darkMode
   const { darkMode, toggleDark } = useTheme()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: darkMode ? '#0f172a' : '#f8fafc', color: darkMode ? '#f8fafc' : '#0f172a', transition: 'background 0.2s, color 0.2s' }}>
-      <nav style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1.5rem', padding: '0.75rem', background: darkMode ? '#1e293b' : 'white', borderBottom: '1px solid #e2e8f0' }}>
-        <strong style={{ fontSize: '1.125rem', marginRight: '1rem' }}>Smart Todo</strong>
+      <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', padding: '0.75rem 1.25rem', background: darkMode ? '#1e293b' : 'white', borderBottom: '1px solid #e2e8f0' }}>
+        <strong style={{ fontSize: '1.125rem' }}>Smart Todo</strong>
         <NavLink to="/" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: 'inherit', textDecoration: 'none' })}>
           Home
         </NavLink>
         <NavLink to="/about" style={({ isActive }) => ({ fontWeight: isActive ? 700 : 400, color: 'inherit', textDecoration: 'none' })}>
           About
         </NavLink>
-        {/* useContext in action: toggleDark came from ThemeContext, not from a parent prop */}
-        <button
-          onClick={toggleDark}
-          style={{ marginLeft: 'auto', background: 'none', border: '1px solid #cbd5e1', borderRadius: '0.375rem', padding: '0.25rem 0.75rem', cursor: 'pointer', color: 'inherit', fontSize: '0.85rem' }}
-        >
-          {darkMode ? '☀ Light' : '🌙 Dark'}
-        </button>
+
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {user && (
+            <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+              👤 <strong>{user.name}</strong> ({user.email})
+            </span>
+          )}
+          <button onClick={toggleDark} style={navBtn}>
+            {darkMode ? '☀ Light' : '🌙 Dark'}
+          </button>
+          {user
+            ? <button onClick={handleLogout} style={{ ...navBtn, color: '#ef4444', borderColor: '#fecaca' }}>Sign out</button>
+            : <NavLink to="/login" style={{ ...navBtn, textDecoration: 'none', display: 'inline-block' }}>Sign in</NavLink>
+          }
+        </div>
       </nav>
       <Outlet />
     </div>
   )
+}
+
+const navBtn: React.CSSProperties = {
+  background: 'none',
+  border: '1px solid #cbd5e1',
+  borderRadius: '0.375rem',
+  padding: '0.25rem 0.75rem',
+  cursor: 'pointer',
+  color: 'inherit',
+  fontSize: '0.85rem',
 }

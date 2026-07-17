@@ -1,0 +1,57 @@
+name: Deploy Backend (CDK)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'infra/**'
+
+# GitHub Actions secrets required (Settings → Secrets → Actions):
+#   AWS_ACCESS_KEY_ID       IAM user with CDK deploy permissions
+#   AWS_SECRET_ACCESS_KEY   IAM user secret
+#   JWT_SECRET_KEY          JWT signing secret
+#   PASSWORD_PEPPER         Password hashing pepper
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install CDK CLI
+        run: npm install -g aws-cdk
+
+      - name: Install CDK Python deps
+        working-directory: infra
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            us-east-2
+
+      - name: CDK Deploy
+        working-directory: infra
+        # All secrets are passed as env vars → CDK reads via os.environ → Lambda env
+        env:
+          JWT_SECRET_KEY:  ${{ secrets.JWT_SECRET_KEY }}
+          PASSWORD_PEPPER: ${{ secrets.PASSWORD_PEPPER }}
+        run: |
+          source .venv/bin/activate
+          cdk deploy SmartTodoStack --require-approval never
+

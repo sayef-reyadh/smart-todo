@@ -25,6 +25,7 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     CfnOutput,
+    BundlingOptions,
     aws_dynamodb as dynamodb,
     aws_lambda as lambda_,
     aws_apigatewayv2 as apigwv2,
@@ -73,7 +74,7 @@ class SmartTodoStack(Stack):
             handler="handler.handler",
             code=lambda_.Code.from_asset(
                 "../backend",
-                bundling=lambda_.BundlingOptions(
+                bundling=BundlingOptions(
                     image=lambda_.Runtime.PYTHON_3_11.bundling_image,
                     command=[
                         "bash", "-c",

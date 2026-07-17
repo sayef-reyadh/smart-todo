@@ -180,10 +180,10 @@ The AWS API Gateway URL that the frontend calls. Baked into the Vite build at de
 
 **Format:**
 ```
-https://xxxxxxxxxx.execute-api.us-east-2.amazonaws.com
+https://xxxxxxxxxx.execute-api.us-east-2.amazonaws.com/api
 ```
 
-> Do NOT add `/api` at the end — the frontend appends that itself.
+> **Include `/api` at the end.** The axios client uses this as the base URL and appends paths like `/auth/signup` and `/tasks` directly.
 
 ---
 

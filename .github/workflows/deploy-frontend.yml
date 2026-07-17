@@ -1,13 +1,24 @@
-name: Deploy Frontend (Vercel)
+name: Build Check — Frontend
+
+# Vercel deploys automatically via its native GitHub integration.
+# This workflow only runs a build check to catch errors before Vercel picks it up.
+#
+# Vercel setup (one-time):
+#   1. vercel.com/new → import sayef-reyadh/smart-todo
+#   2. Set root directory: frontend
+#   3. Add environment variable: VITE_API_BASE_URL = <CDK ApiUrl output>
 
 on:
   push:
     branches: [main]
     paths:
       - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,19 +38,6 @@ jobs:
       - name: Build
         working-directory: frontend
         env:
-          # Set at Vercel project level OR as GitHub secret
-          # Value is the CDK ApiUrl output (e.g. https://xxxx.execute-api.us-east-2.amazonaws.com/api)
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: npm run build
 
-      - name: Deploy to Vercel
-        working-directory: frontend
-        env:
-          VERCEL_TOKEN:   ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID:  ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          npm install -g vercel
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-          vercel build --prod --token=$VERCEL_TOKEN
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

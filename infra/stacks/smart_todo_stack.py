@@ -43,7 +43,7 @@ class SmartTodoStack(Stack):
             table_name="TASKS",
             partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.DESTROY,
         )
         tasks_table.add_global_secondary_index(
             index_name="user_id-index",
@@ -57,7 +57,7 @@ class SmartTodoStack(Stack):
             table_name="USERS",
             partition_key=dynamodb.Attribute(name="email", type=dynamodb.AttributeType.STRING),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            removal_policy=RemovalPolicy.RETAIN,
+            removal_policy=RemovalPolicy.DESTROY,
         )
 
         # ── Secrets: read from environment (injected by GitHub Actions) ───────

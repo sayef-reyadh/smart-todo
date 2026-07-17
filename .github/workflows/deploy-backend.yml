@@ -53,5 +53,18 @@ jobs:
           PASSWORD_PEPPER: ${{ secrets.PASSWORD_PEPPER }}
         run: |
           source .venv/bin/activate
-          cdk deploy SmartTodoStack --require-approval never
+          cdk deploy SmartTodoStack --require-approval never --outputs-file cdk-outputs.json
+
+      - name: Print API URL to job summary
+        working-directory: infra
+        run: |
+          API_URL=$(python3 -c "import json; d=json.load(open('cdk-outputs.json')); print(d['SmartTodoStack']['ApiUrl'])")
+          echo "## Deploy Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Key | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| API Gateway URL | \`${API_URL}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **VITE_API_BASE_URL** | \`${API_URL}/api\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Copy the **VITE_API_BASE_URL** value into GitHub Actions secrets and Vercel environment variables." >> $GITHUB_STEP_SUMMARY
 

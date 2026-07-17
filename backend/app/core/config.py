@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     # GitHub Actions: Settings → Secrets → JWT_SECRET_KEY
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRE_MINUTES: int = 1440  # 24 hours
+    JWT_EXPIRE_MINUTES: int = 10   # 10 minutes — short-lived for security
 
     # ── Password pepper ───────────────────────────────────────────────────────
     # Must come from GitHub Actions secret → CDK → Lambda env (via SSM / Secrets Manager)

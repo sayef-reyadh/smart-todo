@@ -98,7 +98,7 @@ class SmartTodoStack(Stack):
                 "JWT_SECRET_KEY":            jwt_secret_key,
                 "PASSWORD_PEPPER":           password_pepper,
                 "JWT_ALGORITHM":             "HS256",
-                "JWT_EXPIRE_MINUTES":        "1440",
+                "JWT_EXPIRE_MINUTES":        "10",
             },
         )
 

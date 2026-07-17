@@ -30,12 +30,91 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def _hash_password(plain: str) -> str:
-    """Pepper is added BEFORE bcrypt hashing. bcrypt then auto-generates the salt."""
+    """
+    Combine the user's password with the server pepper, then bcrypt it.
+    bcrypt auto-generates a unique random salt and embeds it in the result.
+
+    ┌──────────────────────────────────────────────────────────────────┐
+    │  HOW BCRYPT WORKS INTERNALLY (step by step)                     │
+    │                                                                  │
+    │  Step 1 — You call:  bcrypt("123456my-pepper")                  │
+    │                                                                  │
+    │  Step 2 — bcrypt generates a random salt (16 random bytes):     │
+    │           e.g.  b'\x9a\x3f\x02...'  (different every call)      │
+    │                                                                  │
+    │  Step 3 — bcrypt encodes the salt to a 22-char string:          │
+    │           e.g.  "N9qo8uLOickgx2ZMRZoMye"                        │
+    │                                                                  │
+    │  Step 4 — bcrypt runs the Blowfish cipher 2^12 = 4096 times     │
+    │           using BOTH the password and the salt as input.         │
+    │           (the "12" is the "cost factor" — more = slower)        │
+    │                                                                  │
+    │  Step 5 — bcrypt packs everything into one string:              │
+    │                                                                  │
+    │    "$2b $ 12 $ N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68..."  │
+    │      │    │    ──────────────────────  ──────────────────────    │
+    │    algo cost      salt (22 chars)        hash (31 chars)         │
+    │                   ↑ plain text,          ↑ one-way, cannot       │
+    │                     not a secret           be reversed           │
+    │                                                                  │
+    │  This entire string is what gets stored in DynamoDB.            │
+    └──────────────────────────────────────────────────────────────────┘
+
+    Example — two users both choose password "123456":
+
+      alice:  _hash_password("123456")
+              → bcrypt("123456" + "my-pepper")
+              → internally generates salt = "N9qo8uLOickgx2ZMRZoMye"  ← random
+              → runs Blowfish 4096× with ("123456my-pepper" + that salt)
+              → stores "$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+
+      bob:    _hash_password("123456")
+              → bcrypt("123456" + "my-pepper")
+              → internally generates salt = "KJ7mnOP24iKjIEbI2ahmku"  ← different random!
+              → runs Blowfish 4096× with ("123456my-pepper" + that salt)
+              → stores "$2b$12$KJ7mnOP24iKjIEbI2ahmkuOW.72pGjBt9NNoP0MoGFpHmCCGbCLq6"
+
+      alice's hash ≠ bob's hash  →  identical passwords look completely different in DB
+
+    ┌──────────────────────────────────────────────────────────────────┐
+    │  WHY SLOW IS GOOD                                               │
+    │                                                                  │
+    │  cost=12 means 4096 rounds of Blowfish.                         │
+    │  One hash takes ~100ms on modern hardware.                       │
+    │                                                                  │
+    │  For a normal user logging in:  100ms  →  unnoticeable          │
+    │  For an attacker brute-forcing: 100ms × 1,000,000,000 guesses   │
+    │                                 = 3+ years per account           │
+    │                                                                  │
+    │  This is intentional. bcrypt is designed to be slow.            │
+    └──────────────────────────────────────────────────────────────────┘
+    """
     return _pwd_context.hash(plain + settings.PASSWORD_PEPPER)
 
 
 def _verify_password(plain: str, hashed: str) -> bool:
-    """Re-add pepper then let bcrypt verify (which also checks the embedded salt)."""
+    """
+    Re-attach the pepper, then bcrypt reads the salt out of `hashed` and re-hashes.
+
+    Example — alice logs in with "123456":
+
+      _verify_password("123456", "$2b$12$N9qo8uLOickgx2ZMRZoMye...")
+          1. prepend pepper  →  "123456" + "my-pepper"
+          2. extract salt A  from "$2b$12$N9qo8uLOickgx2ZMRZoMye..."
+          3. bcrypt("123456my-pepper", salt=A)  →  same hash as at signup
+          4. compare  →  True  ✓
+
+      If bob tries alice's account with "123456":
+          1. pepper applied  →  "123456my-pepper"
+          2. extract salt A  (alice's salt, from her stored hash)
+          3. bcrypt produces alice's hash — BUT that IS alice's hash → True ✓
+             (bob can only log in if he knows the correct password — which he does here)
+
+      If someone tries "wrongpass":
+          1. pepper applied  →  "wrongpassmy-pepper"
+          2. bcrypt("wrongpassmy-pepper", salt=A)  →  completely different hash
+          3. compare  →  False  ✗
+    """
     return _pwd_context.verify(plain + settings.PASSWORD_PEPPER, hashed)
 
 

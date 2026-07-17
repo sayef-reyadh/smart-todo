@@ -127,14 +127,16 @@ class SmartTodoStack(Stack):
         refresh_tokens_table.grant_read_write_data(api_fn)
 
         # ── HTTP API Gateway v2 ───────────────────────────────────────────────
+        # cors_preflight is intentionally NOT set here.
+        # When cors_preflight is configured on the HttpApi, API Gateway intercepts
+        # OPTIONS preflight requests and returns Access-Control-Allow-Origin: *
+        # which browsers reject when withCredentials=true (required for the
+        # httpOnly refresh-token cookie).
+        # Instead, all CORS — including OPTIONS preflight — is handled by
+        # FastAPI's CORSMiddleware, which correctly echoes the specific origin.
         http_api = apigwv2.HttpApi(
             self, "SmartTodoHttpApi",
             api_name="smart-todo-api",
-            cors_preflight=apigwv2.CorsPreflightOptions(
-                allow_origins=["*"],
-                allow_methods=[apigwv2.CorsHttpMethod.ANY],
-                allow_headers=["*"],
-            ),
             default_integration=integrations.HttpLambdaIntegration(
                 "ApiIntegration", api_fn
             ),

@@ -89,7 +89,7 @@ class SmartTodoStack(Stack):
                 # ── Table names: set by CDK (not secrets) ────────────────────
                 "DYNAMODB_TABLE_NAME":       tasks_table.table_name,
                 "DYNAMODB_USERS_TABLE_NAME": users_table.table_name,
-                "AWS_REGION":                self.region,
+                # AWS_REGION is reserved by Lambda runtime — injected automatically
                 # ── Secrets: from GitHub Actions → CDK env → Lambda ───────────
                 "JWT_SECRET_KEY":            jwt_secret_key,
                 "PASSWORD_PEPPER":           password_pepper,

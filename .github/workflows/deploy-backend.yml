@@ -6,6 +6,14 @@ on:
     paths:
       - 'backend/**'
       - 'infra/**'
+  # Manual trigger — use this to force a redeploy without a code change,
+  # e.g. after updating GitHub secrets (CORS_ORIGINS_RAW, JWT_SECRET_KEY, etc.)
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deploy (optional)'
+        required: false
+        default: 'Manual redeploy'
 
 # GitHub Actions secrets required (Settings → Secrets → Actions):
 #   AWS_ACCESS_KEY_ID       IAM user with CDK deploy permissions

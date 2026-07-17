@@ -5,6 +5,14 @@ on:
     branches: [main]
     paths:
       - 'frontend/**'
+  # Manual trigger — use this to force a redeploy without a code change,
+  # e.g. after updating VITE_API_BASE_URL or CORS_ORIGINS_RAW secrets
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deploy (optional)'
+        required: false
+        default: 'Manual redeploy'
 
 # GitHub Actions secrets required:
 #   VERCEL_TOKEN       — from vercel.com/account/tokens

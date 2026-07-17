@@ -20,6 +20,7 @@ GitHub Actions secrets required:
 """
 
 import os
+from pathlib import Path
 from aws_cdk import (
     Stack,
     Duration,
@@ -61,19 +62,40 @@ class SmartTodoStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
+        # ── DynamoDB: REFRESH_TOKENS ──────────────────────────────────────────
+        # Stores opaque refresh token IDs for sliding-window session management.
+        # TTL attribute "ttl" enables automatic DynamoDB cleanup of expired rows.
+        refresh_tokens_table = dynamodb.Table(
+            self, "RefreshTokensTable",
+            table_name="REFRESH_TOKENS",
+            partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.DESTROY,
+            time_to_live_attribute="ttl",
+        )
+        refresh_tokens_table.add_global_secondary_index(
+            index_name="user_id-index",
+            partition_key=dynamodb.Attribute(name="user_id", type=dynamodb.AttributeType.STRING),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
         # ── Secrets: read from environment (injected by GitHub Actions) ───────
         # These are NEVER hardcoded — GitHub Actions passes them at deploy time
         jwt_secret_key  = os.environ["JWT_SECRET_KEY"]
         password_pepper = os.environ["PASSWORD_PEPPER"]
+        cors_origins    = os.environ.get("CORS_ORIGINS_RAW", "http://localhost:5173")
 
         # ── Lambda: FastAPI + Mangum ──────────────────────────────────────────
+        # Resolve backend path relative to this file (infra/stacks/ → ../../backend)
+        backend_dir = str(Path(__file__).resolve().parent.parent.parent / "backend")
+
         api_fn = lambda_.Function(
             self, "SmartTodoApiFunction",
             function_name="smart-todo-api",
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="handler.handler",
             code=lambda_.Code.from_asset(
-                "../backend",
+                backend_dir,
                 bundling=BundlingOptions(
                     image=lambda_.Runtime.PYTHON_3_11.bundling_image,
                     command=[
@@ -87,19 +109,22 @@ class SmartTodoStack(Stack):
             memory_size=256,
             environment={
                 # ── Table names: set by CDK (not secrets) ────────────────────
-                "DYNAMODB_TABLE_NAME":       tasks_table.table_name,
-                "DYNAMODB_USERS_TABLE_NAME": users_table.table_name,
-                "AWS_REGION":                self.region,
+                "DYNAMODB_TABLE_NAME":             tasks_table.table_name,
+                "DYNAMODB_USERS_TABLE_NAME":       users_table.table_name,
+                "DYNAMODB_REFRESH_TOKENS_TABLE_NAME": refresh_tokens_table.table_name,
+                # AWS_REGION is reserved by Lambda runtime — injected automatically
                 # ── Secrets: from GitHub Actions → CDK env → Lambda ───────────
                 "JWT_SECRET_KEY":            jwt_secret_key,
                 "PASSWORD_PEPPER":           password_pepper,
                 "JWT_ALGORITHM":             "HS256",
-                "JWT_EXPIRE_MINUTES":        "1440",
+                "JWT_EXPIRE_MINUTES":        "10",
+                "CORS_ORIGINS_RAW":          cors_origins,
             },
         )
 
         tasks_table.grant_read_write_data(api_fn)
         users_table.grant_read_write_data(api_fn)
+        refresh_tokens_table.grant_read_write_data(api_fn)
 
         # ── HTTP API Gateway v2 ───────────────────────────────────────────────
         http_api = apigwv2.HttpApi(

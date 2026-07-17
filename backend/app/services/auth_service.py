@@ -20,28 +20,111 @@ AuthService — demonstrates the Salt + Pepper password strategy.
 
 from passlib.context import CryptContext
 from fastapi import HTTPException, status
+from datetime import datetime, timezone, timedelta
 
 from ..models.user import User
+from ..models.refresh_token import RefreshToken
 from ..repositories.user_repository import UserRepository
-from ..core.jwt import create_access_token
+from ..repositories.refresh_token_repository import RefreshTokenRepository
+from ..core.jwt import create_access_token, create_refresh_token_value
 from ..core.config import settings
 
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def _hash_password(plain: str) -> str:
-    """Pepper is added BEFORE bcrypt hashing. bcrypt then auto-generates the salt."""
+    """
+    Combine the user's password with the server pepper, then bcrypt it.
+    bcrypt auto-generates a unique random salt and embeds it in the result.
+
+    ┌──────────────────────────────────────────────────────────────────┐
+    │  HOW BCRYPT WORKS INTERNALLY (step by step)                     │
+    │                                                                  │
+    │  Step 1 — You call:  bcrypt("123456my-pepper")                  │
+    │                                                                  │
+    │  Step 2 — bcrypt generates a random salt (16 random bytes):     │
+    │           e.g.  b'\x9a\x3f\x02...'  (different every call)      │
+    │                                                                  │
+    │  Step 3 — bcrypt encodes the salt to a 22-char string:          │
+    │           e.g.  "N9qo8uLOickgx2ZMRZoMye"                        │
+    │                                                                  │
+    │  Step 4 — bcrypt runs the Blowfish cipher 2^12 = 4096 times     │
+    │           using BOTH the password and the salt as input.         │
+    │           (the "12" is the "cost factor" — more = slower)        │
+    │                                                                  │
+    │  Step 5 — bcrypt packs everything into one string:              │
+    │                                                                  │
+    │    "$2b $ 12 $ N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68..."  │
+    │      │    │    ──────────────────────  ──────────────────────    │
+    │    algo cost      salt (22 chars)        hash (31 chars)         │
+    │                   ↑ plain text,          ↑ one-way, cannot       │
+    │                     not a secret           be reversed           │
+    │                                                                  │
+    │  This entire string is what gets stored in DynamoDB.            │
+    └──────────────────────────────────────────────────────────────────┘
+
+    Example — two users both choose password "123456":
+
+      alice:  _hash_password("123456")
+              → bcrypt("123456" + "my-pepper")
+              → internally generates salt = "N9qo8uLOickgx2ZMRZoMye"  ← random
+              → runs Blowfish 4096× with ("123456my-pepper" + that salt)
+              → stores "$2b$12$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+
+      bob:    _hash_password("123456")
+              → bcrypt("123456" + "my-pepper")
+              → internally generates salt = "KJ7mnOP24iKjIEbI2ahmku"  ← different random!
+              → runs Blowfish 4096× with ("123456my-pepper" + that salt)
+              → stores "$2b$12$KJ7mnOP24iKjIEbI2ahmkuOW.72pGjBt9NNoP0MoGFpHmCCGbCLq6"
+
+      alice's hash ≠ bob's hash  →  identical passwords look completely different in DB
+
+    ┌──────────────────────────────────────────────────────────────────┐
+    │  WHY SLOW IS GOOD                                               │
+    │                                                                  │
+    │  cost=12 means 4096 rounds of Blowfish.                         │
+    │  One hash takes ~100ms on modern hardware.                       │
+    │                                                                  │
+    │  For a normal user logging in:  100ms  →  unnoticeable          │
+    │  For an attacker brute-forcing: 100ms × 1,000,000,000 guesses   │
+    │                                 = 3+ years per account           │
+    │                                                                  │
+    │  This is intentional. bcrypt is designed to be slow.            │
+    └──────────────────────────────────────────────────────────────────┘
+    """
     return _pwd_context.hash(plain + settings.PASSWORD_PEPPER)
 
 
 def _verify_password(plain: str, hashed: str) -> bool:
-    """Re-add pepper then let bcrypt verify (which also checks the embedded salt)."""
+    """
+    Re-attach the pepper, then bcrypt reads the salt out of `hashed` and re-hashes.
+
+    Example — alice logs in with "123456":
+
+      _verify_password("123456", "$2b$12$N9qo8uLOickgx2ZMRZoMye...")
+          1. prepend pepper  →  "123456" + "my-pepper"
+          2. extract salt A  from "$2b$12$N9qo8uLOickgx2ZMRZoMye..."
+          3. bcrypt("123456my-pepper", salt=A)  →  same hash as at signup
+          4. compare  →  True  ✓
+
+      If bob tries alice's account with "123456":
+          1. pepper applied  →  "123456my-pepper"
+          2. extract salt A  (alice's salt, from her stored hash)
+          3. bcrypt produces alice's hash — BUT that IS alice's hash → True ✓
+             (bob can only log in if he knows the correct password — which he does here)
+
+      If someone tries "wrongpass":
+          1. pepper applied  →  "wrongpassmy-pepper"
+          2. bcrypt("wrongpassmy-pepper", salt=A)  →  completely different hash
+          3. compare  →  False  ✗
+    """
     return _pwd_context.verify(plain + settings.PASSWORD_PEPPER, hashed)
 
 
 class AuthService:
-    def __init__(self, repo: UserRepository):
-        self.repo = repo
+    def __init__(self, user_repo: UserRepository, rt_repo: RefreshTokenRepository):
+        self.repo = user_repo
+        self.rt_repo = rt_repo
 
     def register(self, name: str, email: str, password: str) -> User:
         # Business rule: duplicate email check
@@ -58,7 +141,13 @@ class AuthService:
         )
         return self.repo.create(user)
 
-    def login(self, email: str, password: str) -> tuple[User, str]:
+    def login(self, email: str, password: str) -> tuple[User, str, RefreshToken]:
+        """
+        Verify credentials and issue BOTH tokens:
+          access_token  — short-lived JWT (10 min), sent in response body
+          refresh_token — opaque random ID (7 days), stored in DB,
+                          sent as httpOnly cookie by the controller
+        """
         user = self.repo.get_by_email(email)
         if not user or not _verify_password(password, user.hashed_password):
             raise HTTPException(
@@ -67,9 +156,83 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        token = create_access_token(
+        access_token = create_access_token(
             user_id=user.id,
             email=user.email,
             name=user.name,
         )
-        return user, token
+        refresh_token = RefreshToken.create(
+            user_id=user.id,
+            expire_days=settings.REFRESH_TOKEN_EXPIRE_DAYS,
+            absolute_max_days=settings.REFRESH_TOKEN_ABSOLUTE_MAX_DAYS,
+        )
+        # Override the UUID with a cryptographically secure random value
+        refresh_token.id = create_refresh_token_value()
+        self.rt_repo.create(refresh_token)
+
+        return user, access_token, refresh_token
+
+    def refresh(self, token_id: str) -> tuple[str, RefreshToken]:
+        """
+        Sliding-window token rotation:
+          1. Look up the token in DB
+          2. Reject if revoked, expired, or past absolute_max
+          3. Extend the sliding expiry (+7 days)
+          4. Issue a new access_token
+
+        Why extend instead of rotate (issue a new refresh token)?
+          Rotating means invalidating the old token and issuing a new one.
+          That’s safer but requires updating the cookie on every refresh.
+          Extending is simpler — same cookie, just updated DB row.
+          Both approaches are valid; extending is used here for simplicity.
+        """
+        stored = self.rt_repo.get(token_id)
+
+        if not stored or stored.revoked:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="Refresh token invalid or revoked")
+
+        now = datetime.now(timezone.utc)
+
+        if now > datetime.fromisoformat(stored.expires_at):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="Refresh token expired")
+
+        if now > datetime.fromisoformat(stored.absolute_max):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="Session exceeded maximum lifetime, please sign in again")
+
+        # Slide the expiry window forward
+        new_expires = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        self.rt_repo.extend(
+            token_id=token_id,
+            new_expires_at=new_expires.isoformat(),
+            new_ttl=int(new_expires.timestamp()),
+        )
+        stored.expires_at = new_expires.isoformat()
+
+        # Fetch user to embed name/email into the new access token
+        user = self.repo.get_by_email(stored.user_id)  # user_id is email PK
+        # Fallback: use just the user_id if email lookup fails
+        access_token = create_access_token(
+            user_id=stored.user_id,
+            email=stored.user_id,
+            name="",
+        )
+        if user:
+            access_token = create_access_token(
+                user_id=user.id,
+                email=user.email,
+                name=user.name,
+            )
+
+        return access_token, stored
+
+    def logout(self, token_id: str) -> None:
+        """
+        Revoke the refresh token in DB.
+        The access_token will expire on its own (10 min) — there’s no
+        server-side revocation for JWTs, which is why keeping them short-lived
+        is important.
+        """
+        self.rt_repo.revoke(token_id)

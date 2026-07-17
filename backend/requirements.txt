@@ -1,6 +1,8 @@
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.14.1
+bcrypt==4.2.1
+boto3==1.38.32
 certifi==2026.6.17
 click==8.4.2
 colorama==0.4.6
@@ -21,12 +23,15 @@ Jinja2==3.1.6
 markdown-it-py==4.2.0
 MarkupSafe==3.0.3
 mdurl==0.1.2
+mangum==0.17.0
+passlib==1.7.4
 pydantic==2.13.4
 pydantic-extra-types==2.11.1
 pydantic-settings==2.14.2
 pydantic_core==2.46.4
 Pygments==2.20.0
 python-dotenv==1.2.2
+python-jose==3.3.0
 python-multipart==0.0.32
 PyYAML==6.0.3
 rich==15.0.0

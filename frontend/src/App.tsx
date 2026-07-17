@@ -1,25 +1,34 @@
-// App.tsx: router setup + context providers.
-// ThemeProvider wraps everything so any component can call useTheme() — no prop drilling.
-import { BrowserRouter, Routes, Route } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { AppLayout } from './layouts/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { TaskDetailsPage } from './pages/TaskDetailsPage'
 import { AboutPage } from './pages/AboutPage'
+import { LoginPage } from './pages/LoginPage'
+import { SignupPage } from './pages/SignupPage'
 import { ThemeProvider } from './context/ThemeContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth()
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+}
 
 function App() {
   return (
-    // ThemeProvider is the useContext "source" — it owns darkMode state and shares it
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="tasks/:taskId" element={<TaskDetailsPage />} />
-            <Route path="about" element={<AboutPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login"  element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route element={<AppLayout />}>
+              <Route index element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+              <Route path="tasks/:taskId" element={<ProtectedRoute><TaskDetailsPage /></ProtectedRoute>} />
+              <Route path="about" element={<AboutPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

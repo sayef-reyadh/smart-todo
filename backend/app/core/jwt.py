@@ -122,6 +122,9 @@ JWT utility — token creation and decoding.
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+from datetime import datetime, timedelta, timezone
+import secrets
+
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -141,6 +144,22 @@ def create_access_token(user_id: str, email: str, name: str) -> str:
         "iat": datetime.now(timezone.utc),
     }
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+
+def create_refresh_token_value() -> str:
+    """
+    Generate a cryptographically secure random token value (NOT a JWT).
+
+    Why NOT a JWT for refresh tokens?
+      - JWTs are stateless — once issued, the server cannot revoke them
+        before expiry. If stolen, you're powerless.
+      - An opaque random ID is just a lookup key into the DB, so the server
+        can revoke it instantly (logout, password change, suspicious activity).
+
+    Example output:  "3zG8kP1mR9_xVqNwLd2fJhYeT7cAsBuZ4i5oXvCn6E0"
+    (43 random base64url characters = 256 bits of entropy)
+    """
+    return secrets.token_urlsafe(32)
 
 
 def decode_access_token(token: str) -> dict:

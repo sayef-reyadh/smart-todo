@@ -6,10 +6,13 @@ from .core.config import settings
 
 app = FastAPI(title="Smart Todo API")
 
+# CORS: allow_origins cannot be ["*"] when allow_credentials=True.
+# CORS_ORIGIN env var must be set to the exact frontend URL (Vercel domain).
+# CDK injects this from the GitHub Actions secret CORS_ORIGIN.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tightened to specific domains in production via CDK env var
-    allow_credentials=True,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,   # required for httpOnly cookie on cross-origin refresh
     allow_methods=["*"],
     allow_headers=["*"],
 )

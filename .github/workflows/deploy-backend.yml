@@ -49,8 +49,9 @@ jobs:
         working-directory: infra
         # All secrets are passed as env vars → CDK reads via os.environ → Lambda env
         env:
-          JWT_SECRET_KEY:  ${{ secrets.JWT_SECRET_KEY }}
-          PASSWORD_PEPPER: ${{ secrets.PASSWORD_PEPPER }}
+          JWT_SECRET_KEY:    ${{ secrets.JWT_SECRET_KEY }}
+          PASSWORD_PEPPER:   ${{ secrets.PASSWORD_PEPPER }}
+          CORS_ORIGINS_RAW:  ${{ secrets.CORS_ORIGINS_RAW }}
         run: |
           source .venv/bin/activate
           cdk deploy SmartTodoStack --require-approval never --outputs-file cdk-outputs.json

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
 import type { AuthTokenResponse } from '../services/api'
+import { apiService } from '../services/api'
 
 type AuthUser = {
   userId: string
@@ -42,9 +43,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('auth_user')
-    setUser(null)
+    // Revoke refresh token on the server (clears httpOnly cookie + DB entry),
+    // then clear local state. Fire-and-forget — don't block the UI.
+    apiService.logout().finally(() => {
+      setUser(null)
+    })
   }
 
   return (

@@ -21,3 +21,10 @@ class TokenResponse(BaseModel):
     name: str
     # Included so the frontend can show JWT in action
     expires_in_minutes: int
+
+
+class RefreshResponse(BaseModel):
+    """Returned by POST /api/auth/refresh — only the new access_token."""
+    access_token: str
+    token_type: str = "bearer"
+    expires_in_minutes: int

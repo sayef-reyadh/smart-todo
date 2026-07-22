@@ -68,8 +68,11 @@ axiosClient.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    // Signature mismatch / malformed token — refreshing won't help, force logout now
+    // Signature mismatch / malformed token — revoke refresh token then force re-login
     if (error.response?.data?.detail === 'Token invalid') {
+      _processQueue(error, null)
+      // Logout endpoint reads httpOnly cookie directly, no Bearer needed
+      await axiosClient.post('/auth/logout').catch(() => {})
       localStorage.removeItem('access_token')
       localStorage.removeItem('auth_user')
       window.location.href = '/login'

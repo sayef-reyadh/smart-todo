@@ -68,6 +68,14 @@ axiosClient.interceptors.response.use(
       return Promise.reject(error)
     }
 
+    // Signature mismatch / malformed token — refreshing won't help, force logout now
+    if (error.response?.data?.detail === 'Token invalid') {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('auth_user')
+      window.location.href = '/login'
+      return Promise.reject(error)
+    }
+
     if (_isRefreshing) {
       // Queue concurrent requests while a refresh is in progress
       return new Promise((resolve, reject) => {

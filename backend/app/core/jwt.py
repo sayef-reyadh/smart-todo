@@ -126,6 +126,7 @@ from datetime import datetime, timedelta, timezone
 import secrets
 
 from jose import JWTError, jwt
+from jose.exceptions import ExpiredSignatureError
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -165,10 +166,18 @@ def create_refresh_token_value() -> str:
 def decode_access_token(token: str) -> dict:
     try:
         return jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-    except JWTError:
+    except ExpiredSignatureError:
+        # Expired but structurally valid — frontend should try refresh
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
+            detail="Token expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        # Signature mismatch, malformed, wrong algorithm — do not refresh, force logout
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token invalid",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

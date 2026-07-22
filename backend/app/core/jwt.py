@@ -178,11 +178,25 @@ def get_current_user_id(
 ) -> str:
     """FastAPI dependency — extracts user_id from Bearer JWT."""
     payload = decode_access_token(credentials.credentials)
-    return payload["sub"]
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing subject",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user_id
 
 
 def get_current_user_email(
     credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
 ) -> str:
     payload = decode_access_token(credentials.credentials)
-    return payload["email"]
+    email = payload.get("email")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing email",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return email

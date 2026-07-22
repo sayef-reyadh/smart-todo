@@ -213,18 +213,18 @@ class AuthService:
 
         # Fetch user to embed name/email into the new access token
         user = self.repo.get_by_email(stored.user_id)  # user_id is email PK
-        # Fallback: use just the user_id if email lookup fails
-        access_token = create_access_token(
-            user_id=stored.user_id,
-            email=stored.user_id,
-            name="",
-        )
-        if user:
-            access_token = create_access_token(
-                user_id=user.id,
-                email=user.email,
-                name=user.name,
+        if not user:
+            # User was deleted after this refresh token was issued — revoke and force re-login
+            self.rt_repo.revoke(token_id)
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found",
             )
+        access_token = create_access_token(
+            user_id=user.id,
+            email=user.email,
+            name=user.name,
+        )
 
         return access_token, stored
 

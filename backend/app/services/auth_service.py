@@ -174,23 +174,28 @@ class AuthService:
 
     def refresh(self, token_id: str) -> tuple[str, RefreshToken]:
         """
-        Sliding-window token rotation:
+        Refresh token rotation with reuse detection:
           1. Look up the token in DB
-          2. Reject if revoked, expired, or past absolute_max
-          3. Extend the sliding expiry (+7 days)
-          4. Issue a new access_token
+          2. If revoked → replay detected → revoke ALL user sessions
+          3. Reject if expired or past absolute_max
+          4. Revoke old token, issue new one (same family_id)
+          5. Issue new access_token
 
-        Why extend instead of rotate (issue a new refresh token)?
-          Rotating means invalidating the old token and issuing a new one.
-          That’s safer but requires updating the cookie on every refresh.
-          Extending is simpler — same cookie, just updated DB row.
-          Both approaches are valid; extending is used here for simplicity.
+        Each refresh produces a new token id in the cookie. A stolen token
+        can only be used once — the second use triggers full session revocation.
         """
         stored = self.rt_repo.get(token_id)
 
-        if not stored or stored.revoked:
+        if not stored:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail="Refresh token invalid or revoked")
+
+        if stored.revoked:
+            # Token was already rotated — someone is replaying an old token.
+            # Revoke all sessions for this user to limit damage.
+            self.rt_repo.revoke_all_for_user(stored.user_id)
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="Session compromised, please sign in again")
 
         now = datetime.now(timezone.utc)
 
@@ -202,31 +207,31 @@ class AuthService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail="Session exceeded maximum lifetime, please sign in again")
 
-        # Slide the expiry window forward
-        new_expires = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-        self.rt_repo.extend(
-            token_id=token_id,
-            new_expires_at=new_expires.isoformat(),
-            new_ttl=int(new_expires.timestamp()),
-        )
-        stored.expires_at = new_expires.isoformat()
-
-        # Fetch user to embed name/email into the new access token
-        user = self.repo.get_by_email(stored.user_id)  # user_id is email PK
+        user = self.repo.get_by_email(stored.user_id)
         if not user:
-            # User was deleted after this refresh token was issued — revoke and force re-login
             self.rt_repo.revoke(token_id)
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User not found",
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail="User not found")
+
+        # Rotate: mark old token revoked, create new one in same family
+        self.rt_repo.revoke(token_id)
+        new_expires = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        new_token = RefreshToken(
+            user_id=stored.user_id,
+            family_id=stored.family_id,
+            expires_at=new_expires.isoformat(),
+            absolute_max=stored.absolute_max,
+            ttl=int(new_expires.timestamp()),
+        )
+        new_token.id = create_refresh_token_value()
+        self.rt_repo.create(new_token)
+
         access_token = create_access_token(
             user_id=user.id,
             email=user.email,
             name=user.name,
         )
-
-        return access_token, stored
+        return access_token, new_token
 
     def logout(self, token_id: str) -> None:
         """

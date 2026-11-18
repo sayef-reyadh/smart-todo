@@ -80,9 +80,9 @@ def refresh(request: Request, response: Response):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No refresh token cookie",
         )
-    access_token, stored = _service.refresh(token_id)
-    # Update cookie max_age to reflect the new sliding expiry
-    _set_refresh_cookie(response, token_id)
+    access_token, new_token = _service.refresh(token_id)
+    # Rotation: cookie must carry the NEW token id, not the old one
+    _set_refresh_cookie(response, new_token.id)
     return RefreshResponse(
         access_token=access_token,
         expires_in_minutes=settings.JWT_EXPIRE_MINUTES,

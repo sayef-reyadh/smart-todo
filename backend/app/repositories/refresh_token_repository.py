@@ -34,11 +34,3 @@ class RefreshTokenRepository:
         for item in resp.get("Items", []):
             self.revoke(item["id"])
 
-    def extend(self, token_id: str, new_expires_at: str, new_ttl: int) -> None:
-        """Sliding window — push the expiry forward on each successful refresh."""
-        self._table.update_item(
-            Key={"id": token_id},
-            UpdateExpression="SET expires_at = :e, #t = :ttl",
-            ExpressionAttributeNames={"#t": "ttl"},
-            ExpressionAttributeValues={":e": new_expires_at, ":ttl": new_ttl},
-        )
